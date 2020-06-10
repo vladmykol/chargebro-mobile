@@ -251,7 +251,7 @@ RentBorder {
     box-shadow: 0mm 0.2mm 1mm 0mm #8FC0C5;
     background: white;
     margin: 0.3mm 1mm;
-    padding: 0.5mm 1mm 1mm 0.5mm;
+    padding: 1mm 1mm;
 }
 
 RentBorderHeader {

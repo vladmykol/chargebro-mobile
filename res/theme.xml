@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <resource majorVersion="1" minorVersion="11" useXmlUI="false">
+    <image name="charging-station.png" type="multi"  />
     <image name="dont-spend-time.png" type="multi"  />
     <image name="facebook.png" type="multi"  />
     <image name="google.png" type="multi"  />
     <image name="gradient-overlay.png" type="multi"  />
+    <image name="InfinityAnimationBottom_1.png" type="multi"  />
+    <image name="InfinityAnimationBottomL_1.png" type="multi"  />
+    <image name="InfinityAnimationBottomR_1.png" type="multi"  />
+    <image name="InfinityAnimationCenter_1.png" type="multi"  />
+    <image name="InfinityAnimationLeft_1.png" type="multi"  />
+    <image name="InfinityAnimationRight_1.png" type="multi"  />
+    <image name="InfinityAnimationTop_1.png" type="multi"  />
+    <image name="InfinityAnimationTopL_1.png" type="multi"  />
+    <image name="InfinityAnimationTopR_1.png" type="multi"  />
     <image name="main-logo.png" type="multi"  />
     <image name="map-point.png" type="multi"  />
     <image name="power-bank-photo.png" type="multi"  />
-    <image name="Powerbank-Charging-Station.png" type="multi"  />
+    <image name="power-bank-photo.png 1" type="multi"  />
     <image name="RentBorderBottom_1.png" type="multi"  />
     <image name="RentBorderBottomL_1.png" type="multi"  />
     <image name="RentBorderBottomR_1.png" type="multi"  />
@@ -39,6 +49,7 @@
     <image name="TakePowerBankButtonTopR_1.png" type="multi"  />
     <image name="TakePowerBankButtonTopR_2.png" type="multi"  />
     <theme name="Theme">
+        <val key="@chargingStationImage" value="charging-station.png" />
         <val key="@dontSpendTimeImage" value="dont-spend-time.png" />
         <val key="@facebookImage" value="facebook.png" />
         <val key="@googleImage" value="google.png" />
@@ -51,7 +62,6 @@
         <val key="@mapTileLoadingText" value="Loading..." />
         <val key="@mapZoomButtonsBool" value="true" />
         <val key="@menuImageSize" value="5" />
-        <val key="@powerBankPhotoImage" value="power-bank-photo.png" />
         <val key="@sideMenuFoldedSwipeBool" value="false" />
         <val key="@sideSwipeSensitiveInt" value="100" />
         <val key="@splashLogo1Image" value="splash-logo-part1.png" />
@@ -325,6 +335,14 @@
         <val key="Form.sel#fgColor" value="8fc0c5" />
         <val key="Form.sel#transparency" value="255" />
         <val key="Form.transparency" value="255" />
+        <border key="InfinityAnimation.border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
+        <border key="InfinityAnimation.dis#border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
+        <val key="InfinityAnimation.dis#transparency" value="0" />
+        <border key="InfinityAnimation.press#border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
+        <val key="InfinityAnimation.press#transparency" value="0" />
+        <border key="InfinityAnimation.sel#border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
+        <val key="InfinityAnimation.sel#transparency" value="0" />
+        <val key="InfinityAnimation.transparency" value="0" />
         <val key="PanelHeader.align" value="4" />
         <val key="PanelHeader.dis#align" value="4" />
         <val key="PanelHeader.dis#fgColor" value="8fc0c5" />

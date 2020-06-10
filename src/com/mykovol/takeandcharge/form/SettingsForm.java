@@ -56,7 +56,7 @@ public class SettingsForm extends Form {
         signOut.addActionListener(e -> {
             if(Dialog.show("Sign Out", "Are you sure?", "Sign Out", "Cancel")) {
                 UserService.logout();
-                MapForm.get().show();
+                MainForm.get().show();
             }
         });
         

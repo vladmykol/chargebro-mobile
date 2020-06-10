@@ -11,12 +11,15 @@ import static com.mykovol.takeandcharge.service.StyleConst.*;
 
 public class RentBoard extends Container {
     private final TimeLabel rentTime;
+    private long startTime;
+    private long lastRenderedTime = 0;
 
     public RentBoard(String serialNumber, long elapsedTime) {
         super(BoxLayout.x());
         setUIID(RENT_BORDER);
         setName(serialNumber);
-        rentTime = new TimeLabel(elapsedTime, RENT_BORDER_TEXT);
+        startTime = System.currentTimeMillis() - elapsedTime;
+        rentTime = new TimeLabel(RENT_BORDER_TEXT);
         Container timeContainer = BoxLayout.encloseY(new Label("Time", RENT_BORDER_SUB_HEADER),
                 rentTime);
         Container serialNumberContainer = BoxLayout.encloseY(new Label("Serial number", RENT_BORDER_SUB_HEADER),
@@ -27,45 +30,40 @@ public class RentBoard extends Container {
     }
 
     public void updateElapsedTime(long timeElapsed) {
-        rentTime.setStartTime(System.currentTimeMillis() - timeElapsed);
-        animateLayout(200);
+        setStartTime(System.currentTimeMillis() - timeElapsed);
+        revalidate();
     }
+
+    @Override
+    public boolean animate() {
+        if (System.currentTimeMillis() > lastRenderedTime + 60000) {
+            lastRenderedTime = System.currentTimeMillis();
+            int min = (int) (System.currentTimeMillis() - startTime) / 1000 / 60;
+            rentTime.setMin(min);
+            System.out.println("animate -" + min);
+            return true;
+        }
+        return false;
+    }
+
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
 
     public static class TimeLabel extends Label {
         private final String MIN_STRING = " " + getUIManager().localize("min", "min");
         private final String HOUR_STRING = " " + getUIManager().localize("h", "h") + " ";
-        private long startTime;
-        private long lastRenderedTime;
 
-        public TimeLabel(long elapsedTime, String style) {
+
+        public TimeLabel(String style) {
             super("", style);
 //            setText(formatMin(0));
-            startTime = System.currentTimeMillis() - elapsedTime;
         }
 
-        public void setStartTime(long startTime) {
-            this.startTime = startTime;
-        }
-
-        @Override
-        public boolean animate() {
-            if (System.currentTimeMillis() / 1000 / 60 != lastRenderedTime / 1000 / 60) {
-                lastRenderedTime = System.currentTimeMillis();
-                int min = (int) (System.currentTimeMillis() - startTime) / 1000 / 60;
-                setText(formatMin(min));
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        protected void initComponent() {
-            this.getComponentForm().registerAnimated(this);
-        }
-
-        @Override
-        protected void deinitialize() {
-            this.getComponentForm().deregisterAnimated(this);
+        public void setMin(int min) {
+            setText(formatMin(min));
         }
 
         private String formatMin(int minutes) {

@@ -38,13 +38,12 @@ import com.mykovol.takeandcharge.form.component.RentContent;
 import com.mykovol.takeandcharge.service.RentService;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.codename1.ui.CN.*;
 import static com.codename1.ui.util.Resources.getGlobalResources;
 
-/**
- * @author Shai Almog
- */
+
 public class BottomPanel {
     public static final int MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE = 20;
     public static final int minPanelHeight = (int) Math.round(getDisplayHeight() * (MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE / 100.0));
@@ -74,55 +73,60 @@ public class BottomPanel {
 
     public void show() {
         mainContainer.add(SOUTH, bottomPanel);
-        refreshContent();
+        mainContainer.revalidate();
+        refreshRentContent();
     }
 
-    private void refreshContent() {
+    public void refreshRentContent() {
         RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                System.out.println("response from rent history -" + errorCode);
             }
 
             @Override
             public void onSucess(List<RentHistory> rentHistoryList) {
-                rentHistoryList.forEach(rentHistory -> {
+                Map<String, RentBoard> visibleRentBoards = rentContent.getVisibleRentBoards();
+                for (RentHistory rentHistory : rentHistoryList) {
                     String serialNumber = rentHistory.powerBankId.get();
                     long timeElapsed = rentHistory.rentPeriodMs.getLong();
-                    RentBoard existingRentRow = rentContent.getRentInfo().remove(serialNumber);
+                    RentBoard existingRentRow = visibleRentBoards.remove(serialNumber);
                     if (existingRentRow == null) {
                         addRentRow(serialNumber, timeElapsed);
                     } else {
                         existingRentRow.updateElapsedTime(timeElapsed);
                     }
-                });
-                rentContent.getRentInfo().values().forEach(showedButNotExistingRentRow -> {
+                }
+                for (RentBoard showedButNotExistingRentRow : visibleRentBoards.values()) {
                     removeRentRow(showedButNotExistingRentRow);
-                });
+                }
+                mainContainer.revalidate();
             }
         });
     }
 
     public void addRentRow(String serialNumber, long elapsedTime) {
+        RentBoard rentBoard = rentContent.addRow(serialNumber, elapsedTime);
+        getCurrentForm().registerAnimated(rentBoard);
         if (!rentContent.isChildOf(contentHolder)) {
             topPanelTitle.setText(rentContent.getTitleText());
-            rentContent.addRow(serialNumber, elapsedTime);
-            contentHolder.replace(defaultContent, rentContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-        } else
-        {
-            rentContent.addRowAnimated(serialNumber, elapsedTime);
+            contentHolder.replaceAndWait(defaultContent, rentContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
+            contentHolder.revalidate();
+        } else {
+            rentContent.animateRentContent(500);
         }
     }
 
     public void removeRentRow(RentBoard rentBoard) {
+        getCurrentForm().deregisterAnimated(rentBoard);
         rentBoard.remove();
 //        if (rentContent.isChildOf(contentHolder)) {
         if (rentContent.noRentRows()) {
             topPanelTitle.setText(defaultTopTitleText);
-            contentHolder.replace(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-        } else {
-            rentContent.animateLayout(500);
+            contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
+            contentHolder.revalidate();
         }
-//        }
+        rentContent.animateRentContent(500);
     }
 
     public void removeRentRow(String serialNumber) {

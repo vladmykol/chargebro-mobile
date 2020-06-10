@@ -6,6 +6,7 @@ import com.codename1.ui.Label;
 import com.codename1.ui.layouts.BoxLayout;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.mykovol.takeandcharge.service.StyleConst.*;
 
@@ -30,21 +31,18 @@ public class RentContent extends Container {
         return rentTitle.getText();
     }
 
-    public void addRow(String serialNumber, long elapsedTime) {
-        rentInfo.addComponent(0, new RentBoard(serialNumber, elapsedTime));
-    }
-
-    public void addRowAnimated(String serialNumber, long elapsedTime) {
-        addRow(serialNumber,elapsedTime);
-        rentInfo.animateLayout(500);
+    public RentBoard addRow(String serialNumber, long elapsedTime) {
+        RentBoard rentBoard = new RentBoard(serialNumber, elapsedTime);
+        rentInfo.addComponent(0, rentBoard);
+        return rentBoard;
     }
 
     public boolean noRentRows() {
         return rentInfo.getComponentCount() == 0;
     }
 
-    public HashMap<String, RentBoard> getRentInfo() {
-        HashMap<String, RentBoard> rentInfoMap = new HashMap<>();
+    public Map<String, RentBoard> getVisibleRentBoards() {
+        Map<String, RentBoard> rentInfoMap = new HashMap<>();
         for (int i = 0; i < rentInfo.getComponentCount(); i++) {
             Component rentRow = rentInfo.getComponentAt(i);
             rentInfoMap.put(rentRow.getName(), (RentBoard) rentRow);
@@ -55,9 +53,12 @@ public class RentContent extends Container {
     public RentBoard findRentBoardByName(String serialNumber) {
         for (int i = 0; i < rentInfo.getComponentCount(); i++) {
             if (serialNumber.equals(rentInfo.getComponentAt(i).getName()))
-                return (RentBoard) getComponentAt(i);
+                return (RentBoard) rentInfo.getComponentAt(i);
         }
         return null;
     }
 
+    public void animateRentContent(int duration) {
+        rentInfo.animateLayoutAndWait(duration);
+    }
 }

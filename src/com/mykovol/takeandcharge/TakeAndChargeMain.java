@@ -8,8 +8,7 @@ import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
-import com.mykovol.takeandcharge.form.LoginForm;
-import com.mykovol.takeandcharge.form.MapForm;
+import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
 import org.littlemonkey.connectivity.Connectivity;
 
@@ -79,16 +78,15 @@ public class TakeAndChargeMain {
     }
 
     public void start() {
-        MapForm.checkAndEnableGps();
         if (current != null) {
             current.show();
-            return;
+        } else {
+            new SplashScreen().show();
         }
-        new SplashScreen().show();
 //        MapForm.get().show();
 //        new LoginForm(MapForm.get()).show();
 //        new LoginForm().show();
-
+        MainForm.appInit();
     }
 
     public void stop() {
@@ -97,10 +95,11 @@ public class TakeAndChargeMain {
             ((Dialog) current).dispose();
             current = getCurrentForm();
         }
-        MapForm.get().disableGps();
+        MainForm.get().appClose();
     }
 
     public void destroy() {
+        MainForm.get().appClose();
     }
 
 }

@@ -28,7 +28,6 @@ import com.codename1.components.ToastBar;
 import com.codename1.ext.codescan.CodeScanner;
 import com.codename1.ext.codescan.ScanResult;
 import com.codename1.io.rest.Rest;
-import com.codename1.properties.PropertyBusinessObject;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.util.Callback;
@@ -49,6 +48,7 @@ import static com.mykovol.takeandcharge.service.Const.*;
 public class RentService {
 
     private static void sendRentRequest(String stationId, final Callback<String> callback) {
+        Display.getInstance().getCurrent().revalidate();
         InfiniteProgress ip = new InfiniteProgress();
         Dialog dlg = ip.showInfiniteBlocking();
         Rest.post(SERVER_URL + RENT_URL)
@@ -56,7 +56,7 @@ public class RentService {
                 .queryParam("stationId", stationId)
                 .acceptJson()
                 .onError(errorData -> {
-//                    dlg.dispose();
+                    errorData.consume();
                     callback.onError(null, errorData.getError(), errorData.getResponseCode(), "something is terribly wrong");
                 })
                 .onErrorCode(errorData -> {
@@ -69,7 +69,6 @@ public class RentService {
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsString(resp -> {
-//                    dlg.dispose();
                     callback.onSucess(resp.getResponseData());
                 })
                 .setDisposeOnCompletion(dlg);
@@ -78,7 +77,7 @@ public class RentService {
     public static void getRentHistory(boolean onlyCurrentlyInRent, final Callback<List<RentHistory>> callback) {
         Rest.get(SERVER_URL + RENT_HISTORY_URL)
                 .bearer(UserService.getToken())
-                .queryParam("filter", onlyCurrentlyInRent?"current":"all")
+                .queryParam("filter", onlyCurrentlyInRent ? "current" : "all")
                 .acceptJson()
                 .onError(errorData -> {
                     errorData.consume();
@@ -89,7 +88,7 @@ public class RentService {
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsPropertyList(historyList -> {
-                    List<RentHistory> responseData = (List<RentHistory>)(List<?>) historyList.getResponseData();
+                    List<RentHistory> responseData = (List<RentHistory>) (List<?>) historyList.getResponseData();
                     callback.onSucess(responseData);
                 }, RentHistory.class);
 

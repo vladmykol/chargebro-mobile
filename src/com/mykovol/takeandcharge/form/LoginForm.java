@@ -42,7 +42,7 @@ import com.mykovol.takeandcharge.tools.FabProgress;
 public class LoginForm extends Form {
     public LoginForm() {
         super(new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE));
-        Form previous = MapForm.get();
+        Form previous = MainForm.get();
         setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
 //        MorphTransition morph = MorphTransition.create(400).
 //                morph("LogoImageName");
@@ -137,9 +137,9 @@ public class LoginForm extends Form {
             UserService.login(login.getText(), password.getText(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
-                    RentSocketService.get().connect();
+                    RentSocketService.get().reconnect();
+                    MainForm.get().show();
                     FabProgress.stop(fab);
-                    MapForm.get().show();
                 }
 
                 @Override

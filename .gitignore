@@ -1,5 +1,5 @@
 .DS_Store
-*.jar
+#*.jar
 *.log
 build/
 dist/
@@ -8,7 +8,7 @@ iosCerts
 css/.backups
 res/theme
 native/internal_tmp/
-*.zip
+#*.zip
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries

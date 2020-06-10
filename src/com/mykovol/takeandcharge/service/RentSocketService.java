@@ -26,7 +26,7 @@ package com.mykovol.takeandcharge.service;
 import com.codename1.io.Log;
 import com.codename1.io.websocket.WebSocket;
 import com.codename1.util.EasyThread;
-import com.mykovol.takeandcharge.form.MapForm;
+import com.mykovol.takeandcharge.form.MainForm;
 
 import java.io.*;
 
@@ -52,7 +52,6 @@ public class RentSocketService extends WebSocket {
     public RentSocketService() {
         super(SERVER_URL + SERVER_SOCKET_URL);
         et = EasyThread.start("Websocket");
-        autoReconnect(5000);
     }
 
     public static RentSocketService get() {
@@ -107,7 +106,6 @@ public class RentSocketService extends WebSocket {
             short messageType = dis.readShort();
             short messageCode = dis.readShort();
             String message = dis.readUTF();
-
             switch (messageType) {
                 case MESSAGE_TYPE_AUTH:
                     authAction(messageCode, message);
@@ -126,7 +124,7 @@ public class RentSocketService extends WebSocket {
     }
 
     private void returnPowerBankAction(String serialNumber) {
-        callSerially(() -> MapForm.get().getBottomPanel().removeRentRow(serialNumber));
+        callSerially(() -> MainForm.get().getBottomPanel().removeRentRow(serialNumber));
     }
 
     private void authAction(short messageCode, String responseMessage) {

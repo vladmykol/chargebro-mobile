@@ -9,7 +9,6 @@
     <description>Builds, tests, and runs the project TakeAndChargeMain.</description>
     <property file="codenameone_kotlin.properties"/><typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/><import file="nbproject/build-impl.xml"/>
     <property file="codenameone_settings.properties"/>
-    <property file="application.properties.properties"/>
     <property name="automated" value="false" />
     <taskdef name="codeNameOne" classname="com.codename1.build.client.CodeNameOneBuildTask" classpath="CodeNameOneBuildClient.jar"/>
     <taskdef name="prepareTests" classname="com.codename1.build.client.PrepareTestsTask" classpath="CodeNameOneBuildClient.jar"/>
