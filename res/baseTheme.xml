@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resource majorVersion="1" minorVersion="11" useXmlUI="false">
+    <l10n name="prime">
+        <lang name="uk">
+            <entry key="select" value="&#x412;&#x438;&#x431;&#x440;&#x430;&#x442;&#x438;" />
+            <entry key="ok" value="&#x414;&#x43e;&#x431;&#x440;&#x435;" />
+            <entry key="cancel" value="&#x412;&#x456;&#x434;&#x43c;&#x456;&#x43d;&#x438;&#x442;&#x438;" />
+            <entry key="edit" value="&#x420;&#x435;&#x434;&#x430;&#x433;&#x443;&#x432;&#x430;&#x442;&#x438;" />
+            <entry key="menu" value="&#x41c;&#x435;&#x43d;&#x44e;" />
+        </lang>
+    </l10n>
+</resource>

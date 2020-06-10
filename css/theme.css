@@ -1,0 +1,317 @@
+#Constants {
+    includeNativeBool: true;
+    /*sideMenuImage: "menu.png";*/
+    mapTileLoadingImage: "main-logo.png";
+    mapZoomButtonsBool: true;
+    /*menuPrefSizeBool: true;*/
+    sideMenuFoldedSwipeBool: false;
+    sideSwipeSensitiveInt:100;
+    menuImageSize: 5;
+    mapTileLoadingText: "Loading...";
+    /*multi size images. Name should end with Image to map as image resource*/
+    splashLogo1Image: "splash-logo-part1.png";
+    splashLogo2Image: "splash-logo-part2.png";
+    mailLogoImage: "main-logo.png";
+    googleImage: "google.png";
+    facebookImage: "facebook.png";
+    gradientImage: "gradient-overlay.png";
+    verticalDraggableImage: "vertical-draggable.png";
+    dontSpendTimeImage: "dont-spend-time.png";
+    powerBankPhotoImage: "power-bank-photo.png";
+    mapPointImage: "map-point.png";
+    chargingStationImage: "charging-station.png";
+    /*multi size images end*/
+}
+
+/*====================== Common ==========================*/
+
+InfinityAnimation{
+    border-radius: 2mm;
+    box-shadow: 0.5mm 0.5mm 4mm 0.1mm;
+}
+
+Form {
+    background: white;
+    color: #8FC0C5;
+}
+
+/*Label {*/
+/*    color: black;*/
+/*    background-color: white;*/
+/*    font-family: "native:MainLight";*/
+/*    font-size: 3.2mm*/
+/*}*/
+
+TextHint {
+    font-family: "native:MainLight";
+    padding: 2mm;
+    font-size: 3mm
+}
+
+
+TitleCommand {
+    padding: 0mm;
+    margin: 0mm;
+    color: #535861;
+}
+
+TitleCommand.pressed {
+    color: black;
+}
+
+Toolbar {
+    color: #8FC0C5;
+    border: none;
+    padding: 2mm;
+}
+
+SideMenu {
+    background-color: #8FC0C5;
+    color: #8FC0C5;
+    padding: 3mm 3mm 3mm;
+    margin: 3mm;
+}
+
+TextAlignCenter {
+    text-align: center;
+}
+
+FloatingActionButton {
+    background-color: #8FC0C5;
+}
+
+FloatingActionButton.pressed {
+    background-color: #5fa0a5;
+}
+
+ToastBarMessage {
+    font-family: "native:MainLight";
+    padding: 2mm;
+    font-size: 3.2mm
+}
+
+
+/*====================== Login Form ==========================*/
+
+WelcomeText {
+    padding: 0mm;
+    margin: 0mm;
+    font-family: "native:MainLight";
+    font-size: 4mm;
+    text-align: left;
+}
+
+WelcomeText2 {
+    cn1-derive: WelcomeText;
+    font-weight: bold;
+    color: #80acb1;
+}
+
+
+CredentialsField {
+    background-color: white;
+    border-bottom: 0.2mm solid black;
+    padding: 1mm 1mm 1mm;
+    margin: 1mm 2mm 0mm;
+    font-family: "native:MainLight";
+    font-size: 3mm
+}
+
+ForgotPasRegisterLabel {
+    color: #2775a4;
+    text-align: left;
+    padding: 0mm 4mm 2.5mm;
+    margin: 0mm;
+    font-family: "native:MainLight";
+    font-size: 2.5mm
+}
+
+ForgotPasRegisterLabel.pressed {
+    font-weight: bold;
+}
+
+
+ErrorLabel {
+    color: #cc0000;
+    background-color: white;
+    padding: 3mm;
+    margin: 0mm;
+    font-family: "native:MainLight";
+    font-size: 2.8mm
+}
+
+/*====================== Splash Screen ==========================*/
+
+SplashTitle {
+    padding: 0mm;
+    margin: 0mm;
+    color: #80acb1;
+    text-align: center;
+    font-family: "native:MainThin";
+    font-weight: bold;
+    font-size: 6mm;
+}
+
+SplashSubTitle {
+    padding: 0mm;
+    margin: 0mm;
+    text-align: center;
+    font-family: "native:MainThin";
+    font-size: 4mm;
+}
+
+/*====================== Map Form ==========================*/
+
+StationPlaceOnMap {
+    color: #8FC0C5;
+}
+
+TakePowerBankButton {
+    cn1-derive: Button;
+    color: #535861;
+    background: white;
+    padding: 4mm 6mm 5mm 5mm;
+    /*margin: 0mm 0mm 20mm;*/
+    border-radius: 2mm;
+    box-shadow: 0.5mm 0.5mm 4mm 0.1mm;
+    /*cn1-box-shadow-spread: 4mm;*/
+    /*cn1-box-shadow-blur: 4mm;*/
+    font-family: "native:MainLight";
+    font-size: 3.2mm;
+    text-align: center;
+}
+
+TakePowerBankButton.pressed {
+    box-shadow: 0.5mm 0.5mm 4.3mm 0.1mm;
+}
+
+
+/*====================== Bottom panel ==========================*/
+
+BottomPanelFoldedTop {
+    padding: 0mm;
+    margin: 0mm;
+    background: white;
+}
+
+BottomPanelFoldedTopText {
+    color: #535861;
+    font-family: "native:MainRegular";
+    font-size: 3.5mm;
+    padding: 1mm 2mm;
+    margin: 0mm;
+}
+
+BottomPanelUnfolded {
+    background: white;
+    padding: 0mm;
+    margin: 0mm;
+    border: 0.1mm solid lightgrey;
+    border-radius: 3mm 3mm 0mm 0mm;
+}
+
+BottomPanelFolded {
+    background: white;
+    padding: 0mm;
+    margin: 0mm;
+}
+
+UnderBottomPanel {
+    padding: 0mm;
+    margin: 0mm;
+    /*border-radius: 2mm;*/
+    /*box-shadow: 0mm -0.5mm 3.5mm -1mm;*/
+}
+
+PanelHeader {
+    color: #8FC0C5;
+    padding: 1mm 3mm;
+    margin: 0mm;
+    font-family: "native:MainLight";
+    font-size: 3mm;
+    font-weight: bold;
+    text-align: center;
+}
+
+PanelText {
+    padding: 0mm 2mm;
+    font-family: "native:MainLight";
+    font-size: 2.5mm;
+}
+
+PanelImage {
+    padding: 0mm;
+    margin: 0mm 1mm;
+}
+
+RentBorder {
+    border-radius: 2mm;
+    box-shadow: 0mm 0.2mm 1mm 0mm #8FC0C5;
+    background: white;
+    margin: 0.3mm 1mm;
+    padding: 0.5mm 1mm 1mm 0.5mm;
+}
+
+RentBorderHeader {
+    font-family: "native:MainRegular";
+    color: #8FC0C5;
+    font-size: 3.3mm;
+    padding: 0.5mm 2mm;
+    margin: 0mm;
+}
+
+RentBorderSubHeader {
+    font-family: "native:MainRegular";
+    color: lightgrey;
+    font-size: 2mm;
+    padding: 0mm;
+    margin: 0mm 2mm;
+}
+
+RentBorderText {
+    font-family: "native:MainRegular";
+    color: gray;
+    font-size: 2.5mm;
+    padding: 0mm;
+    margin: 0mm 2mm;
+}
+
+DraggableIcon {
+    padding: 1mm 0mm 0mm 0mm;
+    margin: 0mm;
+    text-align: center;
+}
+
+
+/*====================== Side Menu ==========================*/
+
+
+AvatarBlock {
+    color: white;
+    background-color: #8FC0C5;
+    text-align: left;
+    padding: 8mm 2mm 3mm;
+    margin: 0mm;
+    font-size: 5mm;
+}
+
+SideCommand {
+    color: black;
+    padding: 3mm 3mm 3mm;
+    margin: 0mm;
+    border-radius: 3mm;
+    /*box-shadow: 0.5mm 0.5mm 2mm 0.1mm;*/
+    font-family: "native:MainLight";
+    font-size: 3mm;
+}
+
+
+SideNavigationPanel {
+    background-color: white;
+    padding: 0mm 0mm 2mm;
+    margin: 0mm;
+    border-radius: 2mm;
+}
+
+
+
