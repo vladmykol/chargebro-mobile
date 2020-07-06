@@ -10,6 +10,7 @@ import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
+import com.mykovol.takeandcharge.tools.FullScreenLoader;
 import org.littlemonkey.connectivity.Connectivity;
 
 import java.io.IOException;
@@ -57,16 +58,25 @@ public class TakeAndChargeMain {
         addNetworkErrorListener(err -> {
             // prevent the event from propagating
             err.consume();
+            FullScreenLoader.stop();
             if (err.getError() != null) {
                 Log.e(err.getError());
             }
             Log.sendLogAsync();
             if (!Connectivity.isConnected()) {
-                Dialog.show("No Internet connection", "Please check your Internet connection and try again", "OK", null);
+                if (MainForm.get().isVisible()) {
+                    MainForm.get().getBottomPanel().showError("No Internet connection");
+                } else
+                    Dialog.show("No Internet connection", "Please check your Internet connection and try again", "OK", null);
             } else {
-                Dialog.show("Connection Error",
-                        "Error when connecting to " + err.getConnectionRequest().getUrl(),
-                        "OK", null);
+                if (err.getResponseCode() == 0) {
+                    if (MainForm.get().isVisible()) {
+                        MainForm.get().getBottomPanel().showError("No connection with server");
+                    }
+                } else
+                    Dialog.show("Connection Error " + err.getResponseCode(),
+                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
+                            "OK", null);
             }
         });
     }
@@ -82,10 +92,9 @@ public class TakeAndChargeMain {
             current.show();
         } else {
             new SplashScreen().show();
+//            MainForm.get().show();
+//            new RegisterMobileNumberStep1().show();
         }
-//        MapForm.get().show();
-//        new LoginForm(MapForm.get()).show();
-//        new LoginForm().show();
         MainForm.appInit();
     }
 

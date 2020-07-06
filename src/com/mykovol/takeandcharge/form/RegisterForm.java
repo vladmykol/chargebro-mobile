@@ -25,15 +25,9 @@ package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanButton;
 import com.codename1.ui.*;
-import com.codename1.ui.animations.Animation;
 import com.codename1.ui.animations.MorphTransition;
-import com.codename1.ui.geom.Dimension;
-import com.codename1.ui.geom.GeneralPath;
-import com.codename1.ui.geom.Rectangle;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.LayeredLayout;
-import com.codename1.ui.util.Resources;
 
 import static com.codename1.ui.CN.SOUTH;
 
@@ -64,7 +58,7 @@ public class RegisterForm extends Form {
         phoneNumber.getTextComponent().setGrowByContent(false);
         phoneNumber.setUIID("Container");
 
-        phoneNumber.addActionListener(e -> new EnterMobileNumberForm().show());
+        phoneNumber.addActionListener(e -> new RegisterMobileNumberStep1().show());
 
         countryCodeButton.setName("CountryCodeButton");
         Container phonePicking = BorderLayout.centerCenterEastWest(

@@ -23,22 +23,21 @@
 
 package com.mykovol.takeandcharge.service;
 
-import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
 import com.codename1.ext.codescan.CodeScanner;
 import com.codename1.ext.codescan.ScanResult;
 import com.codename1.io.rest.Rest;
-import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.ErrorResponse;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.form.LoginForm;
+import com.mykovol.takeandcharge.tools.FullScreenLoader;
 import org.littlemonkey.qrscanner.QRScanner;
 
 import java.util.List;
 
-import static com.mykovol.takeandcharge.service.Const.*;
+import static com.mykovol.takeandcharge.service.GlobalConst.*;
 
 /**
  * A generic service class that handles login/creation etc.
@@ -48,18 +47,19 @@ import static com.mykovol.takeandcharge.service.Const.*;
 public class RentService {
 
     private static void sendRentRequest(String stationId, final Callback<String> callback) {
-        Display.getInstance().getCurrent().revalidate();
-        InfiniteProgress ip = new InfiniteProgress();
-        Dialog dlg = ip.showInfiniteBlocking();
+        FullScreenLoader.delayedStart(200);
         Rest.post(SERVER_URL + RENT_URL)
                 .bearer(UserService.getToken())
                 .queryParam("stationId", stationId)
                 .acceptJson()
+                .timeout(60000)
                 .onError(errorData -> {
                     errorData.consume();
+                    FullScreenLoader.stop();
                     callback.onError(null, errorData.getError(), errorData.getResponseCode(), "something is terribly wrong");
                 })
                 .onErrorCode(errorData -> {
+                    FullScreenLoader.stop();
                     // TODO: 5/27/2020 move to general error handler
                     if (errorData.getResponseCode() == 403) {
                         new LoginForm().show();
@@ -69,9 +69,9 @@ public class RentService {
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsString(resp -> {
+                    FullScreenLoader.stop();
                     callback.onSucess(resp.getResponseData());
-                })
-                .setDisposeOnCompletion(dlg);
+                });
     }
 
     public static void getRentHistory(boolean onlyCurrentlyInRent, final Callback<List<RentHistory>> callback) {
@@ -79,10 +79,6 @@ public class RentService {
                 .bearer(UserService.getToken())
                 .queryParam("filter", onlyCurrentlyInRent ? "current" : "all")
                 .acceptJson()
-                .onError(errorData -> {
-                    errorData.consume();
-                    callback.onError(null, errorData.getError(), errorData.getResponseCode(), "something is terribly wrong");
-                })
                 .onErrorCode(errorData -> {
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
@@ -114,7 +110,6 @@ public class RentService {
                     @Override
                     public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
                         String stationId = contents.substring(contents.indexOf("id=") + 3);
-
                         sendRentRequest(stationId, callback);
                     }
 

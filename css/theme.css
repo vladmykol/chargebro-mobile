@@ -5,7 +5,7 @@
     mapZoomButtonsBool: true;
     /*menuPrefSizeBool: true;*/
     sideMenuFoldedSwipeBool: false;
-    sideSwipeSensitiveInt:100;
+    sideSwipeSensitiveInt: 100;
     menuImageSize: 5;
     mapTileLoadingText: "Loading...";
     /*multi size images. Name should end with Image to map as image resource*/
@@ -20,12 +20,14 @@
     powerBankPhotoImage: "power-bank-photo.png";
     mapPointImage: "map-point.png";
     chargingStationImage: "charging-station.png";
+    mobileNumberImage: "mobile-number.png";
+    registerImage: "register.png";
     /*multi size images end*/
 }
 
 /*====================== Common ==========================*/
 
-InfinityAnimation{
+InfinityAnimation {
     border-radius: 2mm;
     box-shadow: 0.5mm 0.5mm 4mm 0.1mm;
 }
@@ -53,6 +55,8 @@ TitleCommand {
     padding: 0mm;
     margin: 0mm;
     color: #535861;
+    font-family: "native:MainLight";
+    font-size: 4mm;
 }
 
 TitleCommand.pressed {
@@ -74,6 +78,8 @@ SideMenu {
 
 TextAlignCenter {
     text-align: center;
+    margin: 0mm;
+    padding: 0mm;
 }
 
 FloatingActionButton {
@@ -134,7 +140,7 @@ ForgotPasRegisterLabel.pressed {
 ErrorLabel {
     color: #cc0000;
     background-color: white;
-    padding: 3mm;
+    padding: 2mm;
     margin: 0mm;
     font-family: "native:MainLight";
     font-size: 2.8mm
@@ -168,15 +174,15 @@ StationPlaceOnMap {
 
 TakePowerBankButton {
     cn1-derive: Button;
-    color: #535861;
+    color: #8FC0C5;
     background: white;
-    padding: 4mm 6mm 5mm 5mm;
+    padding: 4mm 8mm 5mm 7mm;
     /*margin: 0mm 0mm 20mm;*/
-    border-radius: 2mm;
+    border-radius: 3mm;
     box-shadow: 0.5mm 0.5mm 4mm 0.1mm;
     /*cn1-box-shadow-spread: 4mm;*/
     /*cn1-box-shadow-blur: 4mm;*/
-    font-family: "native:MainLight";
+    font-family: "native:MainRegular";
     font-size: 3.2mm;
     text-align: center;
 }
@@ -189,7 +195,7 @@ TakePowerBankButton.pressed {
 /*====================== Bottom panel ==========================*/
 
 BottomPanelFoldedTop {
-    padding: 0mm;
+    padding: 1.1mm 0mm;
     margin: 0mm;
     background: white;
 }
@@ -198,8 +204,12 @@ BottomPanelFoldedTopText {
     color: #535861;
     font-family: "native:MainRegular";
     font-size: 3.5mm;
-    padding: 1mm 2mm;
+    padding: 0mm 2mm;
     margin: 0mm;
+}
+
+Title{
+    cn1-derive:BottomPanelFoldedTopText;
 }
 
 BottomPanelUnfolded {
@@ -256,7 +266,7 @@ RentBorderHeader {
     font-family: "native:MainRegular";
     color: #8FC0C5;
     font-size: 3.3mm;
-    padding: 0.5mm 2mm;
+    padding: 0mm 2mm;
     margin: 0mm;
 }
 
@@ -277,11 +287,20 @@ RentBorderText {
 }
 
 DraggableIcon {
-    padding: 1mm 0mm 0mm 0mm;
+    padding: 1mm 0mm 0.5mm 0mm;
     margin: 0mm;
     text-align: center;
 }
 
+ErrorText {
+    background: #f34c4c;
+    color: white;
+    padding: 0.2mm 0mm;
+    margin: 0mm;
+    text-align: center;
+    font-family: "native:MainRegular";
+    font-size: 2.5mm;
+}
 
 /*====================== Side Menu ==========================*/
 
@@ -296,22 +315,95 @@ AvatarBlock {
 }
 
 SideCommand {
-    color: black;
-    padding: 3mm 3mm 3mm;
+    color: #449ea5;
+    background: white;
+    padding: 2mm 2mm;
     margin: 0mm;
-    border-radius: 3mm;
-    /*box-shadow: 0.5mm 0.5mm 2mm 0.1mm;*/
+    border: none;
     font-family: "native:MainLight";
-    font-size: 3mm;
+    font-size: 3.5mm;
+}
+
+SideCommand.pressed {
+    background: lightgrey;
 }
 
 
 SideNavigationPanel {
     background-color: white;
-    padding: 0mm 0mm 2mm;
+    padding: 0mm 0mm 1mm 0mm;
     margin: 0mm;
-    border-radius: 2mm;
+    border-bottom: 0.1mm solid gray;
 }
 
+Legal {
+    cn1-derive:Label;
+    color: gray;
+    padding: 2mm;
+    margin: 0mm;
+    font-family: "native:MainLight";
+    font-size: 2.7mm;
+}
 
+/*====================== Register Form ==========================*/
+
+
+RegisterLabel {
+    cn1-derive: Label;
+    padding: 1.3mm 2mm;
+    margin: 0mm;
+    font-family: "native:MainLight";
+    font-size: 3.2mm;
+    color: black;
+    text-align: center;
+}
+
+RegisterTextField {
+    cn1-derive: TextField;
+    font-family: "native:MainLight";
+    font-size: 3.5mm;
+    color: black;
+}
+
+MobileNumber {
+    cn1-derive: RegisterLabel;
+    margin: 2mm 1mm;
+    font-size: 4mm;
+}
+
+CountryCodePicker {
+    text-align: left;
+    padding: 3mm 2mm 4mm 4mm;
+    margin: 0mm;
+    font-family: "native:MainLight";
+    font-size: 3mm;
+}
+
+ResendCodeLabel {
+    cn1-derive: RegisterLabel;
+    text-align: left;
+    font-size: 2.4mm;
+}
+
+ResendCodeButton {
+    cn1-derive: ResendCodeLabel;
+    color: #2775a4;
+}
+
+ResendCodeButton.pressed {
+    font-weight: bold;
+}
+
+TermsCheckBox {
+    cn1-derive: ResendCodeLabel;
+}
+
+TermsLink {
+    cn1-derive: TermsCheckBox;
+    color: #2775a4;
+}
+
+TermsLink.pressed {
+    font-weight: bold;
+}
 

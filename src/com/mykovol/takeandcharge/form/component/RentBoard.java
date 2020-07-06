@@ -30,20 +30,24 @@ public class RentBoard extends Container {
     }
 
     public void updateElapsedTime(long timeElapsed) {
-        setStartTime(System.currentTimeMillis() - timeElapsed);
+        startTime = System.currentTimeMillis() - timeElapsed;
+        updateTimer();
         revalidate();
     }
 
     @Override
     public boolean animate() {
         if (System.currentTimeMillis() > lastRenderedTime + 60000) {
-            lastRenderedTime = System.currentTimeMillis();
-            int min = (int) (System.currentTimeMillis() - startTime) / 1000 / 60;
-            rentTime.setMin(min);
-            System.out.println("animate -" + min);
+            updateTimer();
             return true;
         }
         return false;
+    }
+
+    private void updateTimer() {
+        lastRenderedTime = System.currentTimeMillis();
+        int min = (int) (System.currentTimeMillis() - startTime) / 1000 / 60;
+        rentTime.setMin(min);
     }
 
 
@@ -59,7 +63,6 @@ public class RentBoard extends Container {
 
         public TimeLabel(String style) {
             super("", style);
-//            setText(formatMin(0));
         }
 
         public void setMin(int min) {

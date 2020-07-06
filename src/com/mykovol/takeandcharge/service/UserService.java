@@ -32,7 +32,6 @@ import com.codename1.io.rest.Response;
 import com.codename1.io.rest.Rest;
 import com.codename1.properties.PreferencesObject;
 import com.codename1.social.LoginCallback;
-import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.util.Callback;
@@ -44,8 +43,8 @@ import com.mykovol.takeandcharge.dataobj.UserLogin;
 import java.io.IOException;
 
 import static com.codename1.ui.CN.addToQueue;
-import static com.mykovol.takeandcharge.service.Const.LOGIN_URL;
-import static com.mykovol.takeandcharge.service.Const.SERVER_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.LOGIN_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.SERVER_URL;
 
 /**
  * A generic service class that handles login/creation etc.

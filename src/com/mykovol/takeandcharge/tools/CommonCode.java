@@ -34,7 +34,7 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.util.SuccessCallback;
-import com.mykovol.takeandcharge.form.EnterMobileNumberForm;
+import com.mykovol.takeandcharge.form.RegisterMobileNumberStep1;
 import com.mykovol.takeandcharge.form.LoginForm;
 import com.mykovol.takeandcharge.form.SettingsForm;
 import com.mykovol.takeandcharge.form.WalkthruForm;
@@ -52,6 +52,8 @@ import static com.codename1.ui.CN.getCurrentForm;
  */
 public class CommonCode {
     private static Image avatar;
+
+
 
     public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
         if (avatar == null) {
@@ -132,7 +134,7 @@ public class CommonCode {
     public static void constructSideMenu(Toolbar tb) {
         Button userAndAvatar = new Button("Welcome Stranger", "AvatarBlock");
 //        userAndAvatar.setIcon(getAvatar(i -> userAndAvatar.setIcon(i)));
-        userAndAvatar.setGap(convertToPixels(4));
+//        userAndAvatar.setGap(convertToPixels(4));
 //        userAndAvatar.addActionListener(e -> new EditAccountForm().show());
         tb.addComponentToSideMenu(userAndAvatar);
 
@@ -141,12 +143,18 @@ public class CommonCode {
             new LoginForm().show();
         });
         tb.addMaterialCommandToSideMenu("Register", FontImage.MATERIAL_PERSON_ADD, e -> {
-            new EnterMobileNumberForm().show();
+            new RegisterMobileNumberStep1().show();
         });
         tb.addMaterialCommandToSideMenu("Help", FontImage.MATERIAL_HELP, e -> { new WalkthruForm().show();
         });
-        tb.addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> new SettingsForm().show());
+        tb.addMaterialCommandToSideMenu("Wallet", FontImage.MATERIAL_ACCOUNT_BALANCE_WALLET, e -> new SettingsForm().show());
         tb.addMaterialCommandToSideMenu("Sign out", FontImage.MATERIAL_EXIT_TO_APP, e -> UserService.logout());
+
+        Button legalButton = new Button("Legal", "Legal");
+        Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1", "Legal"), legalButton);
+        legal.setLeadComponent(legalButton);
+        legal.setUIID("SideNavigationPanel");
+        tb.setComponentToSideMenuSouth(legal);
     }
 
 
@@ -197,6 +205,8 @@ public class CommonCode {
 
         f.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         f.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
+
+
     }
 
     public static void removeTransitionsTemporarily(final Form f) {

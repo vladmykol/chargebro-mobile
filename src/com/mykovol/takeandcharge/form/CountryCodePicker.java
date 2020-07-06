@@ -36,7 +36,7 @@ import com.codename1.ui.util.Resources;
 
 import java.io.IOException;
 
-import static com.codename1.sms.activation.ActivationForm.*;
+import static com.codename1.sms.activation.ActivationForm.COUNTRY_FLAGS;
 import static com.codename1.ui.CN.convertToPixels;
 import static com.codename1.ui.CN.getCurrentForm;
 
@@ -44,18 +44,24 @@ import static com.codename1.ui.CN.getCurrentForm;
  * Generic button that shows a flag and international dial prefix. Defaults to the OS locale value and when
  * clicked allows us to pick a different locale
  *
- * @author Shai Almog
+ * @author Vlad M
  */
 public class CountryCodePicker extends Button {
+    private final String[] COUNTRY_ISO2 = {"UA", "RU", "US"};
+    private final String[] COUNTRY_ISO3 = {"UKR", "RUS", "USA"};
+    private final String[] COUNTRY_CODES = new String[]{"380", "7", "1"};
     private Resources flagResource;
+    private Image blankIcon = Image.createImage(100, 70, 0);
+
 
     public CountryCodePicker() {
         setUIID("CountryCodePicker");
-        addActionListener(e -> showPickerForm());
+//        addActionListener(e -> showPickerForm());
         setGap(convertToPixels(2));
         String code = L10NManager.getInstance().getLocale();
         //String code = "IL";
         if (code != null) {
+            System.out.println(code);
             String[] countryCodes;
             if (code.length() == 2) {
                 countryCodes = COUNTRY_ISO2;
@@ -72,17 +78,22 @@ public class CountryCodePicker extends Button {
             } catch (IOException err) {
                 Log.e(err);
             }
-            Image blankIcon = Image.createImage(100, 70, 0);
-            for (int iter = 0; iter < countryCodes.length; iter++) {
-                if (code.equals(countryCodes[iter])) {
-                    setText("+" + COUNTRY_CODES[iter]);
-                    setIcon(flagResource.getImage(COUNTRY_FLAGS[iter]));
-                    if (getIcon() == null) {
-                        setIcon(blankIcon);
-                    }
-                    return;
-                }
+
+            setText("+380");
+            setIcon(flagResource.getImage("ua.png"));
+            if (getIcon() == null) {
+                setIcon(blankIcon);
             }
+//            for (int iter = 0; iter < countryCodes.length; iter++) {
+//                if (code.equals(countryCodes[iter])) {
+//                    setText("+" + COUNTRY_CODES[iter]);
+//                    setIcon(flagResource.getImage(COUNTRY_FLAGS[iter]));
+//                    if (getIcon() == null) {
+//                        setIcon(blankIcon);
+//                    }
+//                    return;
+//                }
+//            }
         }
     }
 

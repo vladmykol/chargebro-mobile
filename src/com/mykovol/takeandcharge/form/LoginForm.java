@@ -24,6 +24,7 @@ import com.codename1.components.SpanLabel;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -34,27 +35,25 @@ import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
+import static com.codename1.ui.CN.callSerially;
+
 /**
  * The Login form
  *
  * @author Shai Almog
  */
 public class LoginForm extends Form {
+
+    private final TextField loginField = new TextField("", "Enter your login", 20, TextField.EMAILADDR);
+    private final TextField passwordField = new TextField("", "Enter your password", 20, TextField.PASSWORD);
+
     public LoginForm() {
         super(new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE));
-        Form previous = MainForm.get();
-        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
-//        MorphTransition morph = MorphTransition.create(400).
-//                morph("LogoImageName");
-//        setTransitionInAnimator(morph);
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
-        getToolbar().addCommandToLeftBar("", mat, e -> previous.show());
-//        getToolbar().setBackCommand("", Toolbar.BackCommandPolicy.AS_ARROW, e -> {
-//            previous.show();
-//        });
+//        CommonCode.removeTransitionsTemporarily(previous);
+        getToolbar().addCommandToRightBar(constructCloseCommand());
 
-        CommonCode.removeTransitionsTemporarily(previous);
+//        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
+
 
         Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
         Label logoImageHolder = new Label(LogoImage, "TextAlignCenter");
@@ -65,13 +64,11 @@ public class LoginForm extends Form {
                 new Label(" Take&Charge", "WelcomeText2")
         );
 
-        TextField login = new TextField("", "Enter your login", 20, TextField.EMAILADDR);
-        login.setUIID("CredentialsField");
-        TextField password = new TextField("", "Enter your password", 20, TextField.PASSWORD);
-        password.setUIID("CredentialsField");
+        loginField.setUIID("CredentialsField");
+        passwordField.setUIID("CredentialsField");
 
-        login.getAllStyles().setMargin(LEFT, 0);
-        password.getAllStyles().setMargin(LEFT, 0);
+        loginField.getAllStyles().setMargin(LEFT, 0);
+        passwordField.getAllStyles().setMargin(LEFT, 0);
         Label loginIcon = new Label("", "CredentialsField");
         loginIcon.setShowEvenIfBlank(true);
         Label passwordIcon = new Label("", "CredentialsField");
@@ -93,7 +90,7 @@ public class LoginForm extends Form {
         Container registerOrForgot = BoxLayout.encloseY(forgot, newAccountButton);
 
         newAccountButton.addActionListener(evt -> {
-            new EnterMobileNumberForm().show();
+            new RegisterMobileNumberStep1().show();
         });
 
         // We remove the extra space for low resolution devices so things fit better
@@ -107,26 +104,48 @@ public class LoginForm extends Form {
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
 //        validator.addSubmitButtons(fab);
         fab.bindFabToContainer(this);
-        ActionListener<?> loginButtonAction = loginButtonAction(login, password, error, fab);
+        ActionListener<?> loginButtonAction = loginButtonAction(loginField, passwordField, error, fab);
         fab.addActionListener(loginButtonAction);
-        password.addActionListener(loginButtonAction);
+        passwordField.addActionListener(loginButtonAction);
 
         Container mainContainer = BoxLayout.encloseY(
                 logoImageHolder,
                 welcomeText,
                 spaceLabel,
-                BorderLayout.center(login).
+                BorderLayout.center(loginField).
                         add(BorderLayout.WEST, loginIcon),
-                BorderLayout.center(password).
+                BorderLayout.center(passwordField).
                         add(BorderLayout.WEST, passwordIcon),
                 error
         );
         add(BorderLayout.NORTH, mainContainer);
         add(BorderLayout.SOUTH, registerOrForgot);
 
-        setEditOnShow(login);
+        setEditOnShow(loginField);
         mainContainer.setScrollableY(true);
         mainContainer.setScrollVisible(false);
+    }
+
+    private Command constructCloseCommand() {
+        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
+        return Command.create("", mat, e -> {
+
+            MorphTransition morph = MorphTransition.create(400);
+            setTransitionOutAnimator(morph);
+            if (loginField.isEditing()) {
+                loginField.stopEditing(() -> {
+                    revalidate();
+                    callSerially(MainForm.get()::show);
+                });
+            } else if (passwordField.isEditing()) {
+                passwordField.stopEditing(() -> {
+                    revalidate();
+                    callSerially(MainForm.get()::show);
+                });
+            } else {
+                MainForm.get().show();
+            }
+        });
     }
 
     private ActionListener<?> loginButtonAction(TextField login, TextField password, SpanLabel error, FloatingActionButton fab) {

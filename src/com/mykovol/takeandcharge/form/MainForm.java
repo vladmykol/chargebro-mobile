@@ -25,6 +25,7 @@ package com.mykovol.takeandcharge.form;
 
 
 import com.codename1.components.ScaleImageLabel;
+import com.codename1.gif.GifImage;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Util;
 import com.codename1.maps.Coord;
@@ -37,12 +38,11 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.codename1.util.Callback;
-import com.codename1.util.EasyThread;
-import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.tools.BottomPanel;
 import com.mykovol.takeandcharge.tools.CommonCode;
+
+import java.io.IOException;
 
 import static com.codename1.ui.CN.convertToPixels;
 
@@ -55,7 +55,7 @@ public class MainForm extends Form {
     private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RVpEYUpceVw+VSlDWzkjXWZ8bCJDSF5GRkZ4cm1DFVdE");
     private static final Coord station1 = new Coord(50.481952, 30.412420);
     private static MainForm instance;
-    private final Button scanButton = new ScanButton("Take Power Bank", "TakePowerBankButton");
+    private final Button scanButton = new ScanButton(" Take&Charge", "TakePowerBankButton");
     private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(scanButton)));
     //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
 //    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(n)));
@@ -73,7 +73,7 @@ public class MainForm extends Form {
         mapContainer.setShowMyLocation(true);
         add(mapContainer);
 
-        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
+//        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
 
         square = Image.createImage(convertToPixels(0.7f), convertToPixels(0.7f), 0xff000000);
 
@@ -89,12 +89,19 @@ public class MainForm extends Form {
     }
 
 
-
     public static MainForm get() {
         if (instance == null) {
             instance = new MainForm();
         }
         return instance;
+    }
+
+    public static void appInit() {
+        if (instance != null) {
+            instance.mapContainer.setShowMyLocation(true);
+        }
+        RentSocketService.get().autoReconnect(5000);
+        RentSocketService.get().reconnect();
     }
 
     @Override
@@ -130,15 +137,6 @@ public class MainForm extends Form {
         mapContainer.setShowMyLocation(false);
         RentSocketService.get().autoReconnect(0);
         RentSocketService.get().close();
-
-    }
-
-    public static void appInit() {
-        if (instance != null) {
-            instance.mapContainer.setShowMyLocation(true);
-        }
-        RentSocketService.get().autoReconnect(5000);
-        RentSocketService.get().connect();
     }
 
     @Override
@@ -157,18 +155,28 @@ public class MainForm extends Form {
         }
 
         private void scanButtonAction(ActionEvent evt) {
-
-            RentService.rent(new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
-                }
-
-                @Override
-                public void onSucess(String powerBankId) {
-                    bottomPanel.addRentRow(powerBankId, 0);
-                }
-            });
+            try {
+                add(BorderLayout.center(new ScaleImageLabel(GifImage.decode(
+                        Display.getInstance().getResourceAsStream(Resources.class, "/load.gif"),
+                        256611))));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            scanButton.setEnabled(false);
+//            RentService.rent(new Callback<String>() {
+//                @Override
+//                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+//                    scanButton.setEnabled(true);
+//                    bottomPanel.showError(errorMessage.trim());
+////                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
+//                }
+//
+//                @Override
+//                public void onSucess(String powerBankId) {
+//                    bottomPanel.addRentRow(powerBankId, 0);
+//                    scanButton.setEnabled(true);
+//                }
+//            });
         }
     }
 

@@ -6,6 +6,7 @@ import com.codename1.ui.Container;
 import com.codename1.ui.Form;
 import com.codename1.ui.Label;
 import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
@@ -86,7 +87,9 @@ public class SplashScreen extends Form {
         logoImageContainer.setY(getHeight());
         mainContainer.setHeight(getHeight());
         mainContainer.animateUnlayoutAndWait(450, 20);
-        setTransitionOutAnimator(CommonTransitions.createEmpty());
+        MorphTransition morph = MorphTransition.create(300);
+        setTransitionOutAnimator(morph);
+//        setTransitionOutAnimator(CommonTransitions.createEmpty());
     }
 
     private void animateLogoIconAppearance() {

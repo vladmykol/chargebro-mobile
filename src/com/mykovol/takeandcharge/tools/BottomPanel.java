@@ -31,6 +31,7 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.form.component.RentBoard;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.codename1.ui.CN.*;
+import static com.codename1.ui.CN.getDisplayWidth;
 import static com.codename1.ui.util.Resources.getGlobalResources;
 
 
@@ -52,9 +54,11 @@ public class BottomPanel {
     private final Container bottomPanel = BorderLayout.center(contentHolder);
     private final Container mainContainer;
     private final Label draggableImage = new Label(getGlobalResources().getImage("vertical-draggable.png"), "DraggableIcon");
+    private final Label errorLabel = new Label("something went wrong", "ErrorText");
     private final String defaultTopTitleText = "What's new?";
     private final Label topPanelTitle = new Label(defaultTopTitleText, "BottomPanelFoldedTopText");
     private final Button contentPanBlocking;
+    private final Container header = BoxLayout.encloseY(draggableImage, errorLabel);
     private RentContent rentContent = new RentContent();
     private int firstX = -1, firstY = -1;
     private boolean isDraggingBottomPanel;
@@ -111,7 +115,7 @@ public class BottomPanel {
         if (!rentContent.isChildOf(contentHolder)) {
             topPanelTitle.setText(rentContent.getTitleText());
             contentHolder.replaceAndWait(defaultContent, rentContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-            contentHolder.revalidate();
+            mainContainer.revalidate();
         } else {
             rentContent.animateRentContent(500);
         }
@@ -124,7 +128,7 @@ public class BottomPanel {
         if (rentContent.noRentRows()) {
             topPanelTitle.setText(defaultTopTitleText);
             contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-            contentHolder.revalidate();
+            mainContainer.revalidate();
         }
         rentContent.animateRentContent(500);
     }
@@ -152,7 +156,19 @@ public class BottomPanel {
         contentHolder.setBlockLead(true);
         contentHolder.setScrollableY(true);
         contentHolder.setScrollVisible(false);
-        contentHolder.addAll(this.draggableImage, defaultContent.addAll(articlePhoto, headerText, articleText));
+        errorLabel.setHidden(true, true);
+        contentHolder.addAll(header, defaultContent.addAll(articlePhoto, headerText, articleText));
+    }
+
+    public void showError(String errorText) {
+        errorLabel.setText(errorText);
+        errorLabel.setHidden(false, false);
+        contentHolder.animateLayout(700);
+
+        UITimer.timer(5000, false, mainContainer.getComponentForm(), () -> {
+            errorLabel.setHidden(true, false);
+            contentHolder.animateLayout(700);
+        });
     }
 
     private void constructTopPanel() {
@@ -160,7 +176,6 @@ public class BottomPanel {
         float size = Float.parseFloat(mainContainer.getUIManager().getThemeConstant("menuImageSize", "4.5"));
         FontImage.setMaterialIcon(back, FontImage.MATERIAL_ARROW_BACK, size);
         topToolbarPanel = BoxLayout.encloseX(back, topPanelTitle);
-        topToolbarPanel.setBlockLead(true);
         topToolbarPanel.setUIID("BottomPanelFoldedTop");
         topToolbarPanel.setSafeArea(true);
 
@@ -172,7 +187,6 @@ public class BottomPanel {
         rentContent.showTitle();
         contentHolder.addComponent(0, draggableImage);
         bottomPanel.setY(getDisplayHeight() - minPanelHeight);
-        bottomPanel.getUnselectedStyle().setMarginTop(0);
         mainContainer.animateUnlayoutAndWait(200, 255);
         topToolbarPanel.remove();
         bottomPanel.remove();
@@ -180,7 +194,7 @@ public class BottomPanel {
         mainContainer.add(SOUTH, bottomPanel);
         bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
         contentPanBlocking.setEnabled(false);
-        mainContainer.animateLayout(1);
+        mainContainer.animateLayoutAndWait(100);
     }
 
 
@@ -190,11 +204,10 @@ public class BottomPanel {
         f.addPointerReleasedListener(this::processReleaseEvent);
     }
 
-    private void processReleaseEvent(ActionEvent e) {
+    private synchronized void processReleaseEvent(ActionEvent e) {
         if (isDraggingBottomPanel) {
             e.consume();
-            boolean isDruggingUp = mainContainer.getLayout().getComponentConstraint(bottomPanel).equals(SOUTH);
-            bottomPanel.getUnselectedStyle().setMarginTop(0);
+            boolean isDruggingUp = SOUTH.equals(getBottomPanelPosition());
             if (isDruggingUp) {
                 if (bottomPanel.getHeight() > minPanelHeight) {
                     draggableImage.remove();
@@ -209,20 +222,25 @@ public class BottomPanel {
                     bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
                 }
             } else {
-                if (firstY < e.getY())
+                if (firstY < e.getY()) {
                     backButtonAction(e);
+                }
             }
             firstX = -1;
             firstY = -1;
             isDraggingBottomPanel = false;
-            mainContainer.animateLayout(200);
+            mainContainer.animateLayoutAndWait(200);
         }
     }
 
-    private void processDragEvent(ActionEvent e) {
+    private Object getBottomPanelPosition() {
+        return mainContainer.getLayout().getComponentConstraint(bottomPanel);
+    }
+
+    private synchronized void processDragEvent(ActionEvent e) {
         if (isDraggingBottomPanel) {
-            boolean isDruggingUp = mainContainer.getLayout().getComponentConstraint(bottomPanel).equals(SOUTH);
             e.consume();
+            boolean isDruggingUp = SOUTH.equals(getBottomPanelPosition());
             if (isDruggingUp) {
                 bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), firstY - e.getY() + minPanelHeight));
                 mainContainer.revalidate();

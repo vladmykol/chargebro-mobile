@@ -31,8 +31,8 @@ import com.mykovol.takeandcharge.form.MainForm;
 import java.io.*;
 
 import static com.codename1.ui.CN.callSerially;
-import static com.mykovol.takeandcharge.service.Const.SERVER_SOCKET_URL;
-import static com.mykovol.takeandcharge.service.Const.SERVER_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.SERVER_SOCKET_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.SERVER_URL;
 
 /**
  * Connects to the server and updates every time we move using the websocket API
