@@ -34,10 +34,8 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.util.SuccessCallback;
-import com.mykovol.takeandcharge.form.RegisterMobileNumberStep1;
 import com.mykovol.takeandcharge.form.LoginForm;
-import com.mykovol.takeandcharge.form.SettingsForm;
-import com.mykovol.takeandcharge.form.WalkthruForm;
+import com.mykovol.takeandcharge.form.RegisterMobileNumberStep1;
 import com.mykovol.takeandcharge.service.UserService;
 
 import java.io.IOException;
@@ -52,7 +50,6 @@ import static com.codename1.ui.CN.getCurrentForm;
  */
 public class CommonCode {
     private static Image avatar;
-
 
 
     public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
@@ -145,9 +142,9 @@ public class CommonCode {
         tb.addMaterialCommandToSideMenu("Register", FontImage.MATERIAL_PERSON_ADD, e -> {
             new RegisterMobileNumberStep1().show();
         });
-        tb.addMaterialCommandToSideMenu("Help", FontImage.MATERIAL_HELP, e -> { new WalkthruForm().show();
-        });
-        tb.addMaterialCommandToSideMenu("Wallet", FontImage.MATERIAL_ACCOUNT_BALANCE_WALLET, e -> new SettingsForm().show());
+//        tb.addMaterialCommandToSideMenu("Help", FontImage.MATERIAL_HELP, e -> { new WalkthruForm().show();
+//        });
+//        tb.addMaterialCommandToSideMenu("Wallet", FontImage.MATERIAL_ACCOUNT_BALANCE_WALLET, e -> new SettingsForm().show());
         tb.addMaterialCommandToSideMenu("Sign out", FontImage.MATERIAL_EXIT_TO_APP, e -> UserService.logout());
 
         Button legalButton = new Button("Legal", "Legal");

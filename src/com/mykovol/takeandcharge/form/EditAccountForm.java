@@ -61,19 +61,19 @@ public class EditAccountForm extends Form {
 
         String userString = user.getPropertyIndex().toString();
 
-        TextField firstName = createTextField(uib, user.givenName, TextField.ANY);
-        TextField surname = createTextField(uib, user.surname, TextField.ANY);
-        TextField email = createTextField(uib, user.email, TextField.EMAILADDR);
+//        TextField firstName = createTextField(uib, user.givenName, TextField.ANY);
+//        TextField surname = createTextField(uib, user.surname, TextField.ANY);
+//        TextField email = createTextField(uib, user.email, TextField.EMAILADDR);
 
-        addAll(avatarContainer,
-                CommonCode.createSeparator(),
-                new Label("First Name", "GrayLabel"),
-                firstName,
-                new Label("Last Name", "GrayLabel"),
-                surname,
-                new Label("E-Mail", "GrayLabel"),
-                email
-        );
+//        addAll(avatarContainer,
+//                CommonCode.createSeparator(),
+//                new Label("First Name", "GrayLabel"),
+//                firstName,
+//                new Label("Last Name", "GrayLabel"),
+//                surname,
+//                new Label("E-Mail", "GrayLabel"),
+//                email
+//        );
 
         final Form previous = getCurrentForm();
         previous.addShowListener(new ActionListener() {
@@ -83,7 +83,7 @@ public class EditAccountForm extends Form {
                 UiBinding.unbind(user);
                 String newUserString = user.getPropertyIndex().toString();
                 if (!newUserString.equals(userString)) {
-                    UserService.editUser(user);
+//                    UserService.editUser(user);
                 }
             }
         });

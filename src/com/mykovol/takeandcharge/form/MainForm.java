@@ -25,7 +25,6 @@ package com.mykovol.takeandcharge.form;
 
 
 import com.codename1.components.ScaleImageLabel;
-import com.codename1.gif.GifImage;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Util;
 import com.codename1.maps.Coord;
@@ -38,11 +37,12 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.codename1.util.Callback;
+import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.tools.BottomPanel;
 import com.mykovol.takeandcharge.tools.CommonCode;
-
-import java.io.IOException;
+import com.mykovol.takeandcharge.tools.MainGifLoader;
 
 import static com.codename1.ui.CN.convertToPixels;
 
@@ -57,10 +57,11 @@ public class MainForm extends Form {
     private static MainForm instance;
     private final Button scanButton = new ScanButton(" Take&Charge", "TakePowerBankButton");
     private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(scanButton)));
+    private final Container draggablePanelContainer = new Container();
     //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
 //    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(n)));
-    private final Button blockingButton = new Button();
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
+    private final ScaleImageLabel loader = MainGifLoader.get();
     private BottomPanel bottomPanel;
     private Image square;
 
@@ -81,9 +82,9 @@ public class MainForm extends Form {
         gradient.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
         add(BorderLayout.south(gradient));
         add(scabButtonHolder);
+        add(draggablePanelContainer);
 
-        blockingButton.setEnabled(false);
-        add(BorderLayout.center(blockingButton));
+        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
 
         showStationsOnMap();
     }
@@ -108,7 +109,9 @@ public class MainForm extends Form {
     public void show() {
         super.show();
         if (bottomPanel == null) {
-            bottomPanel = new BottomPanel(getLayeredPane(MainForm.class, true), blockingButton);
+            Container draggablePanelContainer = new Container();
+            add(draggablePanelContainer);
+            bottomPanel = new BottomPanel(draggablePanelContainer);
             bottomPanel.show();
         } else {
             bottomPanel.refreshRentContent();
@@ -155,28 +158,19 @@ public class MainForm extends Form {
         }
 
         private void scanButtonAction(ActionEvent evt) {
-            try {
-                add(BorderLayout.center(new ScaleImageLabel(GifImage.decode(
-                        Display.getInstance().getResourceAsStream(Resources.class, "/load.gif"),
-                        256611))));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-//            scanButton.setEnabled(false);
-//            RentService.rent(new Callback<String>() {
-//                @Override
-//                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-//                    scanButton.setEnabled(true);
-//                    bottomPanel.showError(errorMessage.trim());
-////                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
-//                }
-//
-//                @Override
-//                public void onSucess(String powerBankId) {
-//                    bottomPanel.addRentRow(powerBankId, 0);
-//                    scanButton.setEnabled(true);
-//                }
-//            });
+            if (MainGifLoader.get().isVisible()) return;
+            RentService.rent(new Callback<String>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    bottomPanel.showError(errorMessage);
+//                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
+                }
+
+                @Override
+                public void onSucess(String powerBankId) {
+                    bottomPanel.addRentRow(powerBankId, 0);
+                }
+            });
         }
     }
 

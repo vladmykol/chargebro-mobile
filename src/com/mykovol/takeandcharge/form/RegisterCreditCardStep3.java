@@ -35,6 +35,7 @@ import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.util.Resources;
 import com.codename1.ui.util.UITimer;
 import com.mykovol.takeandcharge.service.RegisterStyle;
+import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.service.UserService;
 
 import static com.codename1.ui.CN.getCurrentForm;
@@ -45,6 +46,9 @@ import static com.codename1.ui.CN.getCurrentForm;
  * @author Shai Almog
  */
 public class RegisterCreditCardStep3 extends Form {
+    private final Button skipThisStepButton = new Button("Skip this step", RegisterStyle.TERMS_LINK);
+
+
     public RegisterCreditCardStep3() {
         super(new BorderLayout());
         Form previous = getCurrentForm();
@@ -64,9 +68,16 @@ public class RegisterCreditCardStep3 extends Form {
         Image LogoImage = Resources.getGlobalResources().getImage("register.png");
         box.add(BoxLayout.encloseXCenter(new Label(LogoImage)));
 
-        box.add(new SpanLabel("Card number", RegisterStyle.TEXT_FIELD));
-        TextField pass = new TextField("", "1234 1234 1234 1234", 40, TextField.PHONENUMBER);
-        box.add(pass);
+        box.add(new SpanLabel("Card number", RegisterStyle.LABEL));
+        TextField cardNumber = new TextField("", "1234 1234 1234 1234", 40, TextField.NUMERIC);
+        cardNumber.setUIID(RegisterStyle.TEXT_FIELD);
+        box.add(cardNumber);
+
+        skipThisStepButton.addActionListener(evt -> {
+            setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
+            MainForm.get().show();
+        });
+        box.add(BoxLayout.encloseXRight(skipThisStepButton));
 
         add(CENTER, box);
 

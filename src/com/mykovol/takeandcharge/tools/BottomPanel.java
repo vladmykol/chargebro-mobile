@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.codename1.ui.CN.*;
-import static com.codename1.ui.CN.getDisplayWidth;
 import static com.codename1.ui.util.Resources.getGlobalResources;
 
 
@@ -57,7 +56,6 @@ public class BottomPanel {
     private final Label errorLabel = new Label("something went wrong", "ErrorText");
     private final String defaultTopTitleText = "What's new?";
     private final Label topPanelTitle = new Label(defaultTopTitleText, "BottomPanelFoldedTopText");
-    private final Button contentPanBlocking;
     private final Container header = BoxLayout.encloseY(draggableImage, errorLabel);
     private RentContent rentContent = new RentContent();
     private int firstX = -1, firstY = -1;
@@ -65,9 +63,8 @@ public class BottomPanel {
     private Container topToolbarPanel;
 
 
-    public BottomPanel(Container mainLayer, Button underAreaBlocking) {
+    public BottomPanel(Container mainLayer) {
         this.mainContainer = mainLayer;
-        this.contentPanBlocking = underAreaBlocking;
         mainLayer.setLayout(new BorderLayout());
 
         constructTopPanel();
@@ -161,7 +158,8 @@ public class BottomPanel {
     }
 
     public void showError(String errorText) {
-        errorLabel.setText(errorText);
+        if (errorText == null) return;
+        errorLabel.setText(errorText.trim());
         errorLabel.setHidden(false, false);
         contentHolder.animateLayout(700);
 
@@ -184,6 +182,7 @@ public class BottomPanel {
 
     private void backButtonAction(ActionEvent evt) {
         topToolbarPanel.setY(-topToolbarPanel.getHeight());
+        getCurrentForm().getToolbar().setHidden(false);
         rentContent.showTitle();
         contentHolder.addComponent(0, draggableImage);
         bottomPanel.setY(getDisplayHeight() - minPanelHeight);
@@ -193,7 +192,6 @@ public class BottomPanel {
         contentHolder.setUIID("BottomPanelUnfolded");
         mainContainer.add(SOUTH, bottomPanel);
         bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
-        contentPanBlocking.setEnabled(false);
         mainContainer.animateLayoutAndWait(100);
     }
 
@@ -217,7 +215,7 @@ public class BottomPanel {
                     bottomPanel.remove();
                     mainContainer.add(CENTER, bottomPanel);
                     rentContent.hideTitle();
-                    contentPanBlocking.setEnabled(true);
+                    getCurrentForm().getToolbar().setHidden(true);
                 } else {
                     bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
                 }

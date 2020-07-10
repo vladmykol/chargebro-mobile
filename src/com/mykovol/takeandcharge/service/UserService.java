@@ -35,16 +35,15 @@ import com.codename1.social.LoginCallback;
 import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.util.Callback;
+import com.codename1.util.FailureCallback;
 import com.codename1.util.SuccessCallback;
-import com.mykovol.takeandcharge.dataobj.ErrorResponse;
-import com.mykovol.takeandcharge.dataobj.User;
-import com.mykovol.takeandcharge.dataobj.UserLogin;
+import com.mykovol.takeandcharge.dataobj.*;
+import com.mykovol.takeandcharge.form.MainForm;
 
 import java.io.IOException;
 
 import static com.codename1.ui.CN.addToQueue;
-import static com.mykovol.takeandcharge.service.GlobalConst.LOGIN_URL;
-import static com.mykovol.takeandcharge.service.GlobalConst.SERVER_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.*;
 
 /**
  * A generic service class that handles login/creation etc.
@@ -76,31 +75,45 @@ public class UserService {
 
     public static void logout() {
         Preferences.set("token", null);
+        RentSocketService.get().close();
+        MainForm.get().getBottomPanel().refreshRentContent();
     }
 
     public static boolean isLoggedIn() {
         return getToken() != null;
     }
 
-    public static void sendSMSActivationCode(String phoneNumber) {
-        // TODO: 5/14/2020 find better sms activation provider
-//        TwilioSMS tw = TwilioSMS.create(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_PHONE);
-//
-//        Random r = new Random();
-//        String val = "";
-//        for (int iter = 0; iter < 4; iter++) {
-//            val += r.nextInt(10);
-//        }
-        Preferences.set("phoneVerification", "1111");
-//        if (Display.getInstance().isSimulator() || DEBUG) {
-//            Log.p("Debug verification code: " + val + " sent to phone " + phoneNumber);
-//        }
-//        tw.sendSmsAsync(phoneNumber, val);
+    public static void validateUserPhone(String phoneNumber, final Callback<RegisterInitResponse> callback) {
+        Rest.post(API_REGISTER_INIT)
+//                .bearer(UserService.getToken())
+                .queryParam("phone", phoneNumber)
+                .timeout(10000)
+                .acceptJson()
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsProperties(resp -> {
+                    callback.onSucess((RegisterInitResponse) resp.getResponseData());
+                }, RegisterInitResponse.class);
     }
 
-    public static void resendSMSActivationCode(String phoneNumber) {
-//        TwilioSMS tw = TwilioSMS.create(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_PHONE);
-//        tw.sendSmsAsync(phoneNumber, Preferences.get("phoneVerification", null));
+    public static void registerUser(User request, final Callback<String>  callback) {
+        Rest.post(API_REGISTER)
+//                .bearer(UserService.getToken())
+                .acceptJson()
+                .timeout(10000)
+                .jsonContent()
+                .body(request)
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsJsonMap(resp -> {
+                    String token = resp.getResponseData().get("token").toString();
+                    setToken(token);
+                    callback.onSucess(null);
+                });
     }
 
     public static boolean validateSMSActivationCode(String code) {
@@ -108,73 +121,13 @@ public class UserService {
         return code.contains(val) && code.length() < 80;
     }
 
-    public static boolean userExists(String phoneNumber, String facebookId, String googleId) {
-        if (phoneNumber != null) {
-            return userExistsPhone(phoneNumber);
-        }
-        if (facebookId != null) {
-            return userExistsFacebook(facebookId);
-        }
-        return userExistsGoogle(googleId);
-    }
-
-    public static boolean userExistsPhone(String phoneNumber) {
-        return userExistsImpl("user/exists", phoneNumber);
-    }
-
-    public static boolean userExistsFacebook(String phoneNumber) {
-        return userExistsImpl("user/existsFacebook", phoneNumber);
-    }
-
-    public static boolean userExistsGoogle(String phoneNumber) {
-        return userExistsImpl("user/existsGoogle", phoneNumber);
-    }
-
-    private static boolean userExistsImpl(String url, String val) {
-        Response<byte[]> b = Rest.get(SERVER_URL + url).
-                acceptJson().
-                queryParam("v", val).getAsBytes();
-        if (b.getResponseCode() == 200) {
-            // the t from true
-            return b.getResponseData()[0] == (byte) 't';
-        }
-        return false;
-    }
-
-    public static boolean addNewUser(User u) {
-        Response<String> token = Rest.post(SERVER_URL + "user/add").
-                jsonContent().
-                body(u.getPropertyIndex().toJSON()).getAsString();
-        if (token.getResponseCode() != 200) {
-            return false;
-        }
-//            registerPush();
-        Preferences.set("token", token.getResponseData());
-        return true;
-    }
-
-    public static void editUser(User u) {
-        Rest.post(SERVER_URL + "user/add").
-                jsonContent().
-                body(u.getPropertyIndex().toJSON()).getAsStringAsync(new Callback<Response<String>>() {
-            @Override
-            public void onSucess(Response<String> value) {
-            }
-
-            @Override
-            public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-            }
-        });
-    }
 
     public static void login(String username, String password, final LoginCallback callback) {
-        Rest.post(SERVER_URL + LOGIN_URL)
+        Rest.post(API_LOGIN)
                 .jsonContent()
                 .acceptJson()
+                .timeout(10000)
                 .body(new UserLogin().username.set(username).password.set(password))
-                .onError(evt -> {
-                    callback.loginFailed("something is terribly wrong");
-                })
                 .onErrorCode(errorData -> {
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
                     callback.loginFailed(responseData.message.get());
@@ -186,17 +139,11 @@ public class UserService {
                 });
     }
 
-
-    public static void fetchAvatar(SuccessCallback<Image> callback) {
-        fetchAvatar(me.id.getLong(), callback);
-    }
-
     public static void fetchAvatar(long id, SuccessCallback<Image> callback) {
         ConnectionRequest cr = new ConnectionRequest(SERVER_URL + "user/avatar/" + id, false);
         cr.setFailSilently(true);
         cr.downloadImageToStorage("avatarImage-" + id, callback);
     }
-
 
     public static void setAvatar(String imageFile) {
         try {
@@ -209,4 +156,6 @@ public class UserService {
             ToastBar.showErrorMessage("Error uploading avatar file: " + err);
         }
     }
+
+
 }

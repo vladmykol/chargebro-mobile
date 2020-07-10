@@ -24,7 +24,6 @@
 package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.FloatingActionButton;
-import com.codename1.ui.Button;
 import com.codename1.ui.Stroke;
 import com.codename1.ui.animations.Motion;
 import com.codename1.ui.plaf.RoundBorder;
@@ -33,10 +32,8 @@ import com.codename1.ui.util.UITimer;
 
 import static com.codename1.ui.CN.convertToPixels;
 
-/**
- * @author Shai Almog
- */
 public class FabProgress {
+    private static FloatingActionButton currentFab;
     private UITimer timer;
     private Motion angle;
     private String originalUiid;
@@ -49,7 +46,7 @@ public class FabProgress {
         angle.start();
         timer = UITimer.timer(30, true, fab.getComponentForm(), () -> {
             int ang = angle.getValue();
-            if(angle.isFinished()) {
+            if (angle.isFinished()) {
                 angle = Motion.createEaseInMotion(0, 360, 1500);
                 angle.start();
             }
@@ -60,25 +57,34 @@ public class FabProgress {
         });
     }
 
-    private void updateFabStyle(Style s, int angle) {
-        RoundBorder rb = (RoundBorder)s.getBorder();
-        s.setBorder(rb.stroke(stroke).
-                strokeColor(0x297aa7).
-                strokeOpacity(255).
-                strokeAngle(angle));
-    }
-
     public static void bind(FloatingActionButton fab) {
+        currentFab = fab;
         FabProgress ff = new FabProgress(fab);
         fab.putClientProperty("$internFabProgress", ff);
+        fab.putClientProperty("$internFab", fab);
+    }
+
+    public static void stopCurrent() {
+        if (currentFab != null) {
+            stop(currentFab);
+            currentFab = null;
+        }
     }
 
     public static void stop(FloatingActionButton fab) {
-        FabProgress fp = (FabProgress)fab.getClientProperty("$internFabProgress");
-        if(fp != null) {
+        FabProgress fp = (FabProgress) fab.getClientProperty("$internFabProgress");
+        if (fp != null) {
             fp.timer.cancel();
             fab.setUIID(fp.originalUiid);
             fab.repaint();
         }
+    }
+
+    private void updateFabStyle(Style s, int angle) {
+        RoundBorder rb = (RoundBorder) s.getBorder();
+        s.setBorder(rb.stroke(stroke).
+                strokeColor(0x297aa7).
+                strokeOpacity(255).
+                strokeAngle(angle));
     }
 }

@@ -10,7 +10,8 @@ import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
-import com.mykovol.takeandcharge.tools.FullScreenLoader;
+import com.mykovol.takeandcharge.tools.FabProgress;
+import com.mykovol.takeandcharge.tools.MainGifLoader;
 import org.littlemonkey.connectivity.Connectivity;
 
 import java.io.IOException;
@@ -58,26 +59,28 @@ public class TakeAndChargeMain {
         addNetworkErrorListener(err -> {
             // prevent the event from propagating
             err.consume();
-            FullScreenLoader.stop();
             if (err.getError() != null) {
                 Log.e(err.getError());
             }
             Log.sendLogAsync();
+            String errorMsg = "unknown error";
             if (!Connectivity.isConnected()) {
-                if (MainForm.get().isVisible()) {
-                    MainForm.get().getBottomPanel().showError("No Internet connection");
-                } else
-                    Dialog.show("No Internet connection", "Please check your Internet connection and try again", "OK", null);
+                errorMsg = "No Internet connection";
             } else {
                 if (err.getResponseCode() == 0) {
-                    if (MainForm.get().isVisible()) {
-                        MainForm.get().getBottomPanel().showError("No connection with server");
-                    }
+                    errorMsg = "No connection with server. Please try latter";
                 } else
-                    Dialog.show("Connection Error " + err.getResponseCode(),
-                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
-                            "OK", null);
+                    errorMsg = err.getResponseCode() + err.getError().toString() + " while connecting to " + err.getConnectionRequest().getUrl();
+//                    Dialog.show("Connection Error " + err.getResponseCode(),
+//                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
+//                            "OK", null);
             }
+            if (Display.getInstance().getCurrent().equals(MainForm.get())) {
+                MainForm.get().show();
+            }
+            MainForm.get().getBottomPanel().showError(errorMsg);
+            FabProgress.stopCurrent();
+            MainGifLoader.get().stop();
         });
     }
 

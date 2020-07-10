@@ -28,11 +28,19 @@ import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.UITimer;
+import com.codename1.ui.validation.Constraint;
+import com.codename1.ui.validation.LengthConstraint;
+import com.codename1.ui.validation.Validator;
+import com.codename1.util.Callback;
+import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
+import com.mykovol.takeandcharge.dataobj.User;
 import com.mykovol.takeandcharge.service.RegisterStyle;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.FabProgress;
 
 import static com.codename1.ui.CN.getCurrentForm;
 
@@ -44,19 +52,30 @@ import static com.codename1.ui.CN.getCurrentForm;
 public class RegisterVerificationCodeStep2 extends Form {
     private final Label phoneNumberHolder = new Label("", RegisterStyle.MOBILE_NUMBER);
     private final SpanLabel phoneNumberText = new SpanLabel("We have sent you an SMS with code", RegisterStyle.LABEL);
-    private final TextField smsCode = new TextField("", "Code", 40, TextField.NUMERIC);
-    private final Label resentLabel = new Label("code is valid for ", RegisterStyle.RESEND_LABEL);
+    private final TextField smsCode = new TextField("", "Code from SMS", 40, TextField.NUMERIC);
+    private final Label resentLabel = new Label("code is valid for", RegisterStyle.RESEND_LABEL);
     private final Button resendButton = new Button("Resend code", RegisterStyle.RESEND_BUTTON);
     private final TextField passwordField = new TextField("", "New password", 40, TextField.PASSWORD);
     private final Button maskAndUnmaskPass = new Button("Show", RegisterStyle.TERMS_LINK);
     private final CheckBox termsCheckBox = new CheckBox("I accept");
     private final Button termsLink = new Button("Terms&Conditions", RegisterStyle.TERMS_LINK);
     private final SpanLabel errorText = new SpanLabel("PIN you've entered is incorrect", RegisterStyle.ERROR_LABEL);
-    private int resendTime = 600;
+    private final User user = new User();
+    private int registerCodeValidForSeconds;
+    private final String registerCode;
     private UITimer timer;
 
-    public RegisterVerificationCodeStep2(Form previousForm) {
+    public RegisterVerificationCodeStep2(Form previousForm, String digitsPhone,
+                                         RegisterInitResponse response) {
         super(BoxLayout.y());
+        phoneNumberHolder.setText(formatPhoneNumber(digitsPhone));
+        user.name.set(digitsPhone);
+        user.token.set(response.token.get());
+        registerCodeValidForSeconds = response.validForMin.getInt() * 60;
+        registerCode = response.code.get();
+        smsCode.setMaxSize(registerCode.length());
+        passwordField.setMaxSize(16);
+
         getToolbar().setTitle("Step 2 from 3");
         getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
 
@@ -64,19 +83,35 @@ public class RegisterVerificationCodeStep2 extends Form {
         box.setScrollableY(true);
         box.add(FlowLayout.encloseCenter(phoneNumberHolder));
 
-        box.add(FlowLayout.encloseCenter(phoneNumberText));
+//        box.add(FlowLayout.encloseCenter(phoneNumberText));
 
         smsCode.setUIID(RegisterStyle.TEXT_FIELD);
-        box.add(smsCode);
+        passwordField.setUIID(RegisterStyle.TEXT_FIELD);
+
+        smsCode.getAllStyles().setMargin(LEFT, 0);
+        passwordField.getAllStyles().setMargin(LEFT, 0);
+        Label smsIcon = new Label("", "CredentialsField");
+        smsIcon.setShowEvenIfBlank(true);
+        Label passwordIcon = new Label("", "CredentialsField");
+        passwordIcon.setShowEvenIfBlank(true);
+        smsIcon.getAllStyles().setMargin(RIGHT, 0);
+        passwordIcon.getAllStyles().setMargin(RIGHT, 0);
+        FontImage.setMaterialIcon(smsIcon, FontImage.MATERIAL_CHAT_BUBBLE_OUTLINE, 3);
+        FontImage.setMaterialIcon(passwordIcon, FontImage.MATERIAL_LOCK_OUTLINE, 3);
+
+
+        box.add(BorderLayout.center(smsCode).
+                add(BorderLayout.WEST, smsIcon));
 
         FontImage.setMaterialIcon(resendButton, FontImage.MATERIAL_REPLAY);
-        Label resentTimeLabel = new Label(formatSeconds(resendTime), RegisterStyle.RESEND_LABEL);
-        resentLabel.getAllStyles().setPaddingRight(1);
+        Label resentTimeLabel = new Label("", RegisterStyle.RESEND_LABEL);
+        resentLabel.getAllStyles().setPaddingRight(0.7f);
         resentTimeLabel.getAllStyles().setPaddingLeft(0);
         Container resendContainer = BoxLayout.encloseXRight(resentLabel, resentTimeLabel);
+        startResendTimer(resendContainer, resentTimeLabel);
         box.add(resendContainer);
 
-        passwordField.setUIID(RegisterStyle.TEXT_FIELD);
+
         maskAndUnmaskPass.addActionListener(evt -> {
             if (passwordField.getConstraint() == TextField.PASSWORD) {
                 passwordField.setConstraint(TextField.ANY);
@@ -92,7 +127,10 @@ public class RegisterVerificationCodeStep2 extends Form {
                 passwordField.getParent().revalidate();
             }
         });
-        box.add(passwordField);
+
+        box.add(BorderLayout.center(passwordField).
+                add(BorderLayout.WEST, passwordIcon));
+
         box.add(BoxLayout.encloseXRight(maskAndUnmaskPass));
 
         termsCheckBox.setUIID(RegisterStyle.TERMS_CHECK_BOX);
@@ -114,28 +152,55 @@ public class RegisterVerificationCodeStep2 extends Form {
         add(box);
 
         smsCode.addActionListener(evt -> {
-            smsCode.stopEditing();
+            passwordField.startEditingAsync();
         });
-        startResendTimer(resendContainer, resentTimeLabel);
+        passwordField.addActionListener(evt -> {
+                    passwordField.stopEditing();
+                }
+        );
 
         resendButton.addActionListener(evt -> {
-            resentTimeLabel.setHidden(false, true);
-            resendContainer.replace(resendButton, resentLabel, CommonTransitions.createFade(50));
-            startResendTimer(resendContainer, resentTimeLabel);
+            previousForm.showBack();
         });
 
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
         fab.bindFabToContainer(this);
 
         fab.addActionListener(e -> {
-            if (!isValid(smsCode.getText())) {
-                errorText.setVisible(true);
-                smsCode.clear();
-                repaint();
+            errorText.setVisible(false);
+
+            if (!new RegisterValidator().validate()) {
                 return;
             }
-            new RegisterCreditCardStep3().show();
+
+            FabProgress.bind(fab);
+            resendContainer.setVisible(true);
+
+            user.password.set(passwordField.getText());
+            user.smsCode.set(smsCode.getText());
+
+            UserService.registerUser(user, new Callback<String>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    errorText.setText(errorCode + " " + errorMessage);
+                    errorText.setVisible(true);
+                    errorText.getParent().revalidate();
+//                    revalidate();
+                    FabProgress.stop(fab);
+                }
+
+                @Override
+                public void onSucess(String response) {
+                    new RegisterCreditCardStep3().show();
+                    FabProgress.stop(fab);
+                }
+            });
         });
+    }
+
+
+    public void setSmsCode(String code) {
+        smsCode.setText(code);
     }
 
     private Command constructBackCommand(Form previousForm) {
@@ -149,11 +214,11 @@ public class RegisterVerificationCodeStep2 extends Form {
     }
 
     public void startResendTimer(Container resendContainer, Label resentTimeLabel) {
-        resendTime = 120;
+        resentTimeLabel.setText(formatSeconds(registerCodeValidForSeconds));
         timer = UITimer.timer(1000, true, this, () -> {
-            if (resendTime > 0) {
-                resendTime--;
-                resentTimeLabel.setText(formatSeconds(resendTime));
+            if (registerCodeValidForSeconds > 0) {
+                registerCodeValidForSeconds--;
+                resentTimeLabel.setText(formatSeconds(registerCodeValidForSeconds));
                 return;
             }
             timer.cancel();
@@ -174,13 +239,66 @@ public class RegisterVerificationCodeStep2 extends Form {
         return "" + t;
     }
 
-    public final boolean isValid(String s) {
-        return UserService.validateSMSActivationCode(s);
+    public String formatPhoneNumber(String number) {
+        StringBuilder stringBuffer = new StringBuilder(number);
+        stringBuffer.insert(0, "+");
+        stringBuffer.insert(4, " (");
+        stringBuffer.insert(8, ") ");
+        stringBuffer.insert(13, "-");
+        stringBuffer.insert(16, "-");
+        return stringBuffer.toString();
     }
 
-    public void show(String phone) {
-        phoneNumberHolder.setText(phone);
-//        phoneNumberHolder.getParent().revalidate();
-        super.show();
+    private class RegisterValidator extends Validator {
+        private static final String VALID_MARKER = "cn1$$VALID_MARKER";
+
+
+        public RegisterValidator() {
+            super();
+            addConstraint(smsCode, new Constraint() {
+                @Override
+                public boolean isValid(Object value) {
+                    return registerCode.equals(value.toString());
+                }
+
+                @Override
+                public String getDefaultFailMessage() {
+                    return "";
+                }
+            });
+            addConstraint(passwordField, new LengthConstraint(4,
+                    ""));
+        }
+
+        public boolean validate() {
+            boolean valid = true;
+            setValidateOnEveryKey(true);
+            validate(smsCode);
+            validate(passwordField);
+
+            if (!isCurrentlyValid(smsCode)) {
+                errorText.setText("SMS code is incorrect");
+                valid = false;
+            } else if (!isCurrentlyValid(passwordField)) {
+                errorText.setText("Password should contain minimum 4 characters");
+                valid = false;
+            } else if (!termsCheckBox.isSelected()) {
+                errorText.setText("Please accept Terms&Conditions");
+                valid = false;
+            }
+
+            if (!valid) {
+                errorText.setVisible(true);
+                errorText.getParent().revalidate();
+            }
+
+            return valid;
+        }
+
+        private boolean isCurrentlyValid(Component cmp) {
+            return (Boolean) cmp.getClientProperty(VALID_MARKER);
+        }
+
     }
+
 }

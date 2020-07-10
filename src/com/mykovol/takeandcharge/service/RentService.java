@@ -32,7 +32,8 @@ import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.ErrorResponse;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.form.LoginForm;
-import com.mykovol.takeandcharge.tools.FullScreenLoader;
+import com.mykovol.takeandcharge.tools.FabProgress;
+import com.mykovol.takeandcharge.tools.MainGifLoader;
 import org.littlemonkey.qrscanner.QRScanner;
 
 import java.util.List;
@@ -47,21 +48,16 @@ import static com.mykovol.takeandcharge.service.GlobalConst.*;
 public class RentService {
 
     private static void sendRentRequest(String stationId, final Callback<String> callback) {
-        FullScreenLoader.delayedStart(200);
+        MainGifLoader.get().start();
         Rest.post(SERVER_URL + RENT_URL)
                 .bearer(UserService.getToken())
                 .queryParam("stationId", stationId)
                 .acceptJson()
                 .timeout(60000)
-                .onError(errorData -> {
-                    errorData.consume();
-                    FullScreenLoader.stop();
-                    callback.onError(null, errorData.getError(), errorData.getResponseCode(), "something is terribly wrong");
-                })
                 .onErrorCode(errorData -> {
-                    FullScreenLoader.stop();
+                    MainGifLoader.get().stop();
                     // TODO: 5/27/2020 move to general error handler
-                    if (errorData.getResponseCode() == 403) {
+                    if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401 ) {
                         new LoginForm().show();
                         return;
                     }
@@ -69,7 +65,7 @@ public class RentService {
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsString(resp -> {
-                    FullScreenLoader.stop();
+                    MainGifLoader.get().stop();
                     callback.onSucess(resp.getResponseData());
                 });
     }

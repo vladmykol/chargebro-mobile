@@ -25,8 +25,6 @@ package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.FloatingActionButton;
 import com.codename1.components.SpanLabel;
-import com.codename1.components.ToastBar;
-import com.codename1.sms.intercept.SMSInterceptor;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.events.ActionListener;
@@ -36,21 +34,23 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.codename1.ui.validation.RegexConstraint;
 import com.codename1.ui.validation.Validator;
+import com.codename1.util.Callback;
+import com.codename1.util.StringUtil;
+import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
 import com.mykovol.takeandcharge.service.RegisterStyle;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.FabProgress;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.CN.getCurrentForm;
 
 public class RegisterMobileNumberStep1 extends Form {
 
-    private final RegisterVerificationCodeStep2 registerVerificationCodeStep2 = new RegisterVerificationCodeStep2(getCurrentForm());
-
-
     private final Image logoImage = Resources.getGlobalResources().getImage("mobile-number.png");
     private final TextField phoneNumber = new TextField("", "(93) 123-45-67", 40, TextField.PHONENUMBER);
-    private final SpanLabel errorText = new SpanLabel("Please enter valid phone number", RegisterStyle.ERROR_LABEL);
-    private final CountryCodePicker countryCodeButton = new CountryCodePicker();
+    private final String invalidPhoneError = "Please enter valid phone number";
+    private final SpanLabel errorText = new SpanLabel("", RegisterStyle.ERROR_LABEL);
+    private final Button countryCodeButton = new Button("+380");
     private final Label errorTimeLabel = new Label("", RegisterStyle.ERROR_LABEL);
     private final Container errorContainer = BoxLayout.encloseX(errorText, errorTimeLabel);
     private final FloatingActionButton submitButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
@@ -58,6 +58,7 @@ public class RegisterMobileNumberStep1 extends Form {
     private final String enterMobileNumberName = "EnterMobileNumber";
     private final String errorLabelName = "ErrorLabel";
     private SpanLabel mobileNumber = new SpanLabel("We need your mobile number to send SMS with PIN code", RegisterStyle.LABEL);
+
 
     public RegisterMobileNumberStep1() {
         super(BoxLayout.y());
@@ -98,15 +99,17 @@ public class RegisterMobileNumberStep1 extends Form {
         countryCodeButton.getAllStyles().setPadding(ps.getPaddingTop(), ps.getPaddingBottom(), pl, pr);
 
         errorTimeLabel.setVisible(false);
+        errorText.setVisible(false);
         errorText.getAllStyles().setPaddingRight(1);
         errorTimeLabel.getAllStyles().setPaddingLeft(0);
-        errorContainer.setVisible(false);
         errorContainer.setName(errorLabelName);
     }
 
     private Validator createPhoneNumberValidator() {
+        phoneNumber.setMaxSize(13);
+        String phoneRegExp = "^[1-9][0-9.-]{7}[0-9]$";
         Validator validator = new Validator();
-        validator.addConstraint(phoneNumber, new RegexConstraint("^[0-9][0-9- ]{7,15}[0-9]$",
+        validator.addConstraint(phoneNumber, new RegexConstraint(phoneRegExp,
                 "Please enter valid phone number"));
         return validator;
     }
@@ -133,40 +136,40 @@ public class RegisterMobileNumberStep1 extends Form {
 
     private ActionListener<?> createSubmitAction(Validator validator) {
         return e -> {
+            phoneNumber.stopEditing();
+            Validator.setValidateOnEveryKey(true);
+
+            errorText.setVisible(false);
             if (!validator.isValid()) {
-                errorContainer.setVisible(true);
-                repaint();
+                errorText.setText(invalidPhoneError);
+                errorText.setVisible(true);
+                errorText.getParent().revalidate();
                 return;
             }
-            errorContainer.setVisible(false);
-            String number = phoneNumber.getText();
+            FabProgress.bind(submitButton);
+            String digitsPhone = StringUtil.replaceAll(countryCodeButton.getText() + phoneNumber.getText(), "+", "");
 
-            String phone = formatPhoneNumber(countryCodeButton, number);
-
-            registerVerificationCodeStep2.show(phone);
-
-            registerVerificationCodeStep2.addShowListener(ee -> {
-                if (SMSInterceptor.isSupported()) {
-                    SMSInterceptor.grabNextSMS(s -> {
-                        if (UserService.validateSMSActivationCode(s)) {
-                            new EditAccountForm().show();
-                            ToastBar.showMessage("Automatically Validated Phone Number!", FontImage.MATERIAL_THUMB_UP);
-                        }
-                    });
+            UserService.validateUserPhone(digitsPhone, new Callback<RegisterInitResponse>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    errorText.setText(errorCode + " " + errorMessage);
+                    errorText.setVisible(true);
+                    errorText.getParent().revalidate();
+                    FabProgress.stop(submitButton);
                 }
 
-                UserService.sendSMSActivationCode(phone);
+                @Override
+                public void onSucess(RegisterInitResponse response) {
+                    RegisterVerificationCodeStep2 step2Form = new RegisterVerificationCodeStep2(getCurrentForm(),
+                            digitsPhone, response);
+
+                    System.out.println("Sms code: " + response.code.get());
+
+                    step2Form.show();
+                    FabProgress.stop(submitButton);
+                }
             });
         };
-    }
-
-    public String formatPhoneNumber(CountryCodePicker countryCodeButton, String number) {
-        StringBuilder stringBuffer = new StringBuilder(number);
-        stringBuffer.insert(0, " (");
-        stringBuffer.insert(4, ") ");
-        stringBuffer.insert(9, "-");
-        stringBuffer.insert(12, "-");
-        return countryCodeButton.getText() + stringBuffer;
     }
 
 //    public void startResendTimer(Container resendContainer, Label resentTimeLabel) {

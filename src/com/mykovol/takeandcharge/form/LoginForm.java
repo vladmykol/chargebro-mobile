@@ -32,7 +32,6 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.service.UserService;
-import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
 import static com.codename1.ui.CN.callSerially;
@@ -44,16 +43,13 @@ import static com.codename1.ui.CN.callSerially;
  */
 public class LoginForm extends Form {
 
-    private final TextField loginField = new TextField("", "Enter your login", 20, TextField.EMAILADDR);
-    private final TextField passwordField = new TextField("", "Enter your password", 20, TextField.PASSWORD);
+    private final TextField loginField = new TextField("", "380 (93) 123-45-56", 20, TextField.NUMERIC);
+    private final TextField passwordField = new TextField("", "Password", 20, TextField.PASSWORD);
 
     public LoginForm() {
         super(new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE));
 //        CommonCode.removeTransitionsTemporarily(previous);
         getToolbar().addCommandToRightBar(constructCloseCommand());
-
-//        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
-
 
         Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
         Label logoImageHolder = new Label(LogoImage, "TextAlignCenter");
@@ -75,7 +71,7 @@ public class LoginForm extends Form {
         passwordIcon.setShowEvenIfBlank(true);
         loginIcon.getAllStyles().setMargin(RIGHT, 0);
         passwordIcon.getAllStyles().setMargin(RIGHT, 0);
-        FontImage.setMaterialIcon(loginIcon, FontImage.MATERIAL_PERSON_OUTLINE, 3);
+        FontImage.setMaterialIcon(loginIcon, FontImage.MATERIAL_PHONE, 3);
         FontImage.setMaterialIcon(passwordIcon, FontImage.MATERIAL_LOCK_OUTLINE, 3);
 
         SpanLabel error = new SpanLabel("Password error", "ErrorLabel");
@@ -86,7 +82,7 @@ public class LoginForm extends Form {
 //        validator.addConstraint(password, new LengthConstraint(4, "at least 4 symbols"));
 
         Button forgot = new Button("I forgot my password", "ForgotPasRegisterLabel");
-        Button newAccountButton = new Button("I don't have an account", "ForgotPasRegisterLabel");
+        Button newAccountButton = new Button("Create new account", "ForgotPasRegisterLabel");
         Container registerOrForgot = BoxLayout.encloseY(forgot, newAccountButton);
 
         newAccountButton.addActionListener(evt -> {
@@ -150,12 +146,13 @@ public class LoginForm extends Form {
 
     private ActionListener<?> loginButtonAction(TextField login, TextField password, SpanLabel error, FloatingActionButton fab) {
         return evt -> {
-            setEditOnShow(null);
             FabProgress.bind(fab);
+            setEditOnShow(null);
 
             UserService.login(login.getText(), password.getText(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
+                    setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
                     RentSocketService.get().reconnect();
                     MainForm.get().show();
                     FabProgress.stop(fab);
@@ -163,10 +160,10 @@ public class LoginForm extends Form {
 
                 @Override
                 public void loginFailed(String errorMessage) {
-                    FabProgress.stop(fab);
                     error.setText(errorMessage);
                     error.setVisible(true);
-                    revalidate();
+                    error.getParent().revalidate();
+                    FabProgress.stop(fab);
                 }
             });
         };

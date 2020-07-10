@@ -39,6 +39,9 @@ public class SplashScreen extends Form {
         getToolbar().setUIID("Container");
         getToolbar().hideToolbar();
 
+//        MorphTransition morph = MorphTransition.create(400);
+//        setTransitionOutAnimator(morph);
+
         logoImage1.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
         add(animatedLogoImage1Container);
         add(animatedLogoImage2Container);
@@ -56,28 +59,31 @@ public class SplashScreen extends Form {
 
             callSerially(() -> {
                 animateTitle();
-//                animateSubTitle();
+                animateSubTitle();
+                revalidate();
 
-                MainForm mainForm = MainForm.get();
-                callSerially(() -> {
-                    animateLogoFlayAway();
-                    revalidate();
-                    mainForm.show();
-                });
+                setTransitionOutAnimator(CommonTransitions.createEmpty());
+                MainForm.get().show();
+//                MainForm mainForm = MainForm.get();
+//                callSerially(() -> {
+////                    animateLogoFlayAway();
+//                    revalidate();
+//                    mainForm.show();
+//                });
             });
         });
     }
 
     private void animateSubTitle() {
         mainContainer.add(logoSubTitlePlaceholder);
-        mainContainer.getParent().animateLayoutAndWait(400);
-        mainContainer.replaceAndWait(logoSubTitlePlaceholder, logoSubTitle, CommonTransitions.createFade(500));
+        mainContainer.getParent().animateLayoutAndWait(300);
+        mainContainer.replaceAndWait(logoSubTitlePlaceholder, logoSubTitle, CommonTransitions.createFade(100));
     }
 
     private void animateTitle() {
         mainContainer.add(logoTitlePlaceHolder);
-        mainContainer.getParent().animateLayoutAndWait(400);
-        mainContainer.replaceAndWait(logoTitlePlaceHolder, logoTitle, CommonTransitions.createFade(500));
+        mainContainer.getParent().animateLayoutAndWait(300);
+        mainContainer.replaceAndWait(logoTitlePlaceHolder, logoTitle, CommonTransitions.createFade(100));
     }
 
 
@@ -87,15 +93,15 @@ public class SplashScreen extends Form {
         logoImageContainer.setY(getHeight());
         mainContainer.setHeight(getHeight());
         mainContainer.animateUnlayoutAndWait(450, 20);
-        MorphTransition morph = MorphTransition.create(300);
-        setTransitionOutAnimator(morph);
+//        MorphTransition morph = MorphTransition.create(300);
+//        setTransitionOutAnimator(morph);
 //        setTransitionOutAnimator(CommonTransitions.createEmpty());
     }
 
     private void animateLogoIconAppearance() {
         ((BorderLayout) animatedLogoImage1Container.getLayout()).setCenterBehavior(CENTER_BEHAVIOR_CENTER_ABSOLUTE);
         animatedLogoImage1Container.setShouldCalcPreferredSize(true);
-        animatedLogoImage1Container.animateLayoutAndWait(350);
+        animatedLogoImage1Container.animateLayoutAndWait(300);
 
         logoImage2.remove();
         logoImage1.remove();
