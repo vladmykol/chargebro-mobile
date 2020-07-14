@@ -15,7 +15,6 @@
     <image name="InfinityAnimationTop_1.png" type="multi"  />
     <image name="InfinityAnimationTopL_1.png" type="multi"  />
     <image name="InfinityAnimationTopR_1.png" type="multi"  />
-    <image name="load.gif"  />
     <image name="main-logo.png" type="multi"  />
     <image name="map-point.png" type="multi"  />
     <image name="mobile-number.png" type="multi"  />
@@ -52,7 +51,6 @@
     <image name="TakePowerBankButtonTopR_2.png" type="multi"  />
     <theme name="Theme">
         <val key="@chargingStationImage" value="charging-station.png" />
-        <val key="@dontSpendTimeImage" value="dont-spend-time.png" />
         <val key="@facebookImage" value="facebook.png" />
         <val key="@googleImage" value="google.png" />
         <val key="@gradientImage" value="gradient-overlay.png" />

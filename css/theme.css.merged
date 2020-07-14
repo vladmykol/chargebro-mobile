@@ -24,6 +24,10 @@
     chargingStationImage: "charging-station.png";
     mobileNumberImage: "mobile-number.png";
     registerImage: "register.png";
+    sideMenuFoldedSwipeBool: false;
+    sideMenuShadowBool: true;
+    menuButtonBottomBool: true;
+    menuTransitionIn: "slide";
     /*multi size images end*/
 }
 
@@ -36,7 +40,7 @@ InfinityAnimation {
 
 Form {
     background: white;
-    color: #8FC0C5;
+    color: #8fc0c5;
 }
 
 /*Label {*/
@@ -210,8 +214,8 @@ BottomPanelFoldedTopText {
     margin: 0mm;
 }
 
-Title{
-    cn1-derive:BottomPanelFoldedTopText;
+Title {
+    cn1-derive: BottomPanelFoldedTopText;
 }
 
 BottomPanelUnfolded {
@@ -339,7 +343,7 @@ SideNavigationPanel {
 }
 
 Legal {
-    cn1-derive:Label;
+    cn1-derive: Label;
     color: gray;
     padding: 2mm;
     margin: 0mm;
@@ -407,6 +411,11 @@ TermsLink {
 
 TermsLink.pressed {
     font-weight: bold;
+}
+
+/*====================== Gif Loader ==========================*/
+LoadImage {
+
 }
 
 

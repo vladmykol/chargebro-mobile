@@ -20,6 +20,7 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.FloatingActionButton;
+import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
@@ -52,7 +53,8 @@ public class LoginForm extends Form {
         getToolbar().addCommandToRightBar(constructCloseCommand());
 
         Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
-        Label logoImageHolder = new Label(LogoImage, "TextAlignCenter");
+        Label logoImageHolder = new ScaleImageLabel(LogoImage);
+        logoImageHolder.setUIID("TextAlignCenter");
         logoImageHolder.setName("LogoImageName");
 
         Container welcomeText = FlowLayout.encloseCenter(

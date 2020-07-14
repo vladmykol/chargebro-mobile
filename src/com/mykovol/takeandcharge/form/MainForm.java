@@ -44,8 +44,6 @@ import com.mykovol.takeandcharge.tools.BottomPanel;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 
-import static com.codename1.ui.CN.convertToPixels;
-
 /**
  * The main form of the application containing the map code
  *
@@ -61,9 +59,8 @@ public class MainForm extends Form {
     //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
 //    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(n)));
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
-    private final ScaleImageLabel loader = MainGifLoader.get();
+    private final Button screenBlocking = new Button();
     private BottomPanel bottomPanel;
-    private Image square;
 
     private MainForm() {
         super(new LayeredLayout());
@@ -76,8 +73,6 @@ public class MainForm extends Form {
 
 //        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
 
-        square = Image.createImage(convertToPixels(0.7f), convertToPixels(0.7f), 0xff000000);
-
         ScaleImageLabel gradient = new ScaleImageLabel(Resources.getGlobalResources().getImage("gradient-overlay.png"));
         gradient.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
         add(BorderLayout.south(gradient));
@@ -87,6 +82,9 @@ public class MainForm extends Form {
         add(BorderLayout.centerAbsolute(MainGifLoader.get()));
 
         showStationsOnMap();
+
+        screenBlocking.setVisible(false);
+        add(screenBlocking);
     }
 
 
@@ -111,7 +109,7 @@ public class MainForm extends Form {
         if (bottomPanel == null) {
             Container draggablePanelContainer = new Container();
             add(draggablePanelContainer);
-            bottomPanel = new BottomPanel(draggablePanelContainer);
+            bottomPanel = new BottomPanel(draggablePanelContainer, screenBlocking);
             bottomPanel.show();
         } else {
             bottomPanel.refreshRentContent();
@@ -158,19 +156,34 @@ public class MainForm extends Form {
         }
 
         private void scanButtonAction(ActionEvent evt) {
-            if (MainGifLoader.get().isVisible()) return;
-            RentService.rent(new Callback<String>() {
+            MainGifLoader.get().start();
+            RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     bottomPanel.showError(errorMessage);
+                    MainGifLoader.get().stop();
 //                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
                 }
 
                 @Override
-                public void onSucess(String powerBankId) {
-                    bottomPanel.addRentRow(powerBankId, 0);
+                public void onSucess(String checkoutUrl) {
+                    new PaymentPopUp(getComponentForm(), "payment", checkoutUrl).show();
+                    MainGifLoader.get().stop();
                 }
             });
+//            if (MainGifLoader.get().isVisible()) return;
+//            RentService.rent(new Callback<String>() {
+//                @Override
+//                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+//                    bottomPanel.showError(errorMessage);
+////                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
+//                }
+//
+//                @Override
+//                public void onSucess(String powerBankId) {
+//                    bottomPanel.addRentRow(powerBankId, 0);
+//                }
+//            });
         }
     }
 

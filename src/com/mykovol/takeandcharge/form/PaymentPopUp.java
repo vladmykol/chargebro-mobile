@@ -19,6 +19,7 @@
 
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.components.FloatingActionButton;
 import com.codename1.ui.BrowserComponent;
 import com.codename1.ui.Display;
 import com.codename1.ui.FontImage;
@@ -32,8 +33,8 @@ import com.mykovol.takeandcharge.tools.CommonCode;
  *
  * @author Shai Almog
  */
-public class BrowserPopUp extends Form {
-    public BrowserPopUp(Form previousForm, String title, String url) {
+public class PaymentPopUp extends Form {
+    public PaymentPopUp(Form previousForm, String title, String url) {
         super(new BorderLayout());
         setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
 //        MorphTransition morph = MorphTransition.create(400).
@@ -48,12 +49,15 @@ public class BrowserPopUp extends Form {
 //        });123
 
         CommonCode.removeTransitionsTemporarily(previousForm);
-
         Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
         BrowserComponent browser = new BrowserComponent();
         browser.setURL(url);
-        add(BorderLayout.CENTER, browser);
 
+        FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
+        fab.bindFabToContainer(this);
+        fab.addActionListener(evt -> previousForm.showBack());
+
+        add(BorderLayout.CENTER, browser);
     }
 
 }

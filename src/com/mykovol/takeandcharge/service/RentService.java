@@ -32,7 +32,6 @@ import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.ErrorResponse;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.form.LoginForm;
-import com.mykovol.takeandcharge.tools.FabProgress;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 import org.littlemonkey.qrscanner.QRScanner;
 
@@ -57,7 +56,7 @@ public class RentService {
                 .onErrorCode(errorData -> {
                     MainGifLoader.get().stop();
                     // TODO: 5/27/2020 move to general error handler
-                    if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401 ) {
+                    if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
                         new LoginForm().show();
                         return;
                     }
@@ -121,6 +120,27 @@ public class RentService {
                 });
             }
         }
+    }
+
+    public static void prepareCheckout(final Callback<String> callback) {
+        Rest.get(SERVER_URL + PAY_URL)
+                .bearer(UserService.getToken())
+//                .queryParam("stationId", stationId)
+                .acceptJson()
+                .timeout(10000)
+                .onErrorCode(errorData -> {
+                    // TODO: 5/27/2020 move to general error handler
+                    if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
+                        new LoginForm().show();
+                        return;
+                    }
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+//                    System.out.println("Error:" + errorData.getResponseCode() + responseData.message.get());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsString(resp -> {
+                    callback.onSucess(resp.getResponseData());
+                });
     }
 
 }

@@ -75,7 +75,7 @@ public class TakeAndChargeMain {
 //                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
 //                            "OK", null);
             }
-            if (Display.getInstance().getCurrent().equals(MainForm.get())) {
+            if (!Display.getInstance().getCurrent().equals(MainForm.get())) {
                 MainForm.get().show();
             }
             MainForm.get().getBottomPanel().showError(errorMsg);
