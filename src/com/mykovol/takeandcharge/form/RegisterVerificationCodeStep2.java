@@ -39,6 +39,7 @@ import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
 import com.mykovol.takeandcharge.dataobj.User;
 import com.mykovol.takeandcharge.service.RegisterStyle;
+import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
@@ -61,8 +62,8 @@ public class RegisterVerificationCodeStep2 extends Form {
     private final Button termsLink = new Button("Terms&Conditions", RegisterStyle.TERMS_LINK);
     private final SpanLabel errorText = new SpanLabel("PIN you've entered is incorrect", RegisterStyle.ERROR_LABEL);
     private final User user = new User();
-    private int registerCodeValidForSeconds;
     private final String registerCode;
+    private int registerCodeValidForSeconds;
     private UITimer timer;
 
     public RegisterVerificationCodeStep2(Form previousForm, String digitsPhone,
@@ -191,8 +192,23 @@ public class RegisterVerificationCodeStep2 extends Form {
 
                 @Override
                 public void onSucess(String response) {
-                    new RegisterCreditCardStep3().show();
-                    FabProgress.stop(fab);
+
+                    RentService.prepareCheckout(new Callback<String>() {
+                        @Override
+                        public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                            errorText.setText(errorCode + " " + errorMessage);
+                            errorText.setVisible(true);
+                            errorText.getParent().revalidate();
+//                    revalidate();
+                            FabProgress.stop(fab);
+                        }
+
+                        @Override
+                        public void onSucess(String checkoutUrl) {
+                            new RegisterCreditCardStep3(checkoutUrl).show();
+                            FabProgress.stop(fab);
+                        }
+                    });
                 }
             });
         });

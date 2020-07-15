@@ -156,34 +156,19 @@ public class MainForm extends Form {
         }
 
         private void scanButtonAction(ActionEvent evt) {
-            MainGifLoader.get().start();
-            RentService.prepareCheckout(new Callback<String>() {
+            if (MainGifLoader.get().isVisible()) return;
+            RentService.rent(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     bottomPanel.showError(errorMessage);
-                    MainGifLoader.get().stop();
 //                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
                 }
 
                 @Override
-                public void onSucess(String checkoutUrl) {
-                    new PaymentPopUp(getComponentForm(), "payment", checkoutUrl).show();
-                    MainGifLoader.get().stop();
+                public void onSucess(String powerBankId) {
+                    bottomPanel.addRentRow(powerBankId, 0);
                 }
             });
-//            if (MainGifLoader.get().isVisible()) return;
-//            RentService.rent(new Callback<String>() {
-//                @Override
-//                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-//                    bottomPanel.showError(errorMessage);
-////                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
-//                }
-//
-//                @Override
-//                public void onSucess(String powerBankId) {
-//                    bottomPanel.addRentRow(powerBankId, 0);
-//                }
-//            });
         }
     }
 

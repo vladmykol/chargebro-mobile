@@ -24,19 +24,12 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.FloatingActionButton;
-import com.codename1.components.SpanLabel;
-import com.codename1.ui.*;
+import com.codename1.ui.BrowserComponent;
+import com.codename1.ui.Display;
+import com.codename1.ui.FontImage;
+import com.codename1.ui.Form;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.FlowLayout;
-import com.codename1.ui.layouts.LayeredLayout;
-import com.codename1.ui.util.Resources;
-import com.codename1.ui.util.UITimer;
-import com.mykovol.takeandcharge.service.RegisterStyle;
-import com.mykovol.takeandcharge.service.RentSocketService;
-import com.mykovol.takeandcharge.service.UserService;
 
 import static com.codename1.ui.CN.getCurrentForm;
 
@@ -46,49 +39,33 @@ import static com.codename1.ui.CN.getCurrentForm;
  * @author Shai Almog
  */
 public class RegisterCreditCardStep3 extends Form {
-    private final Button skipThisStepButton = new Button("Skip this step", RegisterStyle.TERMS_LINK);
 
-
-    public RegisterCreditCardStep3() {
+    public RegisterCreditCardStep3(String url) {
         super(new BorderLayout());
         Form previous = getCurrentForm();
 //        CommonCode.removeTransitionsTemporarily(previous);
-        Command cmd = new Command("") {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                previous.showBack();
-            }
-        };
-        getToolbar().setBackCommand(cmd, Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
         getToolbar().setTitle("Step 3 from 3");
 
-        Container box = new Container(BoxLayout.y());
-        box.setScrollableY(true);
+        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
+        getToolbar().addCommandToRightBar("", mat, e -> MainForm.get().show());
 
-        Image LogoImage = Resources.getGlobalResources().getImage("register.png");
-        box.add(BoxLayout.encloseXCenter(new Label(LogoImage)));
-
-        box.add(new SpanLabel("Card number", RegisterStyle.LABEL));
-        TextField cardNumber = new TextField("", "1234 1234 1234 1234", 40, TextField.NUMERIC);
-        cardNumber.setUIID(RegisterStyle.TEXT_FIELD);
-        box.add(cardNumber);
-
-        skipThisStepButton.addActionListener(evt -> {
-            setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-            MainForm.get().show();
+        Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
+        BrowserComponent browser = new BrowserComponent();
+        browser.setURL(url);
+        browser.addBrowserNavigationCallback(url1 -> {
+            if (url1.indexOf("your-domain.example.com") > 0) {
+                MainForm.get().show();
+                return false;
+            } else
+                return true;
         });
-        box.add(BoxLayout.encloseXRight(skipThisStepButton));
 
-        add(CENTER, box);
-
-
-        FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
+        FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_DONE);
         fab.bindFabToContainer(this);
+        fab.addActionListener(evt -> MainForm.get().show());
 
-        fab.addActionListener(e -> {
-
-//            new EditAccountForm().show();
-        });
+        add(BorderLayout.CENTER, browser);
     }
 
 }
