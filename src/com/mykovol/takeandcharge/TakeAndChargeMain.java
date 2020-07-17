@@ -46,7 +46,6 @@ public class TakeAndChargeMain {
         }
         Dialog.setDefaultBlurBackgroundRadius(10);
 
-
 //        Label.setDefaultGap(convertToPixels(2));
         // only portrait mode
         Display.getInstance().lockOrientation(true);
@@ -86,6 +85,7 @@ public class TakeAndChargeMain {
 
     private void loadLocalization() {
         String local = L10NManager.getInstance().getLanguage();
+//        String local = "ua";
         Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local);
         UIManager.getInstance().setBundle(localizationBundle);
     }

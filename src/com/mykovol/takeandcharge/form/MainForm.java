@@ -27,6 +27,9 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Util;
+import com.codename1.location.Location;
+import com.codename1.location.LocationListener;
+import com.codename1.location.LocationManager;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -37,9 +40,11 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.RentSocketService;
+import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.BottomPanel;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
@@ -66,14 +71,16 @@ public class MainForm extends Form {
         super(new LayeredLayout());
         setName("MapForm");
 
+//        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_MY_LOCATION, "", 4.5f);
+//        getToolbar().addCommandToRightBar("", mat, e -> {});
+
         setScrollableY(false);
         setTransitionOutAnimator(CommonTransitions.createEmpty());
         showMeOnTheMap();
-        add(mapContainer);
-//        add(BorderLayout.center(mapContainer));
+//        add(mapContainer);
+        add(BorderLayout.center(mapContainer));
 //        mapContainer.set
 
-        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
 
         ScaleImageLabel gradient = new ScaleImageLabel(Resources.getGlobalResources().getImage("gradient-overlay.png"));
         gradient.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
@@ -89,29 +96,6 @@ public class MainForm extends Form {
         add(screenBlocking);
     }
 
-    private void showMeOnTheMap() {
-//        mapContainer.setShowMyLocation(true);
-//        LocationManager lm = LocationManager.getLocationManager();
-//        Location loc = lm.getLastKnownLocation();
-//        if (lm.isGPSDetectionSupported()) {
-//            if (lm.isGPSEnabled()) {
-//                Location loc2 = lm.getCurrentLocationSync(20000);
-//                if (loc2 != null) {
-//                    loc = loc2;
-//                }
-//            } else {
-//                Dialog.show("", "MyAppName needs access to your current location, please enable GPS in Settings.", "Ok", null);
-//            }
-//        } else {
-//            Location loc2 = lm.getCurrentLocationSync(20000);
-//            if (loc2 != null) {
-//                loc = loc2;
-//            }
-//        }
-//        mapContainer.zoom(new Coord(loc.getLatitude(), loc.getLongitude()), 15);
-    }
-
-
     public static MainForm get() {
         if (instance == null) {
             instance = new MainForm();
@@ -123,8 +107,38 @@ public class MainForm extends Form {
         if (instance != null) {
             instance.showMeOnTheMap();
         }
-        RentSocketService.get().autoReconnect(5000);
-        RentSocketService.get().reconnect();
+        if (UserService.isLoggedIn()) RentSocketService.get().reconnect();
+    }
+
+    private void showMeOnTheMap() {
+        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
+        new UITimer(() -> {
+            LocationManager lm = LocationManager.getLocationManager();
+            if (lm.isGPSDetectionSupported()) {
+                if (!lm.isGPSEnabled()) {
+                    Dialog.show("", "We need  access to your current location to show nearest PoweBank stations, please enable GPS in Settings.", "Ok", null);
+                }
+            }
+            mapContainer.setShowMyLocation(true);
+            System.out.println("timer");
+        }).schedule(7000, false, this);
+
+        if (!Display.getInstance().isSimulator()) {
+            LocationManager.getLocationManager().setLocationListener(new LocationListener() {
+                @Override
+                public void locationUpdated(Location location) {
+                    if (location.getAccuracy() < 1000) {
+                        mapContainer.zoom(new Coord(location.getLatitude(), location.getLongitude()), mapContainer.getMinZoom() + 6);
+                        LocationManager.getLocationManager().setLocationListener(null);
+                    }
+                }
+
+                @Override
+                public void providerStateChanged(int newState) {
+                }
+            });
+        }
+
     }
 
     @Override
@@ -160,7 +174,6 @@ public class MainForm extends Form {
 
     public void appClose() {
         mapContainer.setShowMyLocation(false);
-        RentSocketService.get().autoReconnect(0);
         RentSocketService.get().close();
     }
 

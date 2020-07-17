@@ -32,7 +32,6 @@ import java.io.*;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.mykovol.takeandcharge.service.GlobalConst.SERVER_SOCKET_URL;
-import static com.mykovol.takeandcharge.service.GlobalConst.SERVER_URL;
 
 /**
  * Connects to the server and updates every time we move using the websocket API
@@ -50,7 +49,8 @@ public class RentSocketService extends WebSocket {
 
 
     public RentSocketService() {
-        super(SERVER_URL + SERVER_SOCKET_URL);
+        super(GlobalConst.getServerUrl() + SERVER_SOCKET_URL);
+        autoReconnect(5000);
         et = EasyThread.start("Websocket");
     }
 

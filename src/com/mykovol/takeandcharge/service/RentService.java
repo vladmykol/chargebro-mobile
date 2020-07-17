@@ -48,7 +48,7 @@ public class RentService {
 
     private static void sendRentRequest(String stationId, final Callback<String> callback) {
         MainGifLoader.get().start();
-        Rest.post(SERVER_URL + RENT_URL)
+        Rest.post(GlobalConst.getServerUrl() + RENT_URL)
                 .bearer(UserService.getToken())
                 .queryParam("stationId", stationId)
                 .acceptJson()
@@ -70,7 +70,7 @@ public class RentService {
     }
 
     public static void getRentHistory(boolean onlyCurrentlyInRent, final Callback<List<RentHistory>> callback) {
-        Rest.get(SERVER_URL + RENT_HISTORY_URL)
+        Rest.get(GlobalConst.getServerUrl() + RENT_HISTORY_URL)
                 .bearer(UserService.getToken())
                 .queryParam("filter", onlyCurrentlyInRent ? "current" : "all")
                 .acceptJson()
@@ -123,7 +123,7 @@ public class RentService {
     }
 
     public static void prepareCheckout(final Callback<String> callback) {
-        Rest.get(SERVER_URL + PAY_URL)
+        Rest.get(GlobalConst.getServerUrl() + PAY_URL)
                 .bearer(UserService.getToken())
 //                .queryParam("stationId", stationId)
                 .acceptJson()

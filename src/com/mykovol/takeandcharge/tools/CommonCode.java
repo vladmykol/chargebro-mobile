@@ -33,9 +33,13 @@ import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
+import com.codename1.util.Callback;
 import com.codename1.util.SuccessCallback;
 import com.mykovol.takeandcharge.form.LoginForm;
+import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.form.RegisterCreditCardStep3;
 import com.mykovol.takeandcharge.form.RegisterMobileNumberStep1;
+import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
 import java.io.IOException;
@@ -135,13 +139,27 @@ public class CommonCode {
 //        userAndAvatar.addActionListener(e -> new EditAccountForm().show());
         tb.addComponentToSideMenu(userAndAvatar);
 
-
         tb.addMaterialCommandToSideMenu("Login", FontImage.MATERIAL_PERSON, e -> {
             new LoginForm().show();
         });
         tb.addMaterialCommandToSideMenu("Register", FontImage.MATERIAL_PERSON_ADD, e -> {
             new RegisterMobileNumberStep1().show();
         });
+        tb.addMaterialCommandToSideMenu("Add Payment method", FontImage.MATERIAL_PERSON_ADD, e -> {
+            RentService.prepareCheckout(new Callback<String>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    MainForm.get().getBottomPanel().showError(errorCode + " " + errorMessage);
+                }
+
+                @Override
+                public void onSucess(String checkoutUrl) {
+                    new RegisterCreditCardStep3(checkoutUrl).show();
+                }
+            });
+        });
+
+
 //        tb.addMaterialCommandToSideMenu("Help", FontImage.MATERIAL_HELP, e -> { new WalkthruForm().show();
 //        });
 //        tb.addMaterialCommandToSideMenu("Wallet", FontImage.MATERIAL_ACCOUNT_BALANCE_WALLET, e -> new SettingsForm().show());

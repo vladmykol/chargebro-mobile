@@ -76,7 +76,7 @@ public class UserService {
     public static void logout() {
         Preferences.set("token", null);
         RentSocketService.get().close();
-        MainForm.get().getBottomPanel().refreshRentContent();
+        MainForm.get().getBottomPanel().removeAllRentRows();
     }
 
     public static boolean isLoggedIn() {
@@ -84,7 +84,7 @@ public class UserService {
     }
 
     public static void validateUserPhone(String phoneNumber, final Callback<RegisterInitResponse> callback) {
-        Rest.post(API_REGISTER_INIT)
+        Rest.post(GlobalConst.getServerUrl() + API_REGISTER_INIT)
 //                .bearer(UserService.getToken())
                 .queryParam("phone", phoneNumber)
                 .timeout(10000)
@@ -99,7 +99,7 @@ public class UserService {
     }
 
     public static void registerUser(User request, final Callback<String>  callback) {
-        Rest.post(API_REGISTER)
+        Rest.post(GlobalConst.getServerUrl() + API_REGISTER)
 //                .bearer(UserService.getToken())
                 .acceptJson()
                 .timeout(10000)
@@ -123,7 +123,7 @@ public class UserService {
 
 
     public static void login(String username, String password, final LoginCallback callback) {
-        Rest.post(API_LOGIN)
+        Rest.post(GlobalConst.getServerUrl() + API_LOGIN)
                 .jsonContent()
                 .acceptJson()
                 .timeout(10000)
@@ -140,7 +140,7 @@ public class UserService {
     }
 
     public static void fetchAvatar(long id, SuccessCallback<Image> callback) {
-        ConnectionRequest cr = new ConnectionRequest(SERVER_URL + "user/avatar/" + id, false);
+        ConnectionRequest cr = new ConnectionRequest(GlobalConst.getServerUrl() + "user/avatar/" + id, false);
         cr.setFailSilently(true);
         cr.downloadImageToStorage("avatarImage-" + id, callback);
     }
@@ -148,7 +148,7 @@ public class UserService {
     public static void setAvatar(String imageFile) {
         try {
             MultipartRequest mp = new MultipartRequest();
-            mp.setUrl(SERVER_URL + "user/updateAvatar/" + getToken());
+            mp.setUrl(GlobalConst.getServerUrl() + "user/updateAvatar/" + getToken());
             mp.addData("img", imageFile, "image/jpeg");
             addToQueue(mp);
         } catch (IOException err) {

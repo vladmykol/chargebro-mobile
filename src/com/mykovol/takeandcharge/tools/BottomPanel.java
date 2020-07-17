@@ -85,7 +85,7 @@ public class BottomPanel {
         RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                System.out.println("response from rent history -" + errorCode);
+                if (errorCode != 404) showError(errorMessage);
             }
 
             @Override
@@ -126,16 +126,27 @@ public class BottomPanel {
         rentBoard.remove();
 //        if (rentContent.isChildOf(contentHolder)) {
         if (rentContent.noRentRows()) {
-            topPanelTitle.setText(defaultTopTitleText);
-            contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-            mainContainer.revalidateWithAnimationSafety();
+            setDefaultContent();
+        } else {
+            rentContent.animateRentContent(500);
         }
-        rentContent.animateRentContent(500);
     }
 
     public void removeRentRow(String serialNumber) {
         RentBoard rentBoard = rentContent.findRentBoardByName(serialNumber);
         if (rentBoard != null) removeRentRow(rentBoard);
+    }
+
+    private void setDefaultContent() {
+        topPanelTitle.setText(defaultTopTitleText);
+        contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
+        mainContainer.revalidateWithAnimationSafety();
+    }
+
+
+    public void removeAllRentRows() {
+        setDefaultContent();
+        rentContent = new RentContent();
     }
 
 
@@ -200,9 +211,9 @@ public class BottomPanel {
         contentHolder.setUIID("BottomPanelUnfolded");
         mainContainer.add(SOUTH, bottomPanel);
         bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
-        mainContainer.animateLayout(100);
         screenBlocking.setVisible(false);
         addSwipeListeners();
+        mainContainer.animateLayoutAndWait(100);
         isInMove = false;
     }
 

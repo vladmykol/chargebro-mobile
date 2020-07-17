@@ -155,7 +155,7 @@ public class LoginForm extends Form {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-                    RentSocketService.get().reconnect();
+                    RentSocketService.get().connect();
                     MainForm.get().show();
                     FabProgress.stop(fab);
                 }
