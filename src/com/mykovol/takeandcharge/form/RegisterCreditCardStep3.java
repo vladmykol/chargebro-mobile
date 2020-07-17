@@ -50,7 +50,6 @@ public class RegisterCreditCardStep3 extends Form {
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
         getToolbar().addCommandToRightBar("", mat, e -> MainForm.get().show());
 
-        Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
         BrowserComponent browser = new BrowserComponent();
         browser.setURL(url);
         browser.addBrowserNavigationCallback(url1 -> {

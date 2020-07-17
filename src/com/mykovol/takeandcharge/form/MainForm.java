@@ -68,10 +68,12 @@ public class MainForm extends Form {
 
         setScrollableY(false);
         setTransitionOutAnimator(CommonTransitions.createEmpty());
-        mapContainer.setShowMyLocation(true);
+        showMeOnTheMap();
         add(mapContainer);
+//        add(BorderLayout.center(mapContainer));
+//        mapContainer.set
 
-//        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
+        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
 
         ScaleImageLabel gradient = new ScaleImageLabel(Resources.getGlobalResources().getImage("gradient-overlay.png"));
         gradient.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
@@ -87,6 +89,28 @@ public class MainForm extends Form {
         add(screenBlocking);
     }
 
+    private void showMeOnTheMap() {
+//        mapContainer.setShowMyLocation(true);
+//        LocationManager lm = LocationManager.getLocationManager();
+//        Location loc = lm.getLastKnownLocation();
+//        if (lm.isGPSDetectionSupported()) {
+//            if (lm.isGPSEnabled()) {
+//                Location loc2 = lm.getCurrentLocationSync(20000);
+//                if (loc2 != null) {
+//                    loc = loc2;
+//                }
+//            } else {
+//                Dialog.show("", "MyAppName needs access to your current location, please enable GPS in Settings.", "Ok", null);
+//            }
+//        } else {
+//            Location loc2 = lm.getCurrentLocationSync(20000);
+//            if (loc2 != null) {
+//                loc = loc2;
+//            }
+//        }
+//        mapContainer.zoom(new Coord(loc.getLatitude(), loc.getLongitude()), 15);
+    }
+
 
     public static MainForm get() {
         if (instance == null) {
@@ -97,7 +121,7 @@ public class MainForm extends Form {
 
     public static void appInit() {
         if (instance != null) {
-            instance.mapContainer.setShowMyLocation(true);
+            instance.showMeOnTheMap();
         }
         RentSocketService.get().autoReconnect(5000);
         RentSocketService.get().reconnect();

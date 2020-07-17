@@ -60,14 +60,14 @@ public class SplashScreen extends Form {
             callSerially(() -> {
                 animateTitle();
                 animateSubTitle();
-                revalidate();
+                revalidateWithAnimationSafety();
 
                 setTransitionOutAnimator(CommonTransitions.createEmpty());
                 MainForm.get().show();
 //                MainForm mainForm = MainForm.get();
 //                callSerially(() -> {
 ////                    animateLogoFlayAway();
-//                    revalidate();
+//                    revalidateWithAnimationSafety();
 //                    mainForm.show();
 //                });
             });
@@ -108,6 +108,6 @@ public class SplashScreen extends Form {
         animatedLogoImage2Container.remove();
 
         animatedLogoImage1Container.add(CENTER, mainContainer);
-        revalidate();
+        revalidateWithAnimationSafety();
     }
 }

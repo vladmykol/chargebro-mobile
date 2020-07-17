@@ -125,7 +125,7 @@ public class RegisterMobileNumberStep1 extends Form {
             setTransitionOutAnimator(morph);
             if (phoneNumber.isEditing()) {
                 phoneNumber.stopEditing(() -> {
-                    revalidate();
+                    revalidateWithAnimationSafety();
                     callSerially(MainForm.get()::show);
                 });
             } else {
@@ -143,7 +143,7 @@ public class RegisterMobileNumberStep1 extends Form {
             if (!validator.isValid()) {
                 errorText.setText(invalidPhoneError);
                 errorText.setVisible(true);
-                errorText.getParent().revalidate();
+                errorText.getParent().revalidateWithAnimationSafety();
                 return;
             }
             FabProgress.bind(submitButton);
@@ -154,7 +154,7 @@ public class RegisterMobileNumberStep1 extends Form {
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     errorText.setText(errorCode + " " + errorMessage);
                     errorText.setVisible(true);
-                    errorText.getParent().revalidate();
+                    errorText.getParent().revalidateWithAnimationSafety();
                     FabProgress.stop(submitButton);
                 }
 

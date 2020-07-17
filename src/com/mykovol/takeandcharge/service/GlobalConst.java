@@ -29,8 +29,8 @@ package com.mykovol.takeandcharge.service;
  * @author Shai Almog
  */
 public final class GlobalConst {
-//    public static String SERVER_URL = "https://your-domain.example.com:10381";
-        public static final String SERVER_URL = "http://192.168.0.124:10381";
+    public static String SERVER_URL = "https://your-domain.example.com:10381";
+//        public static final String SERVER_URL = "http://192.168.0.124:10381";
 //    public static final String SERVER_URL = "https://localhost:10381";
     private static final String API_AUTH = SERVER_URL + "/auth";
     public static final String API_LOGIN = API_AUTH + "/login";

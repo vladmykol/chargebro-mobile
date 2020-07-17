@@ -132,12 +132,12 @@ public class LoginForm extends Form {
             setTransitionOutAnimator(morph);
             if (loginField.isEditing()) {
                 loginField.stopEditing(() -> {
-                    revalidate();
+                    revalidateWithAnimationSafety();
                     callSerially(MainForm.get()::show);
                 });
             } else if (passwordField.isEditing()) {
                 passwordField.stopEditing(() -> {
-                    revalidate();
+                    revalidateWithAnimationSafety();
                     callSerially(MainForm.get()::show);
                 });
             } else {
@@ -164,7 +164,7 @@ public class LoginForm extends Form {
                 public void loginFailed(String errorMessage) {
                     error.setText(errorMessage);
                     error.setVisible(true);
-                    error.getParent().revalidate();
+                    error.getParent().revalidateWithAnimationSafety();
                     FabProgress.stop(fab);
                 }
             });

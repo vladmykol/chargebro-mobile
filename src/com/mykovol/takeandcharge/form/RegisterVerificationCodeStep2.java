@@ -125,7 +125,7 @@ public class RegisterVerificationCodeStep2 extends Form {
                 passwordField.stopEditing();
                 passwordField.startEditingAsync();
             } else {
-                passwordField.getParent().revalidate();
+                passwordField.getParent().revalidateWithAnimationSafety();
             }
         });
 
@@ -185,8 +185,8 @@ public class RegisterVerificationCodeStep2 extends Form {
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     errorText.setText(errorCode + " " + errorMessage);
                     errorText.setVisible(true);
-                    errorText.getParent().revalidate();
-//                    revalidate();
+                    errorText.getParent().revalidateWithAnimationSafety();
+//                    revalidateWithAnimationSafety();
                     FabProgress.stop(fab);
                 }
 
@@ -198,8 +198,8 @@ public class RegisterVerificationCodeStep2 extends Form {
                         public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                             errorText.setText(errorCode + " " + errorMessage);
                             errorText.setVisible(true);
-                            errorText.getParent().revalidate();
-//                    revalidate();
+                            errorText.getParent().revalidateWithAnimationSafety();
+//                    revalidateWithAnimationSafety();
                             FabProgress.stop(fab);
                         }
 
@@ -305,7 +305,7 @@ public class RegisterVerificationCodeStep2 extends Form {
 
             if (!valid) {
                 errorText.setVisible(true);
-                errorText.getParent().revalidate();
+                errorText.getParent().revalidateWithAnimationSafety();
             }
 
             return valid;

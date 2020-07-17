@@ -77,7 +77,7 @@ public class BottomPanel {
 
     public void show() {
         mainContainer.add(SOUTH, bottomPanel);
-        mainContainer.revalidate();
+        mainContainer.revalidateWithAnimationSafety();
         refreshRentContent();
     }
 
@@ -104,7 +104,7 @@ public class BottomPanel {
                 for (RentBoard showedButNotExistingRentRow : visibleRentBoards.values()) {
                     removeRentRow(showedButNotExistingRentRow);
                 }
-                mainContainer.revalidate();
+                mainContainer.revalidateWithAnimationSafety();
             }
         });
     }
@@ -115,7 +115,7 @@ public class BottomPanel {
         if (!rentContent.isChildOf(contentHolder)) {
             topPanelTitle.setText(rentContent.getTitleText());
             contentHolder.replaceAndWait(defaultContent, rentContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-            mainContainer.revalidate();
+            mainContainer.revalidateWithAnimationSafety();
         } else {
             rentContent.animateRentContent(500);
         }
@@ -128,7 +128,7 @@ public class BottomPanel {
         if (rentContent.noRentRows()) {
             topPanelTitle.setText(defaultTopTitleText);
             contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-            mainContainer.revalidate();
+            mainContainer.revalidateWithAnimationSafety();
         }
         rentContent.animateRentContent(500);
     }
@@ -189,7 +189,7 @@ public class BottomPanel {
         isInMove = true;
         removeSwipeListeners();
         getCurrentForm().getToolbar().setHidden(false);
-        mainContainer.revalidate();
+        mainContainer.revalidateWithAnimationSafety();
         topToolbarPanel.setY(-topToolbarPanel.getHeight());
         rentContent.showTitle();
         contentHolder.addComponent(0, draggableImage);
@@ -232,14 +232,14 @@ public class BottomPanel {
                     rentContent.hideTitle();
                     screenBlocking.setVisible(true);
                     getCurrentForm().getToolbar().setHidden(true);
-//                    mainContainer.revalidate();
+//                    mainContainer.revalidateWithAnimationSafety();
                     contentHolder.setUIID("BottomPanelFolded");
                     mainContainer.add(NORTH, topToolbarPanel);
                     mainContainer.add(CENTER, bottomPanel);
                     mainContainer.animateLayout(100);
                 } else {
                     bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
-                    mainContainer.revalidate();
+                    mainContainer.revalidateWithAnimationSafety();
                 }
             } else {
                 if (firstY < e.getY()) {
@@ -265,7 +265,7 @@ public class BottomPanel {
             boolean isDruggingUp = SOUTH.equals(getBottomPanelPosition());
             if (isDruggingUp) {
                 bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), firstY - e.getY() + minPanelHeight));
-                mainContainer.revalidate();
+                mainContainer.revalidateWithAnimationSafety();
             }
         } else {
             Component draggedCmp = mainContainer.getComponentAt(e.getX(), e.getY());

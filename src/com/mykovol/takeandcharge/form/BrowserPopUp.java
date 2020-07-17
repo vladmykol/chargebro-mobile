@@ -49,7 +49,6 @@ public class BrowserPopUp extends Form {
 
         CommonCode.removeTransitionsTemporarily(previousForm);
 
-        Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
         BrowserComponent browser = new BrowserComponent();
         browser.setURL(url);
         add(BorderLayout.CENTER, browser);

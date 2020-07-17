@@ -32,7 +32,7 @@ public class RentBoard extends Container {
     public void updateElapsedTime(long timeElapsed) {
         startTime = System.currentTimeMillis() - timeElapsed;
         updateTimer();
-        revalidate();
+        revalidateWithAnimationSafety();
     }
 
     @Override
