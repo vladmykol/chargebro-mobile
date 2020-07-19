@@ -45,6 +45,7 @@ public class TakeAndChargeMain {
             Toolbar.setOnTopSideMenu(true);
         }
         Dialog.setDefaultBlurBackgroundRadius(10);
+        Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
 
 //        Label.setDefaultGap(convertToPixels(2));
         // only portrait mode
@@ -86,7 +87,7 @@ public class TakeAndChargeMain {
     private void loadLocalization() {
         String local = L10NManager.getInstance().getLanguage();
 //        String local = "ua";
-        Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local);
+        Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local.toLowerCase());
         UIManager.getInstance().setBundle(localizationBundle);
     }
 

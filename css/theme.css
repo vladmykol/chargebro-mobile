@@ -2,12 +2,8 @@
     includeNativeBool: true;
     /*sideMenuImage: "menu.png";*/
     mapTileLoadingImage: "main-logo.png";
-    mapZoomButtonsBool: true;
     /*menuPrefSizeBool: true;*/
-    sideMenuFoldedSwipeBool: false;
-    sideSwipeSensitiveInt: 100;
-    menuImageSize: 5;
-    mapTileLoadingText: "Loading...";
+    menuImageSize: 6;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part1.png";
     splashLogo2Image: "splash-logo-part2.png";
@@ -22,10 +18,6 @@
     chargingStationImage: "charging-station.png";
     mobileNumberImage: "mobile-number.png";
     registerImage: "register.png";
-    sideMenuFoldedSwipeBool: false;
-    sideMenuShadowBool: true;
-    menuButtonBottomBool: true;
-    menuTransitionIn: "slide";
     /*multi size images end*/
 }
 
@@ -56,15 +48,15 @@ TextHint {
 
 
 TitleCommand {
-    padding: 0mm;
-    margin: 0mm;
+    padding: 1mm;
+    margin: 0mm;;
     color: #535861;
     font-family: "native:MainLight";
     font-size: 4mm;
 }
 
 TitleCommand.pressed {
-    color: black;
+    color: black
 }
 
 Toolbar {

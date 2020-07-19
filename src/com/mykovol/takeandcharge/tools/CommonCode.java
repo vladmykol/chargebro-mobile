@@ -25,6 +25,7 @@ package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
 import com.codename1.io.Log;
+import com.codename1.l10n.L10NManager;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.animations.Transition;
@@ -166,7 +167,7 @@ public class CommonCode {
         tb.addMaterialCommandToSideMenu("Sign out", FontImage.MATERIAL_EXIT_TO_APP, e -> UserService.logout());
 
         Button legalButton = new Button("Legal", "Legal");
-        Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1", "Legal"), legalButton);
+        Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1" + L10NManager.getInstance().getLanguage(), "Legal"), legalButton);
         legal.setLeadComponent(legalButton);
         legal.setUIID("SideNavigationPanel");
         tb.setComponentToSideMenuSouth(legal);

@@ -138,7 +138,6 @@ public class MainForm extends Form {
                 }
             });
         }
-
     }
 
     @Override

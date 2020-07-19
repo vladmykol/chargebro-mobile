@@ -36,7 +36,6 @@ public final class GlobalConst {
     public static final String RENT_HISTORY_URL = RENT_URL + "/history";
     public static final String SERVER_SOCKET_URL = "/socket/rent";
 
-    public static final String PORT = ":10381";
     private static final String API_AUTH = "/auth";
     public static final String API_LOGIN = API_AUTH + "/login";
     public static final String API_REGISTER_INIT = API_AUTH + "/register";
@@ -44,7 +43,7 @@ public final class GlobalConst {
     public static final String API_LOGOUT = API_AUTH + "/logout";
 
     public static String getServerUrl() {
-        if (LOCAL) return "http://192.168.0.124" + PORT;
-        else return "https://your-domain.example.com" + PORT;
+        if (LOCAL) return "http://192.168.0.124:10381";
+        else return "https://server.your-domain.example.com";
     }
 }
