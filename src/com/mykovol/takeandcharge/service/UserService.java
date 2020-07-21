@@ -28,14 +28,12 @@ import com.codename1.io.ConnectionRequest;
 import com.codename1.io.Log;
 import com.codename1.io.MultipartRequest;
 import com.codename1.io.Preferences;
-import com.codename1.io.rest.Response;
 import com.codename1.io.rest.Rest;
 import com.codename1.properties.PreferencesObject;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.util.Callback;
-import com.codename1.util.FailureCallback;
 import com.codename1.util.SuccessCallback;
 import com.mykovol.takeandcharge.dataobj.*;
 import com.mykovol.takeandcharge.form.MainForm;
@@ -75,8 +73,9 @@ public class UserService {
 
     public static void logout() {
         Preferences.set("token", null);
+        RentSocketService.get().autoReconnect(0);
         RentSocketService.get().close();
-        MainForm.get().getBottomPanel().removeAllRentRows();
+        MainForm.get().removeAllRentRows();
     }
 
     public static boolean isLoggedIn() {

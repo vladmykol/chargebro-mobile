@@ -1,5 +1,6 @@
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.components.SpanLabel;
 import com.codename1.ui.Container;
 import com.codename1.ui.Image;
 import com.codename1.ui.Label;
@@ -18,6 +19,8 @@ public class StationInfoSheet extends Sheet {
 //        });
 //        cnt.add(gotoSheet2);
         Image image = Resources.getGlobalResources().getImage("charging-station.png");
-        cnt.add(new Label("Available power banks: 6", image));
+        SpanLabel spanLabel = new SpanLabel("Available power banks: 6");
+        spanLabel.setIcon(image);
+        cnt.add(spanLabel);
     }
 }

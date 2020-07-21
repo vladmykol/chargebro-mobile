@@ -46,12 +46,13 @@ public class RentSocketService extends WebSocket {
     private static final short MESSAGE_CODE_UNAUTHORIZED = 401;
     private static RentSocketService instance;
     private EasyThread et;
-
+    private WebSocket webSocket;
 
     public RentSocketService() {
         super(GlobalConst.getServerUrl() + SERVER_SOCKET_URL);
-        autoReconnect(5000);
+        autoReconnect(10000);
         et = EasyThread.start("Websocket");
+        connect();
     }
 
     public static RentSocketService get() {
@@ -59,6 +60,12 @@ public class RentSocketService extends WebSocket {
             instance = new RentSocketService();
         }
         return instance;
+    }
+
+    @Override
+    public void reconnect() {
+        super.reconnect();
+        autoReconnect(10000);
     }
 
     @Override
@@ -94,6 +101,9 @@ public class RentSocketService extends WebSocket {
 
     @Override
     protected void onClose(int statusCode, String reason) {
+        if (statusCode == 101) {
+            reconnect();
+        }
     }
 
     @Override
@@ -124,15 +134,17 @@ public class RentSocketService extends WebSocket {
     }
 
     private void returnPowerBankAction(String serialNumber) {
-        callSerially(() -> MainForm.get().getBottomPanel().removeRentRow(serialNumber));
+        callSerially(() -> MainForm.get().removeRentRow(serialNumber));
     }
 
     private void authAction(short messageCode, String responseMessage) {
         if (messageCode != MESSAGE_CODE_OK) {
             System.out.println("websocket authentication issue - " + responseMessage);
+            autoReconnect(0);
             close();
         } else {
             System.out.println("authenticated in websocket server " + responseMessage);
+            callSerially(() ->  MainForm.get().refreshRentContent());
         }
     }
 

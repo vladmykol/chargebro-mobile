@@ -40,7 +40,8 @@ public class TakeAndChargeMain {
             Log.e(e);
         }
 
-        Toolbar.setGlobalToolbar(true);
+        Toolbar.setGlobalToolbar(false);
+//        Toolbar.setOnTopSideMenu(false);
         if (!isTablet()) {
             Toolbar.setOnTopSideMenu(true);
         }
@@ -78,7 +79,7 @@ public class TakeAndChargeMain {
             if (!Display.getInstance().getCurrent().equals(MainForm.get())) {
                 MainForm.get().show();
             }
-            MainForm.get().getBottomPanel().showError(errorMsg);
+            MainForm.get().showErrorDraggablePanel(errorMsg);
             FabProgress.stopCurrent();
             MainGifLoader.get().stop();
         });
@@ -99,7 +100,6 @@ public class TakeAndChargeMain {
 //            MainForm.get().show();
 //            new RegisterMobileNumberStep1().show();
         }
-        MainForm.appInit();
     }
 
     public void stop() {
@@ -108,11 +108,10 @@ public class TakeAndChargeMain {
             ((Dialog) current).dispose();
             current = getCurrentForm();
         }
-        MainForm.get().appClose();
+        MainForm.get().suspend();
     }
 
     public void destroy() {
-        MainForm.get().appClose();
     }
 
 }

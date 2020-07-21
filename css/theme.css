@@ -4,6 +4,7 @@
     mapTileLoadingImage: "main-logo.png";
     /*menuPrefSizeBool: true;*/
     menuImageSize: 6;
+    sideSwipeSensitiveInt: 50;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part1.png";
     splashLogo2Image: "splash-logo-part2.png";
@@ -187,6 +188,23 @@ TakePowerBankButton.pressed {
     box-shadow: 0.5mm 0.5mm 4.3mm 0.1mm;
 }
 
+ShowMeButton{
+    /*cn1-derive: Button;*/
+    padding:2mm;
+    background: white;
+    margin: 13mm 2mm;
+    font-size: 3.2mm;
+    border: 0px solid #000000;
+    border-radius: 2.2mm;
+    color: #8FC0C5;
+    box-shadow: 0mm 0mm 1.5mm 0mm #8FC0C5;
+    /*box-shadow: 1mm 1mm 5mm 0.1mm;*/
+    text-align: center;
+}
+
+ShowMeButton.pressed {
+    box-shadow: 0mm 0mm 1.7mm 0mm #8FC0C5;
+}
 
 /*====================== Bottom panel ==========================*/
 
@@ -355,10 +373,10 @@ RegisterLabel {
 }
 
 RegisterTextField {
-    cn1-derive: TextField;
+    cn1-derive: CredentialsField;
     font-family: "native:MainLight";
     font-size: 3.5mm;
-    color: black;
+    /*color: black;*/
 }
 
 MobileNumber {
@@ -396,7 +414,7 @@ TermsCheckBox {
 
 TermsLink {
     cn1-derive: TermsCheckBox;
-    color: #2775a4;
+    color: #5fa0a5;
 }
 
 TermsLink.pressed {

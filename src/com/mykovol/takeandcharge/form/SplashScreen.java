@@ -1,10 +1,7 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.ScaleImageLabel;
-import com.codename1.ui.Component;
-import com.codename1.ui.Container;
-import com.codename1.ui.Form;
-import com.codename1.ui.Label;
+import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.layouts.BorderLayout;
@@ -35,8 +32,9 @@ public class SplashScreen extends Form {
 
     public SplashScreen() {
         super(new LayeredLayout());
-        getContentPane().setUIID("Container");
-        getToolbar().setUIID("Container");
+//        getContentPane().setUIID("Container");
+//        getToolbar().setUIID("Container");
+        setToolbar(new Toolbar(true));
         getToolbar().hideToolbar();
 
 //        MorphTransition morph = MorphTransition.create(400);

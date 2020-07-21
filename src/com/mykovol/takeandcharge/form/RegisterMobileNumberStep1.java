@@ -50,7 +50,7 @@ public class RegisterMobileNumberStep1 extends Form {
     private final TextField phoneNumber = new TextField("", "(93) 123-45-67", 40, TextField.PHONENUMBER);
     private final String invalidPhoneError = "Please enter valid phone number";
     private final SpanLabel errorText = new SpanLabel("", RegisterStyle.ERROR_LABEL);
-    private final Button countryCodeButton = new Button("+380");
+    private final Button countryCodeButton = new Button("+380", RegisterStyle.LABEL);
     private final Label errorTimeLabel = new Label("", RegisterStyle.ERROR_LABEL);
     private final Container errorContainer = BoxLayout.encloseX(errorText, errorTimeLabel);
     private final FloatingActionButton submitButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
@@ -62,6 +62,7 @@ public class RegisterMobileNumberStep1 extends Form {
 
     public RegisterMobileNumberStep1() {
         super(BoxLayout.y());
+        setToolbar(new Toolbar(false));
         getToolbar().setTitle("Step 1 from 3");
         getToolbar().addCommandToRightBar(getCloseCommand());
 
@@ -123,11 +124,9 @@ public class RegisterMobileNumberStep1 extends Form {
                     morph(countryCodeButtonName).
                     morph(errorLabelName);
             setTransitionOutAnimator(morph);
-            if (phoneNumber.isEditing()) {
-                phoneNumber.stopEditing(() -> {
-                    revalidateWithAnimationSafety();
-                    callSerially(MainForm.get()::show);
-                });
+            Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
+            if (currEditing != null) {
+                currEditing.stopEditing(() -> MainForm.get().show());
             } else {
                 MainForm.get().show();
             }

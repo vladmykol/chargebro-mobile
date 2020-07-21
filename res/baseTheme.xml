@@ -2,7 +2,7 @@
 
 <resource majorVersion="1" minorVersion="11" useXmlUI="false">
     <l10n name="prime">
-        <lang name="ua">
+        <lang name="uk">
             <entry key="menu" value="&#x41c;&#x435;&#x43d;&#x44e;" />
             <entry key="I forgot my password" value="&#x42f; &#x437;&#x430;&#x431;&#x443;&#x432; &#x43f;&#x430;&#x440;&#x43e;&#x43b;&#x44c;" />
             <entry key="Password" value="&#x41f;&#x430;&#x440;&#x43e;&#x43b;&#x44c;" />
@@ -14,13 +14,15 @@
             <entry key="Welcome Stranger" value="&#x41f;&#x440;&#x438;&#x432;&#x456;&#x442; &#x43d;&#x435;&#x437;&#x43d;&#x430;&#x439;&#x43e;&#x43c;&#x435;&#x446;&#x44c;" />
             <entry key="We need  access to your current location to show nearest PoweBank stations, please enable GPS in Settings." value="&#x41d;&#x430;&#x43c; &#x43f;&#x43e;&#x442;&#x440;&#x456;&#x431;&#x435;&#x43d; &#x434;&#x43e;&#x441;&#x442;&#x443;&#x43f; &#x434;&#x43e; &#x432;&#x430;&#x448;&#x43e;&#x457; &#x433;&#x435;&#x43b;&#x43e;&#x43a;&#x43e;&#x430;&#x446;&#x456;&#x457;, &#x449;&#x43e;&#x431; &#x43f;&#x43e;&#x43a;&#x430;&#x437;&#x430;&#x442;&#x438; &#x43d;&#x430;&#x439;&#x431;&#x43b;&#x438;&#x449;&#x456; PowerBank &#x441;&#x442;&#x430;&#x43d;&#x446;&#x456;&#x457;. &#x411;&#x443;&#x434;&#x44c; &#x43b;&#x430;&#x441;&#x43a;&#x430; &#x434;&#x43e;&#x437;&#x432;&#x43e;&#x43b;&#x44c;&#x442;&#x435; GPS &#x432; &#x43d;&#x430;&#x43b;&#x430;&#x448;&#x442;&#x443;&#x432;&#x430;&#x43d;&#x43d;&#x44f;&#x445;" />
             <entry key="ok" value="&#x414;&#x43e;&#x431;&#x440;&#x435;" />
+            <entry key="Support" value="&#x414;&#x43e;&#x43f;&#x43e;&#x43c;&#x43e;&#x433;&#x430;" />
             <entry key="Legal" value="&#x412;&#x441;&#x456; &#x43f;&#x440;&#x430;&#x432;&#x430; &#x437;&#x430;&#x445;&#x438;&#x449;&#x435;&#x43d;&#x456;" />
             <entry key="edit" value="&#x420;&#x435;&#x434;&#x430;&#x433;&#x443;&#x432;&#x430;&#x442;&#x438;" />
             <entry key="select" value="&#x412;&#x438;&#x431;&#x440;&#x430;&#x442;&#x438;" />
             <entry key="powerbank sharing solution" value="powerbank &#x448;&#x435;&#x440;&#x456;&#x43d;&#x433; &#x441;&#x435;&#x440;&#x432;&#x456;&#x441;" />
             <entry key="Sign out" value="&#x412;&#x438;&#x439;&#x442;&#x438;" />
-            <entry key="No connection with server. Please try latter" value="&#x41d;&#x435;&#x43c;&#x430;&#x454; &#x437;&#x432;'&#x44f;&#x437;&#x43a;&#x443; &#x437; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x43e;&#x43c;. &#x411;&#x443;&#x434;&#x44c; &#x43b;&#x430;&#x441;&#x43a;&#x430; &#x441;&#x43f;&#x440;&#x43e;&#x431;&#x443;&#x439;&#x442;&#x435; &#x43f;&#x456;&#x437;&#x43d;&#x456;&#x448;&#x435;" />
+            <entry key="Add Payment method" value="&#x414;&#x43e;&#x434;&#x430;&#x442;&#x438; &#x43a;&#x430;&#x440;&#x442;&#x443;" />
             <entry key="Login" value="&#x412;&#x445;&#x456;&#x434;" />
+            <entry key="No connection with server. Please try latter" value="&#x41d;&#x435;&#x43c;&#x430;&#x454; &#x437;&#x432;'&#x44f;&#x437;&#x43a;&#x443; &#x437; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x43e;&#x43c;. &#x411;&#x443;&#x434;&#x44c; &#x43b;&#x430;&#x441;&#x43a;&#x430; &#x441;&#x43f;&#x440;&#x43e;&#x431;&#x443;&#x439;&#x442;&#x435; &#x43f;&#x456;&#x437;&#x43d;&#x456;&#x448;&#x435;" />
             <entry key="What's new?" value="&#x429;&#x43e; &#x43d;&#x43e;&#x432;&#x43e;&#x433;&#x43e;?" />
             <entry key="Welcome to" value="&#x412;&#x456;&#x442;&#x430;&#x44e; &#x432;" />
             <entry key="Create new account" value="&#x421;&#x442;&#x432;&#x43e;&#x440;&#x438;&#x442;&#x438; &#x43d;&#x43e;&#x432;&#x438;&#x439; &#x430;&#x43a;&#x430;&#x443;&#x43d;&#x442;" />

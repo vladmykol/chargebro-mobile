@@ -36,6 +36,7 @@ import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
 import static com.codename1.ui.CN.callSerially;
+import static com.codename1.ui.CN.getCurrentForm;
 
 /**
  * The Login form
@@ -50,11 +51,13 @@ public class LoginForm extends Form {
     public LoginForm() {
         super(new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE));
 //        CommonCode.removeTransitionsTemporarily(previous);
+        setToolbar(new Toolbar(true));
         getToolbar().addCommandToRightBar(constructCloseCommand());
 
         Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
         Label logoImageHolder = new ScaleImageLabel(LogoImage);
         logoImageHolder.setUIID("TextAlignCenter");
+        logoImageHolder.getAllStyles().setMarginTop(10);
         logoImageHolder.setName("LogoImageName");
 
         Container welcomeText = FlowLayout.encloseCenter(
@@ -130,16 +133,9 @@ public class LoginForm extends Form {
 
             MorphTransition morph = MorphTransition.create(400);
             setTransitionOutAnimator(morph);
-            if (loginField.isEditing()) {
-                loginField.stopEditing(() -> {
-                    revalidateWithAnimationSafety();
-                    callSerially(MainForm.get()::show);
-                });
-            } else if (passwordField.isEditing()) {
-                passwordField.stopEditing(() -> {
-                    revalidateWithAnimationSafety();
-                    callSerially(MainForm.get()::show);
-                });
+            Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
+            if (currEditing != null) {
+                currEditing.stopEditing(() -> MainForm.get().show());
             } else {
                 MainForm.get().show();
             }
@@ -155,7 +151,7 @@ public class LoginForm extends Form {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-                    RentSocketService.get().connect();
+                    RentSocketService.get().reconnect();
                     MainForm.get().show();
                     FabProgress.stop(fab);
                 }

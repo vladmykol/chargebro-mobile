@@ -25,7 +25,10 @@ package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
 import com.codename1.io.Log;
+import com.codename1.io.Preferences;
 import com.codename1.l10n.L10NManager;
+import com.codename1.messaging.Message;
+import com.codename1.notifications.LocalNotification;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.animations.Transition;
@@ -150,7 +153,7 @@ public class CommonCode {
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().getBottomPanel().showError(errorCode + " " + errorMessage);
+                    MainForm.get().showErrorDraggablePanel(errorCode + " " + errorMessage);
                 }
 
                 @Override
@@ -159,6 +162,23 @@ public class CommonCode {
                 }
             });
         });
+
+        tb.addMaterialCommandToSideMenu("Support", FontImage.MATERIAL_CONTACT_SUPPORT, evt -> {
+            String email = "admin@your-domain.example.com";
+            Message message = new Message("");
+            Display.getInstance().sendMessage(new String[]{email}, "Take'Charge", message);
+        });
+
+//        tb.addMaterialCommandToSideMenu("Notification", FontImage.MATERIAL_NOTIFICATIONS, evt -> {
+//            LocalNotification ln = new LocalNotification();
+//            ln.setBadgeNumber(2);
+//            ln.setAlertImage("icon.png");
+//            ln.setId("LnMessage");
+//            ln.setAlertTitle("Welcome");
+//            ln.setAlertBody("Thanks for the life!");
+//            Display.getInstance().scheduleLocalNotification(ln, System.currentTimeMillis() + 10 * 1000, LocalNotification.REPEAT_NONE);
+//
+//        });
 
 
 //        tb.addMaterialCommandToSideMenu("Help", FontImage.MATERIAL_HELP, e -> { new WalkthruForm().show();
@@ -171,6 +191,8 @@ public class CommonCode {
         legal.setLeadComponent(legalButton);
         legal.setUIID("SideNavigationPanel");
         tb.setComponentToSideMenuSouth(legal);
+        tb.getMenuBar().setScrollableY(false);
+        tb.getMenuBar().setBlockLead(true);
     }
 
 

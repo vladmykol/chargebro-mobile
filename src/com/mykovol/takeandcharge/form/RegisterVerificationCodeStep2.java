@@ -77,6 +77,7 @@ public class RegisterVerificationCodeStep2 extends Form {
         smsCode.setMaxSize(registerCode.length());
         passwordField.setMaxSize(16);
 
+        setToolbar(new Toolbar(false));
         getToolbar().setTitle("Step 2 from 3");
         getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
 

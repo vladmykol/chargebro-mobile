@@ -24,10 +24,7 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.FloatingActionButton;
-import com.codename1.ui.BrowserComponent;
-import com.codename1.ui.Display;
-import com.codename1.ui.FontImage;
-import com.codename1.ui.Form;
+import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 
@@ -44,6 +41,7 @@ public class RegisterCreditCardStep3 extends Form {
         super(new BorderLayout());
         Form previous = getCurrentForm();
 //        CommonCode.removeTransitionsTemporarily(previous);
+        setToolbar(new Toolbar(false));
         getToolbar().setTitle("Step 3 from 3");
 
         setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));

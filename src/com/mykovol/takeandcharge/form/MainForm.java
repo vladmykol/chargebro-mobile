@@ -26,9 +26,9 @@ package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.googlemaps.MapContainer;
+import com.codename1.io.Preferences;
 import com.codename1.io.Util;
 import com.codename1.location.Location;
-import com.codename1.location.LocationListener;
 import com.codename1.location.LocationManager;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
@@ -42,11 +42,11 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
+import com.mykovol.takeandcharge.form.component.ShowMyLocationButton;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.RentSocketService;
-import com.mykovol.takeandcharge.service.UserService;
-import com.mykovol.takeandcharge.tools.BottomPanel;
 import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.tools.DraggablePanel;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 
 /**
@@ -56,44 +56,35 @@ import com.mykovol.takeandcharge.tools.MainGifLoader;
  */
 public class MainForm extends Form {
     private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RVpEYUpceVw+VSlDWzkjXWZ8bCJDSF5GRkZ4cm1DFVdE");
-    private static final Coord station1 = new Coord(50.481952, 30.412420);
+    private static final Coord ukraineCoord = new Coord(50.481952, 30.412420);
     private static MainForm instance;
-    private final Button scanButton = new ScanButton(" Take&Charge", "TakePowerBankButton");
-    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(scanButton)));
-    private final Container draggablePanelContainer = new Container();
-    //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
-//    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(n)));
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
+    //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
+    //    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(n)));
     private final Button screenBlocking = new Button();
-    private BottomPanel bottomPanel;
+    private final DraggablePanel draggablePanel = new DraggablePanel(screenBlocking, this);
 
     private MainForm() {
         super(new LayeredLayout());
+        RentSocketService.get();
         setName("MapForm");
-
-//        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_MY_LOCATION, "", 4.5f);
-//        getToolbar().addCommandToRightBar("", mat, e -> {});
-
         setScrollableY(false);
         setTransitionOutAnimator(CommonTransitions.createEmpty());
-        showMeOnTheMap();
-//        add(mapContainer);
-        add(BorderLayout.center(mapContainer));
-//        mapContainer.set
 
+        add(mapContainer);
+        initMap();
 
         ScaleImageLabel gradient = new ScaleImageLabel(Resources.getGlobalResources().getImage("gradient-overlay.png"));
         gradient.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
         add(BorderLayout.south(gradient));
-        add(scabButtonHolder);
-        add(draggablePanelContainer);
-
-        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
-
-        showStationsOnMap();
+        add(BorderLayout.south(FlowLayout.encloseCenter(new ScanButton(" Take&Charge", "TakePowerBankButton"))));
+        add(BorderLayout.north(FlowLayout.encloseRightBottom(new ShowMyLocationButton(mapContainer))));
 
         screenBlocking.setVisible(false);
         add(screenBlocking);
+        add(draggablePanel);
+
+        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
     }
 
     public static MainForm get() {
@@ -103,66 +94,56 @@ public class MainForm extends Form {
         return instance;
     }
 
-    public static void appInit() {
-        if (instance != null) {
-            instance.showMeOnTheMap();
-        }
-        if (UserService.isLoggedIn()) RentSocketService.get().reconnect();
-    }
-
-    private void showMeOnTheMap() {
-        mapContainer.zoom(station1, mapContainer.getMinZoom() + 6);
-        new UITimer(() -> {
-            LocationManager lm = LocationManager.getLocationManager();
-            if (lm.isGPSDetectionSupported()) {
-                if (!lm.isGPSEnabled()) {
-                    Dialog.show("", "We need  access to your current location to show nearest PoweBank stations, please enable GPS in Settings.", "Ok", null);
-                }
-            }
-            mapContainer.setShowMyLocation(true);
-            System.out.println("timer");
-        }).schedule(7000, false, this);
-
-        if (!Display.getInstance().isSimulator()) {
-            LocationManager.getLocationManager().setLocationListener(new LocationListener() {
-                @Override
-                public void locationUpdated(Location location) {
-                    if (location.getAccuracy() < 1000) {
-                        mapContainer.zoom(new Coord(location.getLatitude(), location.getLongitude()), mapContainer.getMinZoom() + 6);
-                        LocationManager.getLocationManager().setLocationListener(null);
-                    }
-                }
-
-                @Override
-                public void providerStateChanged(int newState) {
-                }
-            });
-        }
-    }
-
     @Override
     public void show() {
         super.show();
-        if (bottomPanel == null) {
-            Container draggablePanelContainer = new Container();
-            add(draggablePanelContainer);
-            bottomPanel = new BottomPanel(draggablePanelContainer, screenBlocking);
-            bottomPanel.show();
-        } else {
-            bottomPanel.refreshRentContent();
+        UITimer.timer(10, false, this, () -> {
+            mapContainer.setShowMyLocation(Preferences.get("showMyLocation", false));
+        });
+        refreshRentContent();
+    }
+
+    public void suspend() {
+        mapContainer.setShowMyLocation(false);
+//        Preferences.set("preferredMapZoom", (int) mapContainer.getZoom());
+    }
+
+    private void initMap() {
+        Coord lastCoord = ukraineCoord;
+        if (!Display.getInstance().isSimulator()) {
+            LocationManager lm = LocationManager.getLocationManager();
+            Location lastKnownLocation = lm.getLastKnownLocation();
+            lastCoord = new Coord(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
         }
+        mapContainer.setCameraPosition(lastCoord);
+        mapContainer.zoom(lastCoord, mapContainer.getMinZoom() + 6);
+
+        initStationsOnMap();
     }
 
-    public BottomPanel getBottomPanel() {
-        return bottomPanel;
+    public void showErrorDraggablePanel(String error) {
+        draggablePanel.showError(error);
     }
 
-    private void showStationsOnMap() {
+    public void refreshRentContent() {
+        draggablePanel.refreshRentContent();
+    }
+
+    public void removeRentRow(String serialNumber) {
+        draggablePanel.removeRentRow(serialNumber);
+    }
+
+    public void removeAllRentRows() {
+        draggablePanel.removeAllRentRows();
+    }
+
+
+    private void initStationsOnMap() {
         Image placeImage = Resources.getGlobalResources().getImage("map-point.png");
-        mapContainer.setCameraPosition(station1);
+
         mapContainer.addMarker(
                 EncodedImage.createFromImage(placeImage, false),
-                mapContainer.getCameraPosition(), null,
+                ukraineCoord, null,
                 "Station position on the map",
                 evt -> {
                     StationInfoSheet sheet = new StationInfoSheet("Station 441");
@@ -171,16 +152,15 @@ public class MainForm extends Form {
         );
     }
 
-    public void appClose() {
-        mapContainer.setShowMyLocation(false);
-        RentSocketService.get().close();
-    }
 
     @Override
     protected void initGlobalToolbar() {
         setToolbar(new Toolbar(true));
+        getToolbar().getMenuBar().setTactileTouch(true);
+        getToolbar().setTactileTouch(true);
         CommonCode.constructSideMenu(getToolbar());
     }
+
 
     public class ScanButton extends Button {
         public ScanButton(String text, String uiid) {
@@ -188,7 +168,7 @@ public class MainForm extends Form {
             FontImage.setMaterialIcon(this, FontImage.MATERIAL_CROP_FREE);
             addActionListener(this::scanButtonAction);
             getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
-            getAllStyles().setMarginBottom(BottomPanel.MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE);
+            getAllStyles().setMarginBottom(DraggablePanel.MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE);
         }
 
         private void scanButtonAction(ActionEvent evt) {
@@ -196,13 +176,13 @@ public class MainForm extends Form {
             RentService.rent(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    bottomPanel.showError(errorMessage);
+                    draggablePanel.showError(errorMessage);
 //                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
                 }
 
                 @Override
                 public void onSucess(String powerBankId) {
-                    bottomPanel.addRentRow(powerBankId, 0);
+                    draggablePanel.addRentRow(powerBankId, 0);
                 }
             });
         }

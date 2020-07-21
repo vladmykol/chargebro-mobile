@@ -5,7 +5,7 @@ import com.codename1.ui.Container;
 import com.codename1.ui.Label;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.layouts.BorderLayout;
-import com.mykovol.takeandcharge.tools.BottomPanel;
+import com.mykovol.takeandcharge.tools.DraggablePanel;
 
 import static com.codename1.ui.CN.getDisplayHeight;
 import static com.codename1.ui.CN.getDisplayWidth;
@@ -31,7 +31,7 @@ public class BlockedArea {
     }
 
     public void defaultSize(){
-        zone.setPreferredSize(new Dimension(getDisplayWidth(), BottomPanel.minPanelHeight + (int) Math.round(getDisplayHeight() * 0.4)));
+        zone.setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight + (int) Math.round(getDisplayHeight() * 0.4)));
     }
 
 

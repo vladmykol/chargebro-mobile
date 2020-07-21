@@ -37,6 +37,7 @@ import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.form.component.RentBoard;
 import com.mykovol.takeandcharge.form.component.RentContent;
 import com.mykovol.takeandcharge.service.RentService;
+import com.mykovol.takeandcharge.service.UserService;
 
 import java.util.List;
 import java.util.Map;
@@ -45,19 +46,19 @@ import static com.codename1.ui.CN.*;
 import static com.codename1.ui.util.Resources.getGlobalResources;
 
 
-public class BottomPanel {
+public class DraggablePanel extends Container {
     public static final int MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE = 25;
     public static final int minPanelHeight = (int) Math.round(getDisplayHeight() * (MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE / 100.0));
     private final Container contentHolder = new Container(BoxLayout.y());
     private final Container defaultContent = new Container(BoxLayout.y());
     private final Container bottomPanel = BorderLayout.center(contentHolder);
-    private final Container mainContainer;
     private final Label draggableImage = new Label(getGlobalResources().getImage("vertical-draggable.png"), "DraggableIcon");
     private final SpanLabel errorLabel = new SpanLabel("something went wrong", "ErrorText");
     private final String defaultTopTitleText = "What's new?";
     private final Label topPanelTitle = new Label(defaultTopTitleText, "BottomPanelFoldedTopText");
     private final Container header = BoxLayout.encloseY(draggableImage, errorLabel);
     private final Button screenBlocking;
+    private final Form attachedForm;
     private RentContent rentContent = new RentContent();
     private int firstX = -1, firstY = -1;
     private boolean isDraggingBottomPanel;
@@ -65,48 +66,45 @@ public class BottomPanel {
     private volatile boolean isInMove = false;
 
 
-    public BottomPanel(Container mainLayer, Button screenBlocking) {
-        this.mainContainer = mainLayer;
+    public DraggablePanel(Button screenBlocking, Form currentForm) {
+        super(new BorderLayout());
         this.screenBlocking = screenBlocking;
-        mainLayer.setLayout(new BorderLayout());
+        this.attachedForm = currentForm;
 
         constructTopPanel();
         constructContent();
         addSwipeListeners();
-    }
-
-    public void show() {
-        mainContainer.add(SOUTH, bottomPanel);
-        mainContainer.revalidateWithAnimationSafety();
-        refreshRentContent();
+        add(SOUTH, bottomPanel);
     }
 
     public void refreshRentContent() {
-        RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
-            @Override
-            public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                if (errorCode != 404) showError(errorMessage);
-            }
+        if (UserService.isLoggedIn()) {
+            RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    if (errorCode != 404) showError(errorMessage);
+                }
 
-            @Override
-            public void onSucess(List<RentHistory> rentHistoryList) {
-                Map<String, RentBoard> visibleRentBoards = rentContent.getVisibleRentBoards();
-                for (RentHistory rentHistory : rentHistoryList) {
-                    String serialNumber = rentHistory.powerBankId.get();
-                    long timeElapsed = rentHistory.rentPeriodMs.getLong();
-                    RentBoard existingRentRow = visibleRentBoards.remove(serialNumber);
-                    if (existingRentRow == null) {
-                        addRentRow(serialNumber, timeElapsed);
-                    } else {
-                        existingRentRow.updateElapsedTime(timeElapsed);
+                @Override
+                public void onSucess(List<RentHistory> rentHistoryList) {
+                    Map<String, RentBoard> visibleRentBoards = rentContent.getVisibleRentBoards();
+                    for (RentHistory rentHistory : rentHistoryList) {
+                        String serialNumber = rentHistory.powerBankId.get();
+                        long timeElapsed = rentHistory.rentPeriodMs.getLong();
+                        RentBoard existingRentRow = visibleRentBoards.remove(serialNumber);
+                        if (existingRentRow == null) {
+                            addRentRow(serialNumber, timeElapsed);
+                        } else {
+                            existingRentRow.updateElapsedTime(timeElapsed);
+                        }
                     }
+                    for (RentBoard showedButNotExistingRentRow : visibleRentBoards.values()) {
+                        removeRentRow(showedButNotExistingRentRow);
+                    }
+                    revalidateWithAnimationSafety();
                 }
-                for (RentBoard showedButNotExistingRentRow : visibleRentBoards.values()) {
-                    removeRentRow(showedButNotExistingRentRow);
-                }
-                mainContainer.revalidateWithAnimationSafety();
-            }
-        });
+            });
+        }
     }
 
     public void addRentRow(String serialNumber, long elapsedTime) {
@@ -115,7 +113,6 @@ public class BottomPanel {
         if (!rentContent.isChildOf(contentHolder)) {
             topPanelTitle.setText(rentContent.getTitleText());
             contentHolder.replaceAndWait(defaultContent, rentContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-            mainContainer.revalidateWithAnimationSafety();
         } else {
             rentContent.animateRentContent(500);
         }
@@ -140,7 +137,7 @@ public class BottomPanel {
     private void setDefaultContent() {
         topPanelTitle.setText(defaultTopTitleText);
         contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
-        mainContainer.revalidateWithAnimationSafety();
+//        revalidateWithAnimationSafety();
     }
 
 
@@ -163,8 +160,11 @@ public class BottomPanel {
         ScaleImageLabel articlePhoto = new ScaleImageLabel(getGlobalResources().getImage("dont-spend-time.png"));
         articlePhoto.setUIID("PanelImage");
 
+
         contentHolder.setUIID("BottomPanelUnfolded");
 //        contentHolder.setBlockLead(true);
+//        setScrollableY(true);
+//        setScrollVisible(false);
         contentHolder.setScrollableY(true);
         contentHolder.setScrollVisible(false);
         errorLabel.setHidden(true, true);
@@ -177,7 +177,7 @@ public class BottomPanel {
         if (errorLabel.isHidden()) {
             errorLabel.setHidden(false, false);
             contentHolder.animateLayout(700);
-            UITimer.timer(5000, false, mainContainer.getComponentForm(), () -> {
+            UITimer.timer(5000, false, getComponentForm(), () -> {
                 errorLabel.setHidden(true, false);
                 contentHolder.animateLayout(700);
             });
@@ -186,7 +186,7 @@ public class BottomPanel {
 
     private void constructTopPanel() {
         Button back = new Button("", "BottomPanelFoldedTopText");
-        float size = Float.parseFloat(mainContainer.getUIManager().getThemeConstant("menuImageSize", "4.5"));
+        float size = Float.parseFloat(getUIManager().getThemeConstant("menuImageSize", "4.5"));
         FontImage.setMaterialIcon(back, FontImage.MATERIAL_ARROW_BACK, size);
         topToolbarPanel = BoxLayout.encloseX(back, topPanelTitle);
         topToolbarPanel.setUIID("BottomPanelFoldedTop");
@@ -199,35 +199,33 @@ public class BottomPanel {
         if (isInMove) return;
         isInMove = true;
         removeSwipeListeners();
-        getCurrentForm().getToolbar().setHidden(false);
-        mainContainer.revalidateWithAnimationSafety();
+        attachedForm.getToolbar().setHidden(false);
+        revalidateWithAnimationSafety();
         topToolbarPanel.setY(-topToolbarPanel.getHeight());
         rentContent.showTitle();
         contentHolder.addComponent(0, draggableImage);
         bottomPanel.setY(getDisplayHeight() - minPanelHeight);
-        mainContainer.animateUnlayoutAndWait(200, 255);
+        animateUnlayoutAndWait(200, 255);
         topToolbarPanel.remove();
         bottomPanel.remove();
         contentHolder.setUIID("BottomPanelUnfolded");
-        mainContainer.add(SOUTH, bottomPanel);
+        add(SOUTH, bottomPanel);
         bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
         screenBlocking.setVisible(false);
+        animateLayoutAndWait(100);
         addSwipeListeners();
-        mainContainer.animateLayoutAndWait(100);
         isInMove = false;
     }
 
 
     public void addSwipeListeners() {
-        Form f = mainContainer.getComponentForm();
-        f.addPointerDraggedListener(this::processDragEvent);
-        f.addPointerReleasedListener(this::processReleaseEvent);
+        attachedForm.addPointerDraggedListener(this::processDragEvent);
+        attachedForm.addPointerReleasedListener(this::processReleaseEvent);
     }
 
     public void removeSwipeListeners() {
-        Form f = mainContainer.getComponentForm();
-        f.removePointerDraggedListener(this::processDragEvent);
-        f.removePointerReleasedListener(this::processReleaseEvent);
+        attachedForm.removePointerDraggedListener(this::processDragEvent);
+        attachedForm.removePointerReleasedListener(this::processReleaseEvent);
     }
 
     private void processReleaseEvent(ActionEvent e) {
@@ -245,12 +243,12 @@ public class BottomPanel {
                     getCurrentForm().getToolbar().setHidden(true);
 //                    mainContainer.revalidateWithAnimationSafety();
                     contentHolder.setUIID("BottomPanelFolded");
-                    mainContainer.add(NORTH, topToolbarPanel);
-                    mainContainer.add(CENTER, bottomPanel);
-                    mainContainer.animateLayout(100);
+                    add(NORTH, topToolbarPanel);
+                    add(CENTER, bottomPanel);
+                    animateLayout(100);
                 } else {
                     bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
-                    mainContainer.revalidateWithAnimationSafety();
+                    revalidateWithAnimationSafety();
                 }
             } else {
                 if (firstY < e.getY()) {
@@ -267,7 +265,7 @@ public class BottomPanel {
     }
 
     private Object getBottomPanelPosition() {
-        return mainContainer.getLayout().getComponentConstraint(bottomPanel);
+        return getLayout().getComponentConstraint(bottomPanel);
     }
 
     private synchronized void processDragEvent(ActionEvent e) {
@@ -276,10 +274,10 @@ public class BottomPanel {
             boolean isDruggingUp = SOUTH.equals(getBottomPanelPosition());
             if (isDruggingUp) {
                 bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), firstY - e.getY() + minPanelHeight));
-                mainContainer.revalidateWithAnimationSafety();
+                revalidateWithAnimationSafety();
             }
         } else {
-            Component draggedCmp = mainContainer.getComponentAt(e.getX(), e.getY());
+            Component draggedCmp = getComponentAt(e.getX(), e.getY());
             if (draggedCmp == null || !draggedCmp.isChildOf(bottomPanel)) {
                 return;
             }
