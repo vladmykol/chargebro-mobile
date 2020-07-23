@@ -60,7 +60,8 @@ public class RegisterVerificationCodeStep2 extends Form {
     private final Button maskAndUnmaskPass = new Button("Show", RegisterStyle.TERMS_LINK);
     private final CheckBox termsCheckBox = new CheckBox("I accept");
     private final Button termsLink = new Button("Terms&Conditions", RegisterStyle.TERMS_LINK);
-    private final SpanLabel errorText = new SpanLabel("PIN you've entered is incorrect", RegisterStyle.ERROR_LABEL);
+    private final String INCORRECT_PIN_ERROR_TEXT = "SMS code is incorrect";
+    private final SpanLabel errorText = new SpanLabel(INCORRECT_PIN_ERROR_TEXT, RegisterStyle.ERROR_LABEL);
     private final User user = new User();
     private final String registerCode;
     private int registerCodeValidForSeconds;
@@ -294,7 +295,7 @@ public class RegisterVerificationCodeStep2 extends Form {
             validate(passwordField);
 
             if (!isCurrentlyValid(smsCode)) {
-                errorText.setText("SMS code is incorrect");
+                errorText.setText(INCORRECT_PIN_ERROR_TEXT);
                 valid = false;
             } else if (!isCurrentlyValid(passwordField)) {
                 errorText.setText("Password should contain minimum 4 characters");

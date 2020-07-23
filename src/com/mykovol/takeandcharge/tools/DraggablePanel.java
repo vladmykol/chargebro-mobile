@@ -47,7 +47,7 @@ import static com.codename1.ui.util.Resources.getGlobalResources;
 
 
 public class DraggablePanel extends Container {
-    public static final int MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE = 25;
+    public static final int MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE = 17;
     public static final int minPanelHeight = (int) Math.round(getDisplayHeight() * (MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE / 100.0));
     private final Container contentHolder = new Container(BoxLayout.y());
     private final Container defaultContent = new Container(BoxLayout.y());
@@ -56,7 +56,7 @@ public class DraggablePanel extends Container {
     private final SpanLabel errorLabel = new SpanLabel("something went wrong", "ErrorText");
     private final String defaultTopTitleText = "What's new?";
     private final Label topPanelTitle = new Label(defaultTopTitleText, "BottomPanelFoldedTopText");
-    private final Container header = BoxLayout.encloseY(draggableImage, errorLabel);
+    private final Container header = BoxLayout.encloseYCenter(draggableImage, errorLabel);
     private final Button screenBlocking;
     private final Form attachedForm;
     private RentContent rentContent = new RentContent();
@@ -168,6 +168,7 @@ public class DraggablePanel extends Container {
         contentHolder.setScrollableY(true);
         contentHolder.setScrollVisible(false);
         errorLabel.setHidden(true, true);
+        errorLabel.setEnabled(false);
         contentHolder.addAll(header, defaultContent.addAll(articlePhoto, headerText, articleText));
     }
 
@@ -239,7 +240,7 @@ public class DraggablePanel extends Container {
                     draggableImage.remove();
                     bottomPanel.remove();
                     rentContent.hideTitle();
-                    screenBlocking.setVisible(true);
+//                    screenBlocking.setVisible(true);
                     getCurrentForm().getToolbar().setHidden(true);
 //                    mainContainer.revalidateWithAnimationSafety();
                     contentHolder.setUIID("BottomPanelFolded");
@@ -277,8 +278,8 @@ public class DraggablePanel extends Container {
                 revalidateWithAnimationSafety();
             }
         } else {
-            Component draggedCmp = getComponentAt(e.getX(), e.getY());
-            if (draggedCmp == null || !draggedCmp.isChildOf(bottomPanel)) {
+            Component draggedCmp = attachedForm.getComponentAt(e.getX(), e.getY());
+            if (draggedCmp == null || !draggedCmp.isChildOf(this)) {
                 return;
             }
 
@@ -289,7 +290,6 @@ public class DraggablePanel extends Container {
             e.consume();
             isDraggingBottomPanel = true;
         }
-        if (isInMove) return;
     }
 
 

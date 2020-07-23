@@ -86,9 +86,10 @@ public class LoginForm extends Form {
 //        validator.addConstraint(login, new LengthConstraint(1, "cannot be blank"));
 //        validator.addConstraint(password, new LengthConstraint(4, "at least 4 symbols"));
 
-        Button forgot = new Button("I forgot my password", "ForgotPasRegisterLabel");
+        Button forgot = new Button("Forgot password", "ForgotPasRegisterLabel");
         Button newAccountButton = new Button("Create new account", "ForgotPasRegisterLabel");
         Container registerOrForgot = BoxLayout.encloseY(forgot, newAccountButton);
+        newAccountButton.getAllStyles().setMarginBottom(3);
 
         newAccountButton.addActionListener(evt -> {
             new RegisterMobileNumberStep1().show();
@@ -119,12 +120,13 @@ public class LoginForm extends Form {
                         add(BorderLayout.WEST, passwordIcon),
                 error
         );
+        mainContainer.setScrollableY(true);
         add(BorderLayout.NORTH, mainContainer);
         add(BorderLayout.SOUTH, registerOrForgot);
 
         setEditOnShow(loginField);
-        mainContainer.setScrollableY(true);
-        mainContainer.setScrollVisible(false);
+        loginField.setNextFocusDown(passwordField);
+        mainContainer.setScrollableY(false);
     }
 
     private Command constructCloseCommand() {
@@ -133,7 +135,7 @@ public class LoginForm extends Form {
 
             MorphTransition morph = MorphTransition.create(400);
             setTransitionOutAnimator(morph);
-            Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
+            Component currEditing = this.findCurrentlyEditingComponent();
             if (currEditing != null) {
                 currEditing.stopEditing(() -> MainForm.get().show());
             } else {

@@ -35,7 +35,6 @@ import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
@@ -61,16 +60,23 @@ public class MainForm extends Form {
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
     //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
     //    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(n)));
-    private final Button screenBlocking = new Button();
-    private final DraggablePanel draggablePanel = new DraggablePanel(screenBlocking, this);
+    private final Button draggablePanelScreenBlocker = new Button();
+    private final Button sideMenuScreenBlocker = new Button();
+    private final DraggablePanel draggablePanel = new DraggablePanel(draggablePanelScreenBlocker, this);
 
     private MainForm() {
         super(new LayeredLayout());
-        RentSocketService.get();
+
+        setToolbar(new Toolbar(true));
+        getToolbar().getMenuBar().setTactileTouch(true);
+        getToolbar().setTactileTouch(true);
+
+
         setName("MapForm");
         setScrollableY(false);
         setTransitionOutAnimator(CommonTransitions.createEmpty());
 
+        mapContainer.setShowMyLocation(false);
         add(mapContainer);
         initMap();
 
@@ -80,9 +86,14 @@ public class MainForm extends Form {
         add(BorderLayout.south(FlowLayout.encloseCenter(new ScanButton(" Take&Charge", "TakePowerBankButton"))));
         add(BorderLayout.north(FlowLayout.encloseRightBottom(new ShowMyLocationButton(mapContainer))));
 
-        screenBlocking.setVisible(false);
-        add(screenBlocking);
+        draggablePanelScreenBlocker.setVisible(false);
+        add(draggablePanelScreenBlocker);
         add(draggablePanel);
+        setScrollableY(false);
+
+        sideMenuScreenBlocker.setVisible(false);
+        add(sideMenuScreenBlocker);
+        CommonCode.constructSideMenu(getToolbar(),sideMenuScreenBlocker);
 
         add(BorderLayout.centerAbsolute(MainGifLoader.get()));
     }
@@ -110,8 +121,8 @@ public class MainForm extends Form {
 
     private void initMap() {
         Coord lastCoord = ukraineCoord;
-        if (!Display.getInstance().isSimulator()) {
-            LocationManager lm = LocationManager.getLocationManager();
+        LocationManager lm = LocationManager.getLocationManager();
+        if (!Display.getInstance().isSimulator() && lm.isGPSEnabled()) {
             Location lastKnownLocation = lm.getLastKnownLocation();
             lastCoord = new Coord(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
         }
@@ -146,25 +157,17 @@ public class MainForm extends Form {
                 ukraineCoord, null,
                 "Station position on the map",
                 evt -> {
-                    StationInfoSheet sheet = new StationInfoSheet("Station 441");
+                    StationInfoSheet sheet = new StationInfoSheet();
                     sheet.show();
                 }
         );
     }
 
 
-    @Override
-    protected void initGlobalToolbar() {
-        setToolbar(new Toolbar(true));
-        getToolbar().getMenuBar().setTactileTouch(true);
-        getToolbar().setTactileTouch(true);
-        CommonCode.constructSideMenu(getToolbar());
-    }
-
-
     public class ScanButton extends Button {
         public ScanButton(String text, String uiid) {
             super(text, uiid);
+            setTactileTouch(true);
             FontImage.setMaterialIcon(this, FontImage.MATERIAL_CROP_FREE);
             addActionListener(this::scanButtonAction);
             getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);

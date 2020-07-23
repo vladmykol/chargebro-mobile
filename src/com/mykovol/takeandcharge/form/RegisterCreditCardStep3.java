@@ -24,6 +24,7 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.FloatingActionButton;
+import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
@@ -60,7 +61,10 @@ public class RegisterCreditCardStep3 extends Form {
 
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_DONE);
         fab.bindFabToContainer(this);
-        fab.addActionListener(evt -> MainForm.get().show());
+        fab.addActionListener(evt -> {
+            ToastBar.showMessage("Welcom...", FontImage.MATERIAL_INFO);
+            MainForm.get().show();
+        });
 
         add(BorderLayout.CENTER, browser);
     }

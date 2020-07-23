@@ -3,7 +3,6 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
@@ -36,6 +35,7 @@ public class SplashScreen extends Form {
 //        getToolbar().setUIID("Container");
         setToolbar(new Toolbar(true));
         getToolbar().hideToolbar();
+        setTransitionOutAnimator(CommonTransitions.createEmpty());
 
 //        MorphTransition morph = MorphTransition.create(400);
 //        setTransitionOutAnimator(morph);
@@ -55,20 +55,31 @@ public class SplashScreen extends Form {
         callSerially(() -> {
             animateLogoIconAppearance();
 
+
             callSerially(() -> {
                 animateTitle();
+                callSerially(RentSocketService::get);
                 animateSubTitle();
-                revalidateWithAnimationSafety();
+//                mainContainer.add(BoxLayout.encloseXCenter(new InfiniteProgress()));
 
-                setTransitionOutAnimator(CommonTransitions.createEmpty());
-                MainForm.get().show();
+                AnimationManager a = getAnimationManager();
+                if (a != null) {
+                    a.flushAnimation(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainForm.get().show();
+                        }
+                    });
+                }
+            });
+
+
 //                MainForm mainForm = MainForm.get();
 //                callSerially(() -> {
 ////                    animateLogoFlayAway();
 //                    revalidateWithAnimationSafety();
 //                    mainForm.show();
 //                });
-            });
         });
     }
 
@@ -76,6 +87,7 @@ public class SplashScreen extends Form {
         mainContainer.add(logoSubTitlePlaceholder);
         mainContainer.getParent().animateLayoutAndWait(300);
         mainContainer.replaceAndWait(logoSubTitlePlaceholder, logoSubTitle, CommonTransitions.createFade(100));
+
     }
 
     private void animateTitle() {

@@ -8,13 +8,13 @@ import com.codename1.location.LocationListener;
 import com.codename1.location.LocationManager;
 import com.codename1.maps.Coord;
 import com.codename1.ui.Button;
-import com.codename1.ui.Dialog;
 import com.codename1.ui.FontImage;
 
 public class ShowMyLocationButton extends Button {
 
     public ShowMyLocationButton(MapContainer mapContainer) {
         setUIID("ShowMeButton");
+
         LocationManager lm = LocationManager.getLocationManager();
         if (Preferences.get("showMyLocation", false)) {
             FontImage.setMaterialIcon(this, FontImage.MATERIAL_LOCATION_ON);
@@ -26,22 +26,22 @@ public class ShowMyLocationButton extends Button {
                 mapContainer.setShowMyLocation(false);
                 FontImage.setMaterialIcon(this, FontImage.MATERIAL_LOCATION_OFF);
             } else {
-                if (lm.isGPSDetectionSupported()) {
-                    if (!lm.isGPSEnabled()) {
-                        Dialog.show("", "We need  access to your current location to show nearest PoweBank stations, please enable GPS in Settings.", "Ok", null);
-                        return;
-                    }
-                }
+//                if (lm.isGPSDetectionSupported()) {
+//                    if (!lm.isGPSEnabled()) {
+//                        Dialog.show("", "We need  access to your current location to show nearest PoweBank stations, please enable GPS in Settings.", "Ok", null);
+//                        return;
+//                    }
+//                }
                 mapContainer.setShowMyLocation(true);
                 FontImage.setMaterialIcon(this, FontImage.MATERIAL_LOCATION_ON);
+
 
                 LocationManager.getLocationManager().setLocationListener(new LocationListener() {
                     @Override
                     public void locationUpdated(Location location) {
-                        if (location.getAccuracy() < 100) {
-                            mapContainer.setCameraPosition(new Coord(location.getLatitude(), location.getLongitude()));
-                            LocationManager.getLocationManager().setLocationListener(null);
-                        }
+                        mapContainer.setCameraPosition(new Coord(location.getLatitude(), location.getLongitude()));
+                        mapContainer.zoom(new Coord(location.getLatitude(), location.getLongitude()), getDefaultZoom(mapContainer));
+                        LocationManager.getLocationManager().setLocationListener(null);
                     }
 
                     @Override
@@ -51,5 +51,9 @@ public class ShowMyLocationButton extends Button {
             }
             Preferences.set("showMyLocation", mapContainer.isShowMyLocation());
         });
+    }
+
+    private int getDefaultZoom(MapContainer mapContainer) {
+        return mapContainer.getMaxZoom() - (int) ((mapContainer.getMaxZoom() - mapContainer.getMinZoom()) * 0.3);
     }
 }

@@ -1,11 +1,9 @@
 package com.mykovol.takeandcharge;
 
+import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
 import com.codename1.l10n.L10NManager;
-import com.codename1.ui.Dialog;
-import com.codename1.ui.Display;
-import com.codename1.ui.Form;
-import com.codename1.ui.Toolbar;
+import com.codename1.ui.*;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.form.MainForm;
@@ -76,10 +74,11 @@ public class TakeAndChargeMain {
 //                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
 //                            "OK", null);
             }
-            if (!Display.getInstance().getCurrent().equals(MainForm.get())) {
-                MainForm.get().show();
-            }
-            MainForm.get().showErrorDraggablePanel(errorMsg);
+//            if (!Display.getInstance().getCurrent().equals(MainForm.get())) {
+//                MainForm.get().show();
+//            }
+            ToastBar.showErrorMessage(errorMsg);
+//            MainForm.get().showErrorDraggablePanel(errorMsg);
             FabProgress.stopCurrent();
             MainGifLoader.get().stop();
         });

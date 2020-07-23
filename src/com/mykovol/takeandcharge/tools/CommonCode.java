@@ -24,6 +24,7 @@
 package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
+import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
 import com.codename1.io.Preferences;
 import com.codename1.l10n.L10NManager;
@@ -34,6 +35,7 @@ import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.animations.Transition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
+import com.codename1.ui.events.FocusListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
@@ -136,7 +138,7 @@ public class CommonCode {
         return sep;
     }
 
-    public static void constructSideMenu(Toolbar tb) {
+    public static void constructSideMenu(Toolbar tb, Button screenBlocking) {
         Button userAndAvatar = new Button("Welcome Stranger", "AvatarBlock");
 //        userAndAvatar.setIcon(getAvatar(i -> userAndAvatar.setIcon(i)));
 //        userAndAvatar.setGap(convertToPixels(4));
@@ -187,12 +189,28 @@ public class CommonCode {
         tb.addMaterialCommandToSideMenu("Sign out", FontImage.MATERIAL_EXIT_TO_APP, e -> UserService.logout());
 
         Button legalButton = new Button("Legal", "Legal");
-        Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1" + L10NManager.getInstance().getLanguage(), "Legal"), legalButton);
+        Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1", "Legal"), legalButton);
         legal.setLeadComponent(legalButton);
         legal.setUIID("SideNavigationPanel");
         tb.setComponentToSideMenuSouth(legal);
         tb.getMenuBar().setScrollableY(false);
         tb.getMenuBar().setBlockLead(true);
+
+
+//        tb.getLeftSideMenuButton().addActionListener(evt -> {
+//            System.out.println("screen blocking");
+//            screenBlocking.setVisible(true);
+//        });
+//
+//        screenBlocking.addActionListener(evt -> {
+//            if (!tb.getMenuBar().isMenuShowing()) {
+//                screenBlocking.setVisible(false);
+//                System.out.println("screen blocking false");
+//            }
+//        });
+
+
+
     }
 
 

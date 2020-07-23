@@ -63,7 +63,7 @@ public class RegisterMobileNumberStep1 extends Form {
     public RegisterMobileNumberStep1() {
         super(BoxLayout.y());
         setToolbar(new Toolbar(false));
-        getToolbar().setTitle("Step 1 from 3");
+        getToolbar().setTitle("Register new user");
         getToolbar().addCommandToRightBar(getCloseCommand());
 
         initComponents();
@@ -74,6 +74,7 @@ public class RegisterMobileNumberStep1 extends Form {
 
     private void attachComponentsToForm() {
         add(BoxLayout.encloseXCenter(new Label(logoImage)));
+        mobileNumber.setEnabled(false);
         add(mobileNumber);
         add(BorderLayout.centerEastWest(
                 phoneNumber,
@@ -151,7 +152,7 @@ public class RegisterMobileNumberStep1 extends Form {
             UserService.validateUserPhone(digitsPhone, new Callback<RegisterInitResponse>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    errorText.setText(errorCode + " " + errorMessage);
+                    errorText.setText(errorMessage);
                     errorText.setVisible(true);
                     errorText.getParent().revalidateWithAnimationSafety();
                     FabProgress.stop(submitButton);
@@ -161,9 +162,6 @@ public class RegisterMobileNumberStep1 extends Form {
                 public void onSucess(RegisterInitResponse response) {
                     RegisterVerificationCodeStep2 step2Form = new RegisterVerificationCodeStep2(getCurrentForm(),
                             digitsPhone, response);
-
-                    System.out.println("Sms code: " + response.code.get());
-
                     step2Form.show();
                     FabProgress.stop(submitButton);
                 }

@@ -6,7 +6,8 @@
     mapTileLoadingImage: "main-logo.png";
     /*menuPrefSizeBool: true;*/
     menuImageSize: 6;
-    sideSwipeSensitiveInt: 50;
+    sideSwipeSensitiveInt: 10;
+    sideMenuTensileDragBool: false;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part1.png";
     splashLogo2Image: "splash-logo-part2.png";
@@ -21,6 +22,7 @@
     chargingStationImage: "charging-station.png";
     mobileNumberImage: "mobile-number.png";
     registerImage: "register.png";
+    cafeSovaImage: "sova.jpg";
     /*multi size images end*/
 }
 
@@ -69,8 +71,8 @@ Toolbar {
 }
 
 SideMenu {
-    background-color: #8FC0C5;
-    color: #8FC0C5;
+    /*background: linear-gradient(90deg, rgba(255, 0, 0, 0.6), blue);;*/
+    /*color: #8FC0C5;*/
     padding: 3mm 3mm 3mm;
     margin: 3mm;
 }
@@ -190,9 +192,9 @@ TakePowerBankButton.pressed {
     box-shadow: 0.5mm 0.5mm 4.3mm 0.1mm;
 }
 
-ShowMeButton{
+ShowMeButton {
     /*cn1-derive: Button;*/
-    padding:2mm;
+    padding: 2mm;
     background: white;
     margin: 13mm 2mm;
     font-size: 3.2mm;
@@ -427,6 +429,48 @@ TermsLink.pressed {
 LoadImage {
 
 }
+
+/*====================== Stations sheet ==========================*/
+SheetTitle {
+    font-family: "native:MainRegular";
+    font-size: 4mm;
+}
+
+StationsSheetImage {
+    margin: 1mm;
+}
+
+StationsSheetAddress {
+    font-family: "native:MainLight";
+    font-size: 2.5mm;
+    text-align: left;
+    margin: 0mm;
+    padding: 1mm;
+    color: black;
+}
+
+StationsSheetText {
+    font-family: "native:MainLight";
+    color: grey;
+    font-size: 2.5mm;
+    margin: 0mm 0mm 0mm 1mm;
+    padding: 0mm;
+}
+
+StationsSheetNumberAvailable {
+    cn1-derive: StationsSheetText;
+    color: green;
+    padding: 0mm 1mm;
+    margin: 0mm 1mm;
+    font-size: 3mm;
+    font-weight: bold;
+}
+
+StationsSheetNumberCanBeReturned {
+    cn1-derive: StationsSheetNumberAvailable;
+    color: yellowgreen;
+}
+
 
 
 /* End G:\JAVA007\take&charge\mobile\css\theme.css */
