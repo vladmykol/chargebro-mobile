@@ -64,20 +64,24 @@ public class FabProgress {
         fab.putClientProperty("$internFab", fab);
     }
 
-    public static void stopCurrent() {
-        if (currentFab != null) {
+    public static void stop() {
+        if (isInProgress()) {
             stop(currentFab);
             currentFab = null;
         }
     }
 
-    public static void stop(FloatingActionButton fab) {
+    private static void stop(FloatingActionButton fab) {
         FabProgress fp = (FabProgress) fab.getClientProperty("$internFabProgress");
         if (fp != null) {
             fp.timer.cancel();
             fab.setUIID(fp.originalUiid);
             fab.repaint();
         }
+    }
+
+    public static boolean isInProgress() {
+        return currentFab != null;
     }
 
     private void updateFabStyle(Style s, int angle) {

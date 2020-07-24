@@ -29,6 +29,7 @@ import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Preferences;
 import com.codename1.io.Util;
 import com.codename1.location.Location;
+import com.codename1.location.LocationListener;
 import com.codename1.location.LocationManager;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
@@ -39,11 +40,10 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.form.component.ShowMyLocationButton;
 import com.mykovol.takeandcharge.service.RentService;
-import com.mykovol.takeandcharge.service.RentSocketService;
+import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.DraggablePanel;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
@@ -55,14 +55,14 @@ import com.mykovol.takeandcharge.tools.MainGifLoader;
  */
 public class MainForm extends Form {
     private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RVpEYUpceVw+VSlDWzkjXWZ8bCJDSF5GRkZ4cm1DFVdE");
-    private static final Coord ukraineCoord = new Coord(50.481952, 30.412420);
+    private static final Coord ukraineCoord = new Coord(50.480471, 30.412376);
     private static MainForm instance;
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
     //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
-    //    private final Container scabButtonHolder = BorderLayout.south(BoxLayout.encloseY(FlowLayout.encloseCenter(n)));
+    private final ScanButton scanButton = new ScanButton("TakePowerBankButton");
     private final Button draggablePanelScreenBlocker = new Button();
     private final Button sideMenuScreenBlocker = new Button();
-    private final DraggablePanel draggablePanel = new DraggablePanel(draggablePanelScreenBlocker, this);
+    private final DraggablePanel draggablePanel;
 
     private MainForm() {
         super(new LayeredLayout());
@@ -71,7 +71,7 @@ public class MainForm extends Form {
         getToolbar().getMenuBar().setTactileTouch(true);
         getToolbar().setTactileTouch(true);
 
-
+        draggablePanel = new DraggablePanel(draggablePanelScreenBlocker, this, getToolbar());
         setName("MapForm");
         setScrollableY(false);
         setTransitionOutAnimator(CommonTransitions.createEmpty());
@@ -83,7 +83,9 @@ public class MainForm extends Form {
         ScaleImageLabel gradient = new ScaleImageLabel(Resources.getGlobalResources().getImage("gradient-overlay.png"));
         gradient.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
         add(BorderLayout.south(gradient));
-        add(BorderLayout.south(FlowLayout.encloseCenter(new ScanButton(" Take&Charge", "TakePowerBankButton"))));
+        add(BorderLayout.south(scanButton));
+
+
         add(BorderLayout.north(FlowLayout.encloseRightBottom(new ShowMyLocationButton(mapContainer))));
 
         draggablePanelScreenBlocker.setVisible(false);
@@ -91,11 +93,13 @@ public class MainForm extends Form {
         add(draggablePanel);
         setScrollableY(false);
 
+        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
+
         sideMenuScreenBlocker.setVisible(false);
         add(sideMenuScreenBlocker);
-        CommonCode.constructSideMenu(getToolbar(),sideMenuScreenBlocker);
+        CommonCode.constructSideMenu(getToolbar(), sideMenuScreenBlocker);
 
-        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
+//        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
     }
 
     public static MainForm get() {
@@ -108,9 +112,7 @@ public class MainForm extends Form {
     @Override
     public void show() {
         super.show();
-        UITimer.timer(10, false, this, () -> {
-            mapContainer.setShowMyLocation(Preferences.get("showMyLocation", false));
-        });
+        mapContainer.setShowMyLocation(Preferences.get("showMyLocation", false));
         refreshRentContent();
     }
 
@@ -127,7 +129,22 @@ public class MainForm extends Form {
             lastCoord = new Coord(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
         }
         mapContainer.setCameraPosition(lastCoord);
-        mapContainer.zoom(lastCoord, mapContainer.getMinZoom() + 6);
+        mapContainer.zoom(lastCoord, mapContainer.getMinZoom() + 13);
+
+        if (!Display.getInstance().isSimulator()) {
+            LocationManager.getLocationManager().setLocationListener(new LocationListener() {
+                @Override
+                public void locationUpdated(Location location) {
+                    mapContainer.setCameraPosition(new Coord(location.getLatitude(), location.getLongitude()));
+//                        mapContainer.zoom(new Coord(location.getLatitude(), location.getLongitude()), getDefaultZoom(mapContainer));
+                    LocationManager.getLocationManager().setLocationListener(null);
+                }
+
+                @Override
+                public void providerStateChanged(int newState) {
+                }
+            });
+        }
 
         initStationsOnMap();
     }
@@ -163,12 +180,17 @@ public class MainForm extends Form {
         );
     }
 
+    public void refreshContext() {
+        scanButton.refreshContext();
+    }
+
 
     public class ScanButton extends Button {
-        public ScanButton(String text, String uiid) {
-            super(text, uiid);
+
+        public ScanButton(String uiid) {
+            super("", uiid);
             setTactileTouch(true);
-            FontImage.setMaterialIcon(this, FontImage.MATERIAL_CROP_FREE);
+            refreshContext();
             addActionListener(this::scanButtonAction);
             getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
             getAllStyles().setMarginBottom(DraggablePanel.MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE);
@@ -176,18 +198,33 @@ public class MainForm extends Form {
 
         private void scanButtonAction(ActionEvent evt) {
             if (MainGifLoader.get().isVisible()) return;
-            RentService.rent(new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    draggablePanel.showError(errorMessage);
-//                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
-                }
 
-                @Override
-                public void onSucess(String powerBankId) {
-                    draggablePanel.addRentRow(powerBankId, 0);
-                }
-            });
+            if (UserService.isLoggedIn()) {
+                RentService.rent(new Callback<String>() {
+                    @Override
+                    public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                        draggablePanel.showError(errorMessage);
+//                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
+                    }
+
+                    @Override
+                    public void onSucess(String powerBankId) {
+                        draggablePanel.addRentRow(powerBankId, 0);
+                    }
+                });
+            } else {
+                new LoginForm().show();
+            }
+        }
+
+        public void refreshContext() {
+            if (UserService.isLoggedIn()) {
+                setText(" Take&Charge");
+                FontImage.setMaterialIcon(this, FontImage.MATERIAL_CROP_FREE);
+            } else {
+                setText("Login");
+                FontImage.setMaterialIcon(this, FontImage.MATERIAL_PERSON);
+            }
         }
     }
 

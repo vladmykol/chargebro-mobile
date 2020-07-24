@@ -26,7 +26,7 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.FloatingActionButton;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
-import com.codename1.ui.animations.MorphTransition;
+import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -41,29 +41,29 @@ import com.mykovol.takeandcharge.service.RegisterStyle;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
-import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.CN.getCurrentForm;
-
+/**
+ * Registering of a new user. Phone number check
+ *
+ * @author Vlad Mykol
+ */
 public class RegisterMobileNumberStep1 extends Form {
 
     private final Image logoImage = Resources.getGlobalResources().getImage("mobile-number.png");
     private final TextField phoneNumber = new TextField("", "(93) 123-45-67", 40, TextField.PHONENUMBER);
     private final String invalidPhoneError = "Please enter valid phone number";
     private final SpanLabel errorText = new SpanLabel("", RegisterStyle.ERROR_LABEL);
-    private final Button countryCodeButton = new Button("+380", RegisterStyle.LABEL);
+    private final Button countryCodeButton = new Button("+380", RegisterStyle.TEXT_FIELD);
     private final Label errorTimeLabel = new Label("", RegisterStyle.ERROR_LABEL);
     private final Container errorContainer = BoxLayout.encloseX(errorText, errorTimeLabel);
     private final FloatingActionButton submitButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
-    private final String countryCodeButtonName = "CountryCodeButton";
-    private final String enterMobileNumberName = "EnterMobileNumber";
-    private final String errorLabelName = "ErrorLabel";
     private SpanLabel mobileNumber = new SpanLabel("We need your mobile number to send SMS with PIN code", RegisterStyle.LABEL);
 
 
     public RegisterMobileNumberStep1() {
         super(BoxLayout.y());
         setToolbar(new Toolbar(false));
-        getToolbar().setTitle("Register new user");
+        getToolbar().setTitle("Step 1 from 3");
         getToolbar().addCommandToRightBar(getCloseCommand());
 
         initComponents();
@@ -82,17 +82,19 @@ public class RegisterMobileNumberStep1 extends Form {
                 countryCodeButton));
         add(errorContainer);
         submitButton.bindFabToContainer(this);
+        setScrollableY(true);
     }
 
     private void initComponents() {
         phoneNumber.setUIID(RegisterStyle.TEXT_FIELD);
-        phoneNumber.setName(enterMobileNumberName);
+        countryCodeButton.getAllStyles().setMargin(RIGHT, 0);
+        phoneNumber.getAllStyles().setMargin(LEFT, 0);
+
         Validator phoneNumberValidator = createPhoneNumberValidator();
         ActionListener<?> submitAction = createSubmitAction(phoneNumberValidator);
         submitButton.addActionListener(submitAction);
         phoneNumber.addActionListener(submitAction);
 
-        countryCodeButton.setName(countryCodeButtonName);
         Style ps = phoneNumber.getUnselectedStyle();
         Style cs = countryCodeButton.getUnselectedStyle();
         int pl = cs.getPaddingLeft(isRTL());
@@ -104,7 +106,6 @@ public class RegisterMobileNumberStep1 extends Form {
         errorText.setVisible(false);
         errorText.getAllStyles().setPaddingRight(1);
         errorTimeLabel.getAllStyles().setPaddingLeft(0);
-        errorContainer.setName(errorLabelName);
     }
 
     private Validator createPhoneNumberValidator() {
@@ -120,11 +121,7 @@ public class RegisterMobileNumberStep1 extends Form {
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
         return Command.create("", mat, e -> {
 
-            MorphTransition morph = MorphTransition.create(400).
-                    morph(enterMobileNumberName).
-                    morph(countryCodeButtonName).
-                    morph(errorLabelName);
-            setTransitionOutAnimator(morph);
+            setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
             Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
             if (currEditing != null) {
                 currEditing.stopEditing(() -> MainForm.get().show());
@@ -136,6 +133,7 @@ public class RegisterMobileNumberStep1 extends Form {
 
     private ActionListener<?> createSubmitAction(Validator validator) {
         return e -> {
+            if (FabProgress.isInProgress()) return;
             phoneNumber.stopEditing();
             Validator.setValidateOnEveryKey(true);
 
@@ -155,7 +153,7 @@ public class RegisterMobileNumberStep1 extends Form {
                     errorText.setText(errorMessage);
                     errorText.setVisible(true);
                     errorText.getParent().revalidateWithAnimationSafety();
-                    FabProgress.stop(submitButton);
+                    FabProgress.stop();
                 }
 
                 @Override
@@ -163,7 +161,7 @@ public class RegisterMobileNumberStep1 extends Form {
                     RegisterVerificationCodeStep2 step2Form = new RegisterVerificationCodeStep2(getCurrentForm(),
                             digitsPhone, response);
                     step2Form.show();
-                    FabProgress.stop(submitButton);
+                    FabProgress.stop();
                 }
             });
         };

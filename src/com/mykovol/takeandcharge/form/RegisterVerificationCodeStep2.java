@@ -46,9 +46,9 @@ import com.mykovol.takeandcharge.tools.FabProgress;
 import static com.codename1.ui.CN.getCurrentForm;
 
 /**
- * Implements the SMS verification code logic
+ * Registering of a new user. Creating password
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class RegisterVerificationCodeStep2 extends Form {
     private final Label phoneNumberHolder = new Label("", RegisterStyle.MOBILE_NUMBER);
@@ -170,6 +170,7 @@ public class RegisterVerificationCodeStep2 extends Form {
         fab.bindFabToContainer(this);
 
         fab.addActionListener(e -> {
+            if (FabProgress.isInProgress()) return;
             errorText.setVisible(false);
 
             if (!new RegisterValidator().validate()) {
@@ -189,7 +190,7 @@ public class RegisterVerificationCodeStep2 extends Form {
                     errorText.setVisible(true);
                     errorText.getParent().revalidateWithAnimationSafety();
 //                    revalidateWithAnimationSafety();
-                    FabProgress.stop(fab);
+                    FabProgress.stop();
                 }
 
                 @Override
@@ -202,13 +203,13 @@ public class RegisterVerificationCodeStep2 extends Form {
                             errorText.setVisible(true);
                             errorText.getParent().revalidateWithAnimationSafety();
 //                    revalidateWithAnimationSafety();
-                            FabProgress.stop(fab);
+                            FabProgress.stop();
                         }
 
                         @Override
                         public void onSucess(String checkoutUrl) {
                             new RegisterCreditCardStep3(checkoutUrl).show();
-                            FabProgress.stop(fab);
+                            FabProgress.stop();
                         }
                     });
                 }

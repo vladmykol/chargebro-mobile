@@ -79,7 +79,7 @@ public class TakeAndChargeMain {
 //            }
             ToastBar.showErrorMessage(errorMsg);
 //            MainForm.get().showErrorDraggablePanel(errorMsg);
-            FabProgress.stopCurrent();
+            FabProgress.stop();
             MainGifLoader.get().stop();
         });
     }

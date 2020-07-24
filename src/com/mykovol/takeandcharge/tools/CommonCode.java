@@ -24,18 +24,13 @@
 package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
-import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
-import com.codename1.io.Preferences;
-import com.codename1.l10n.L10NManager;
 import com.codename1.messaging.Message;
-import com.codename1.notifications.LocalNotification;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.animations.Transition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
-import com.codename1.ui.events.FocusListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
@@ -44,7 +39,6 @@ import com.codename1.util.SuccessCallback;
 import com.mykovol.takeandcharge.form.LoginForm;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.RegisterCreditCardStep3;
-import com.mykovol.takeandcharge.form.RegisterMobileNumberStep1;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
@@ -59,8 +53,12 @@ import static com.codename1.ui.CN.getCurrentForm;
  * @author Shai Almog
  */
 public class CommonCode {
+    private final static Command loginCommand = getLoginCommand();
+    private final static Command registerCommand = getRegisterCommand();
+    private final static Command addPaymentMethodCommand = getAddPaymentMethod();
+    private final static Command supportCommand = getSupportCommand();
+    private final static Command signOutCommandCommand = getSignOutCommand();
     private static Image avatar;
-
 
     public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
         if (avatar == null) {
@@ -145,62 +143,21 @@ public class CommonCode {
 //        userAndAvatar.addActionListener(e -> new EditAccountForm().show());
         tb.addComponentToSideMenu(userAndAvatar);
 
-        tb.addMaterialCommandToSideMenu("Login", FontImage.MATERIAL_PERSON, e -> {
-            new LoginForm().show();
-        });
-        tb.addMaterialCommandToSideMenu("Register", FontImage.MATERIAL_PERSON_ADD, e -> {
-            new RegisterMobileNumberStep1().show();
-        });
-        tb.addMaterialCommandToSideMenu("Add Payment method", FontImage.MATERIAL_PERSON_ADD, e -> {
-            RentService.prepareCheckout(new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().showErrorDraggablePanel(errorCode + " " + errorMessage);
-                }
+        refreshCommands(tb);
 
-                @Override
-                public void onSucess(String checkoutUrl) {
-                    new RegisterCreditCardStep3(checkoutUrl).show();
-                }
-            });
-        });
-
-        tb.addMaterialCommandToSideMenu("Support", FontImage.MATERIAL_CONTACT_SUPPORT, evt -> {
-            String email = "admin@your-domain.example.com";
-            Message message = new Message("");
-            Display.getInstance().sendMessage(new String[]{email}, "Take'Charge", message);
-        });
-
-//        tb.addMaterialCommandToSideMenu("Notification", FontImage.MATERIAL_NOTIFICATIONS, evt -> {
-//            LocalNotification ln = new LocalNotification();
-//            ln.setBadgeNumber(2);
-//            ln.setAlertImage("icon.png");
-//            ln.setId("LnMessage");
-//            ln.setAlertTitle("Welcome");
-//            ln.setAlertBody("Thanks for the life!");
-//            Display.getInstance().scheduleLocalNotification(ln, System.currentTimeMillis() + 10 * 1000, LocalNotification.REPEAT_NONE);
-//
-//        });
-
-
-//        tb.addMaterialCommandToSideMenu("Help", FontImage.MATERIAL_HELP, e -> { new WalkthruForm().show();
-//        });
-//        tb.addMaterialCommandToSideMenu("Wallet", FontImage.MATERIAL_ACCOUNT_BALANCE_WALLET, e -> new SettingsForm().show());
-        tb.addMaterialCommandToSideMenu("Sign out", FontImage.MATERIAL_EXIT_TO_APP, e -> UserService.logout());
 
         Button legalButton = new Button("Legal", "Legal");
         Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1", "Legal"), legalButton);
         legal.setLeadComponent(legalButton);
         legal.setUIID("SideNavigationPanel");
         tb.setComponentToSideMenuSouth(legal);
-        tb.getMenuBar().setScrollableY(false);
-        tb.getMenuBar().setBlockLead(true);
-
-
+////
 //        tb.getLeftSideMenuButton().addActionListener(evt -> {
 //            System.out.println("screen blocking");
 //            screenBlocking.setVisible(true);
 //        });
+//
+//
 //
 //        screenBlocking.addActionListener(evt -> {
 //            if (!tb.getMenuBar().isMenuShowing()) {
@@ -208,11 +165,29 @@ public class CommonCode {
 //                System.out.println("screen blocking false");
 //            }
 //        });
-
-
-
     }
 
+    private static void refreshCommands(Toolbar tb) {
+        tb.removeCommand(loginCommand);
+        tb.removeCommand(registerCommand);
+        tb.removeCommand(addPaymentMethodCommand);
+        tb.removeCommand(supportCommand);
+        tb.removeCommand(signOutCommandCommand);
+
+        if (UserService.isLoggedIn()) {
+            tb.addCommandToLeftSideMenu(addPaymentMethodCommand);
+            tb.addCommandToLeftSideMenu(supportCommand);
+            tb.addCommandToLeftSideMenu(signOutCommandCommand);
+        } else {
+            tb.addCommandToLeftSideMenu(loginCommand);
+            tb.addCommandToLeftSideMenu(registerCommand);
+            tb.addCommandToLeftSideMenu(supportCommand);
+        }
+    }
+
+    public static void refreshCommands() {
+        refreshCommands(MainForm.get().getToolbar());
+    }
 
     /**
      * Initializes a form with a black background title animation style
@@ -261,8 +236,6 @@ public class CommonCode {
 
         f.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         f.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-
-
     }
 
     public static void removeTransitionsTemporarily(final Form f) {
@@ -278,5 +251,56 @@ public class CommonCode {
                 f.removeShowListener(this);
             }
         });
+    }
+
+    private static Command getLoginCommand() {
+        return getCommand("Login", FontImage.MATERIAL_PERSON, evt -> {
+            new LoginForm().show();
+        });
+    }
+
+    private static Command getAddPaymentMethod() {
+        return getCommand("Add Payment method", FontImage.MATERIAL_PERSON_ADD, e -> {
+            RentService.prepareCheckout(new Callback<String>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    MainForm.get().showErrorDraggablePanel(errorCode + " " + errorMessage);
+                }
+
+                @Override
+                public void onSucess(String checkoutUrl) {
+                    new RegisterCreditCardStep3(checkoutUrl).show();
+                }
+            });
+        });
+    }
+
+
+    private static Command getSupportCommand() {
+        return getCommand("Support", FontImage.MATERIAL_CONTACT_SUPPORT, evt -> {
+            String email = "support@your-domain.example.com";
+            Message message = new Message("");
+            Display.getInstance().sendMessage(new String[]{email}, "Take&Charge", message);
+        });
+    }
+
+
+    private static Command getRegisterCommand() {
+        return getCommand("Register", FontImage.MATERIAL_PERSON_ADD, evt -> {
+            new LoginForm().show();
+        });
+    }
+
+    private static Command getSignOutCommand() {
+        return getCommand("Sign out", FontImage.MATERIAL_EXIT_TO_APP, e -> {
+            UserService.logout();
+        });
+    }
+
+    private static Command getCommand(String name, char materialIcon, final ActionListener evt) {
+        Command cmd = Command.create(name, null, evt);
+        cmd.setIconGapMM(2);
+        cmd.setMaterialIcon(materialIcon);
+        return cmd;
     }
 }

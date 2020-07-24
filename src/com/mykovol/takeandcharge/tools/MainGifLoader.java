@@ -39,7 +39,6 @@ import java.io.InputStream;
  */
 public class MainGifLoader extends ScaleImageLabel {
     private static MainGifLoader instance;
-
     private MainGifLoader(Image i) {
         super(i);
     }
@@ -47,8 +46,8 @@ public class MainGifLoader extends ScaleImageLabel {
     public static MainGifLoader get() {
         if (instance == null) {
             try {
-                InputStream gifFile = Display.getInstance().getResourceAsStream(Resources.class, "/load3.gif");
-                instance = new MainGifLoader(GifImage.decode(gifFile, 95172));
+                InputStream gifFile = Display.getInstance().getResourceAsStream(Resources.class, "/load2.gif");
+                instance = new MainGifLoader(GifImage.decode(gifFile, 98306));
                 instance.setUIID("LoadImage");
                 instance.setVisible(false);
             } catch (IOException e) {

@@ -4,7 +4,8 @@
     mapTileLoadingImage: "main-logo.png";
     /*menuPrefSizeBool: true;*/
     menuImageSize: 6;
-    sideSwipeSensitiveInt: 10;
+    sideSwipeSensitiveInt: 50;
+    sideSwipeActivationInt:50;
     sideMenuTensileDragBool: false;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part1.png";
@@ -71,8 +72,6 @@ Toolbar {
 SideMenu {
     /*background: linear-gradient(90deg, rgba(255, 0, 0, 0.6), blue);;*/
     /*color: #8FC0C5;*/
-    padding: 3mm 3mm 3mm;
-    margin: 3mm;
 }
 
 TextAlignCenter {
@@ -173,16 +172,16 @@ StationPlaceOnMap {
 
 TakePowerBankButton {
     cn1-derive: Button;
-    color: #8FC0C5;
-    background: white;
-    padding: 4mm 8mm 5mm 7mm;
-    /*margin: 0mm 0mm 20mm;*/
-    border-radius: 3mm;
-    box-shadow: 0.5mm 0.5mm 4mm 0.1mm;
+    color: white;
+    background: #8FC0C5;
+    padding: 3mm 8mm 4mm 7mm;
+    margin: 0mm 7mm;
+    border-radius: 5mm;
+    box-shadow: 0.5mm 0.5mm 4mm 0.1mm #8FC0C5;
     /*cn1-box-shadow-spread: 4mm;*/
     /*cn1-box-shadow-blur: 4mm;*/
-    font-family: "native:MainRegular";
-    font-size: 3.2mm;
+    font-family: "native:MainBold";
+    font-size: 3.5mm;
     text-align: center;
 }
 
@@ -226,6 +225,7 @@ BottomPanelFoldedTopText {
 
 Title {
     cn1-derive: BottomPanelFoldedTopText;
+    text-align: center;
 }
 
 BottomPanelUnfolded {
@@ -381,20 +381,6 @@ RegisterTextField {
     /*color: black;*/
 }
 
-MobileNumber {
-    cn1-derive: RegisterLabel;
-    margin: 2mm 1mm;
-    font-size: 4mm;
-}
-
-CountryCodePicker {
-    text-align: left;
-    padding: 3mm 2mm 4mm 4mm;
-    margin: 0mm;
-    font-family: "native:MainLight";
-    font-size: 3mm;
-}
-
 ResendCodeLabel {
     cn1-derive: RegisterLabel;
     text-align: left;
@@ -425,13 +411,21 @@ TermsLink.pressed {
 
 /*====================== Gif Loader ==========================*/
 LoadImage {
-
+    /*background: white;*/
+    /*margin: 0mm 0mm 20mm;*/
+    /*cn1-box-shadow-spread: 4mm;*/
+    /*cn1-box-shadow-blur: 4mm;*/
+    /*font-family: "native:MainRegular";*/
+    /*font-size: 2.2mm;*/
+    /*padding: 0mm 15mm;*/
 }
 
 /*====================== Stations sheet ==========================*/
 SheetTitle {
     font-family: "native:MainRegular";
     font-size: 4mm;
+    /*color: #8FC0C5;*/
+    color: #497b7d;
 }
 
 StationsSheetImage {
@@ -442,9 +436,13 @@ StationsSheetAddress {
     font-family: "native:MainLight";
     font-size: 2.5mm;
     text-align: left;
-    margin: 0mm;
-    padding: 1mm;
+    margin: 2mm 0mm;
+    padding: 0mm 0mm 0mm 1mm;
     color: black;
+}
+
+StationsSheetAddress.pressed {
+    font-weight: bold;
 }
 
 StationsSheetText {
@@ -452,21 +450,20 @@ StationsSheetText {
     color: grey;
     font-size: 2.5mm;
     margin: 0mm 0mm 0mm 1mm;
-    padding: 0mm;
+    padding: 0.3mm;
 }
 
 StationsSheetNumberAvailable {
     cn1-derive: StationsSheetText;
     color: green;
     padding: 0mm 1mm;
-    margin: 0mm 1mm;
     font-size: 3mm;
     font-weight: bold;
 }
 
 StationsSheetNumberCanBeReturned {
     cn1-derive: StationsSheetNumberAvailable;
-    color: yellowgreen;
+    color: indianred;
 }
 
 

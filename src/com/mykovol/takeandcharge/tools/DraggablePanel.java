@@ -47,7 +47,7 @@ import static com.codename1.ui.util.Resources.getGlobalResources;
 
 
 public class DraggablePanel extends Container {
-    public static final int MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE = 17;
+    public static final int MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE = 15;
     public static final int minPanelHeight = (int) Math.round(getDisplayHeight() * (MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE / 100.0));
     private final Container contentHolder = new Container(BoxLayout.y());
     private final Container defaultContent = new Container(BoxLayout.y());
@@ -59,6 +59,7 @@ public class DraggablePanel extends Container {
     private final Container header = BoxLayout.encloseYCenter(draggableImage, errorLabel);
     private final Button screenBlocking;
     private final Form attachedForm;
+    private final Toolbar toolbar;
     private RentContent rentContent = new RentContent();
     private int firstX = -1, firstY = -1;
     private boolean isDraggingBottomPanel;
@@ -66,10 +67,11 @@ public class DraggablePanel extends Container {
     private volatile boolean isInMove = false;
 
 
-    public DraggablePanel(Button screenBlocking, Form currentForm) {
+    public DraggablePanel(Button screenBlocking, Form currentForm, Toolbar toolbar) {
         super(new BorderLayout());
         this.screenBlocking = screenBlocking;
         this.attachedForm = currentForm;
+        this.toolbar = toolbar;
 
         constructTopPanel();
         constructContent();
@@ -101,7 +103,6 @@ public class DraggablePanel extends Container {
                     for (RentBoard showedButNotExistingRentRow : visibleRentBoards.values()) {
                         removeRentRow(showedButNotExistingRentRow);
                     }
-                    revalidateWithAnimationSafety();
                 }
             });
         }
@@ -130,13 +131,16 @@ public class DraggablePanel extends Container {
     }
 
     public void removeRentRow(String serialNumber) {
+        System.out.println("remove rent row" + serialNumber);
         RentBoard rentBoard = rentContent.findRentBoardByName(serialNumber);
         if (rentBoard != null) removeRentRow(rentBoard);
     }
 
     private void setDefaultContent() {
         topPanelTitle.setText(defaultTopTitleText);
-        contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
+        if (rentContent.isChildOf(contentHolder)) {
+            contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
+        }
 //        revalidateWithAnimationSafety();
     }
 
@@ -240,7 +244,7 @@ public class DraggablePanel extends Container {
                     draggableImage.remove();
                     bottomPanel.remove();
                     rentContent.hideTitle();
-//                    screenBlocking.setVisible(true);
+                    screenBlocking.setVisible(true);
                     getCurrentForm().getToolbar().setHidden(true);
 //                    mainContainer.revalidateWithAnimationSafety();
                     contentHolder.setUIID("BottomPanelFolded");
@@ -279,7 +283,7 @@ public class DraggablePanel extends Container {
             }
         } else {
             Component draggedCmp = attachedForm.getComponentAt(e.getX(), e.getY());
-            if (draggedCmp == null || !draggedCmp.isChildOf(this)) {
+            if (draggedCmp == null || (!draggedCmp.isChildOf(this) && draggedCmp != screenBlocking)) {
                 return;
             }
 

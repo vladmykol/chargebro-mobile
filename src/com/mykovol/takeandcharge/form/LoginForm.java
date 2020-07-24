@@ -33,6 +33,7 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
 import static com.codename1.ui.CN.callSerially;
@@ -54,10 +55,11 @@ public class LoginForm extends Form {
         setToolbar(new Toolbar(true));
         getToolbar().addCommandToRightBar(constructCloseCommand());
 
+        setSafeArea(true);
         Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
         Label logoImageHolder = new ScaleImageLabel(LogoImage);
         logoImageHolder.setUIID("TextAlignCenter");
-        logoImageHolder.getAllStyles().setMarginTop(10);
+        logoImageHolder.getAllStyles().setMarginTop(2);
         logoImageHolder.setName("LogoImageName");
 
         Container welcomeText = FlowLayout.encloseCenter(
@@ -120,21 +122,19 @@ public class LoginForm extends Form {
                         add(BorderLayout.WEST, passwordIcon),
                 error
         );
-        mainContainer.setScrollableY(true);
         add(BorderLayout.NORTH, mainContainer);
         add(BorderLayout.SOUTH, registerOrForgot);
+        setScrollableY(true);
 
         setEditOnShow(loginField);
         loginField.setNextFocusDown(passwordField);
-        mainContainer.setScrollableY(false);
     }
 
     private Command constructCloseCommand() {
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
         return Command.create("", mat, e -> {
 
-            MorphTransition morph = MorphTransition.create(400);
-            setTransitionOutAnimator(morph);
+            setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
             Component currEditing = this.findCurrentlyEditingComponent();
             if (currEditing != null) {
                 currEditing.stopEditing(() -> MainForm.get().show());
@@ -146,6 +146,7 @@ public class LoginForm extends Form {
 
     private ActionListener<?> loginButtonAction(TextField login, TextField password, SpanLabel error, FloatingActionButton fab) {
         return evt -> {
+            if (FabProgress.isInProgress()) return;
             FabProgress.bind(fab);
             setEditOnShow(null);
 
@@ -153,9 +154,9 @@ public class LoginForm extends Form {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-                    RentSocketService.get().reconnect();
+
                     MainForm.get().show();
-                    FabProgress.stop(fab);
+                    FabProgress.stop();
                 }
 
                 @Override
@@ -163,7 +164,7 @@ public class LoginForm extends Form {
                     error.setText(errorMessage);
                     error.setVisible(true);
                     error.getParent().revalidateWithAnimationSafety();
-                    FabProgress.stop(fab);
+                    FabProgress.stop();
                 }
             });
         };

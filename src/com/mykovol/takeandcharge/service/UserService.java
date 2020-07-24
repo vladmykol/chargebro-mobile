@@ -37,6 +37,7 @@ import com.codename1.util.Callback;
 import com.codename1.util.SuccessCallback;
 import com.mykovol.takeandcharge.dataobj.*;
 import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.tools.CommonCode;
 
 import java.io.IOException;
 
@@ -73,9 +74,11 @@ public class UserService {
 
     public static void logout() {
         Preferences.set("token", null);
+        CommonCode.refreshCommands();
         RentSocketService.get().autoReconnect(0);
         RentSocketService.get().close();
         MainForm.get().removeAllRentRows();
+        MainForm.get().refreshContext();
     }
 
     public static boolean isLoggedIn() {
@@ -134,6 +137,9 @@ public class UserService {
                 .fetchAsJsonMap(resp -> {
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
+                    RentSocketService.get().reconnect();
+                    MainForm.get().refreshContext();
+                    CommonCode.refreshCommands();
                     callback.loginSuccessful();
                 });
     }

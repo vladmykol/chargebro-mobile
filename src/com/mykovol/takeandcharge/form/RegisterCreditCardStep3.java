@@ -32,9 +32,9 @@ import com.codename1.ui.layouts.BorderLayout;
 import static com.codename1.ui.CN.getCurrentForm;
 
 /**
- * Implements the SMS verification code logic
+ * Authorization of a credit card
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class RegisterCreditCardStep3 extends Form {
 
@@ -43,7 +43,7 @@ public class RegisterCreditCardStep3 extends Form {
         Form previous = getCurrentForm();
 //        CommonCode.removeTransitionsTemporarily(previous);
         setToolbar(new Toolbar(false));
-        getToolbar().setTitle("Step 3 from 3");
+        getToolbar().setTitle("Add your credit card");
 
         setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
@@ -62,7 +62,7 @@ public class RegisterCreditCardStep3 extends Form {
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_DONE);
         fab.bindFabToContainer(this);
         fab.addActionListener(evt -> {
-            ToastBar.showMessage("Welcom...", FontImage.MATERIAL_INFO);
+            ToastBar.showMessage("Congrats! Now you can take a powerbank", FontImage.MATERIAL_INFO);
             MainForm.get().show();
         });
 

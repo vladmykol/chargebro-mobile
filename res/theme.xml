@@ -47,7 +47,7 @@
     <image name="ShowMeButtonTopL_2.png" type="multi"  />
     <image name="ShowMeButtonTopR_1.png" type="multi"  />
     <image name="ShowMeButtonTopR_2.png" type="multi"  />
-    <image name="sova.jpg" type="multi"  />
+    <image name="sova.jpg 1" type="multi"  />
     <image name="splash-logo-part1.png" type="multi"  />
     <image name="splash-logo-part2.png" type="multi"  />
     <image name="TakePowerBankButtonBottom_1.png" type="multi"  />
@@ -83,7 +83,8 @@
         <val key="@mobileNumberImage" value="mobile-number.png" />
         <val key="@powerBankPhotoImage" value="power-bank-photo.png" />
         <val key="@registerImage" value="register.png" />
-        <val key="@sideSwipeSensitiveInt" value="50" />
+        <val key="@sideMenuTensileDragBool" value="false" />
+        <val key="@sideSwipeSensitiveInt" value="20" />
         <val key="@splashLogo1Image" value="splash-logo-part1.png" />
         <val key="@splashLogo2Image" value="splash-logo-part2.png" />
         <val key="@verticalDraggableImage" value="vertical-draggable.png" />
@@ -771,6 +772,10 @@
         <val key="ResendCodeLabel.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="ResendCodeLabel.sel#padUnit" value="2,2,2,2" />
         <val key="ResendCodeLabel.sel#padding" value="1.3,1.3,2.0,2.0" />
+        <font key="SheetTitle.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <font key="SheetTitle.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <font key="SheetTitle.press#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <font key="SheetTitle.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
         <val key="ShowMeButton.align" value="4" />
         <val key="ShowMeButton.bgColor" value="ffffff" />
         <border key="ShowMeButton.border" type="image" i1="ShowMeButtonTop_1.png" i2="ShowMeButtonBottom_1.png" i3="ShowMeButtonLeft_1.png" i4="ShowMeButtonRight_1.png" i5="ShowMeButtonTopL_1.png" i6="ShowMeButtonTopR_1.png" i7="ShowMeButtonBottomL_1.png" i8="ShowMeButtonBottomR_1.png" i9="ShowMeButtonCenter_1.png" />
@@ -847,34 +852,6 @@
         <val key="SideCommand.sel#padding" value="2.0,2.0,2.0,2.0" />
         <val key="SideCommand.sel#transparency" value="255" />
         <val key="SideCommand.transparency" value="255" />
-        <val key="SideMenu.bgColor" value="8fc0c5" />
-        <val key="SideMenu.dis#bgColor" value="8fc0c5" />
-        <val key="SideMenu.dis#fgColor" value="8fc0c5" />
-        <val key="SideMenu.dis#marUnit" value="2,2,2,2" />
-        <val key="SideMenu.dis#margin" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.dis#padUnit" value="2,2,2,2" />
-        <val key="SideMenu.dis#padding" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.dis#transparency" value="255" />
-        <val key="SideMenu.fgColor" value="8fc0c5" />
-        <val key="SideMenu.marUnit" value="2,2,2,2" />
-        <val key="SideMenu.margin" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.padUnit" value="2,2,2,2" />
-        <val key="SideMenu.padding" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.press#bgColor" value="8fc0c5" />
-        <val key="SideMenu.press#fgColor" value="8fc0c5" />
-        <val key="SideMenu.press#marUnit" value="2,2,2,2" />
-        <val key="SideMenu.press#margin" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.press#padUnit" value="2,2,2,2" />
-        <val key="SideMenu.press#padding" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.press#transparency" value="255" />
-        <val key="SideMenu.sel#bgColor" value="8fc0c5" />
-        <val key="SideMenu.sel#fgColor" value="8fc0c5" />
-        <val key="SideMenu.sel#marUnit" value="2,2,2,2" />
-        <val key="SideMenu.sel#margin" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.sel#padUnit" value="2,2,2,2" />
-        <val key="SideMenu.sel#padding" value="3.0,3.0,3.0,3.0" />
-        <val key="SideMenu.sel#transparency" value="255" />
-        <val key="SideMenu.transparency" value="255" />
         <val key="SideNavigationPanel.bgColor" value="ffffff" />
         <border key="SideNavigationPanel.border" type="css" css="background-color:#ffffffff;border-width:0px 0px 0.1mm 0px;border-style:none none solid none;border-color:#00000000 #00000000 #808080ff #00000000;"/>
         <val key="SideNavigationPanel.dis#bgColor" value="ffffff" />
@@ -959,6 +936,122 @@
         <val key="StationPlaceOnMap.fgColor" value="8fc0c5" />
         <val key="StationPlaceOnMap.press#fgColor" value="8fc0c5" />
         <val key="StationPlaceOnMap.sel#fgColor" value="8fc0c5" />
+        <val key="StationsSheetAddress.align" value="1" />
+        <val key="StationsSheetAddress.dis#align" value="1" />
+        <val key="StationsSheetAddress.dis#fgColor" value="0" />
+        <font key="StationsSheetAddress.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetAddress.dis#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.dis#margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.dis#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.dis#padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetAddress.fgColor" value="0" />
+        <font key="StationsSheetAddress.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetAddress.marUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.padUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetAddress.press#align" value="1" />
+        <val key="StationsSheetAddress.press#fgColor" value="0" />
+        <font key="StationsSheetAddress.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetAddress.press#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.press#margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.press#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.press#padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetAddress.sel#align" value="1" />
+        <val key="StationsSheetAddress.sel#fgColor" value="0" />
+        <font key="StationsSheetAddress.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetAddress.sel#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.sel#margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.sel#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetAddress.sel#padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetImage.dis#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetImage.dis#margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetImage.marUnit" value="2,2,2,2" />
+        <val key="StationsSheetImage.margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetImage.press#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetImage.press#margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetImage.sel#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetImage.sel#margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetNumberAvailable.derive" value="StationsSheetText" />
+        <val key="StationsSheetNumberAvailable.dis#derive" value="StationsSheetText.dis" />
+        <val key="StationsSheetNumberAvailable.dis#fgColor" value="8000" />
+        <font key="StationsSheetNumberAvailable.dis#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberAvailable.dis#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.dis#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberAvailable.dis#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.dis#padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetNumberAvailable.fgColor" value="8000" />
+        <font key="StationsSheetNumberAvailable.font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberAvailable.marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberAvailable.padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetNumberAvailable.press#derive" value="StationsSheetText.press" />
+        <val key="StationsSheetNumberAvailable.press#fgColor" value="8000" />
+        <font key="StationsSheetNumberAvailable.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberAvailable.press#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.press#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberAvailable.press#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.press#padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetNumberAvailable.sel#derive" value="StationsSheetText.sel" />
+        <val key="StationsSheetNumberAvailable.sel#fgColor" value="8000" />
+        <font key="StationsSheetNumberAvailable.sel#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberAvailable.sel#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.sel#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberAvailable.sel#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberAvailable.sel#padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetNumberCanBeReturned.derive" value="StationsSheetNumberAvailable" />
+        <val key="StationsSheetNumberCanBeReturned.dis#derive" value="StationsSheetNumberAvailable.dis" />
+        <val key="StationsSheetNumberCanBeReturned.dis#fgColor" value="cd5c5c" />
+        <font key="StationsSheetNumberCanBeReturned.dis#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberCanBeReturned.dis#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.dis#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberCanBeReturned.dis#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.dis#padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetNumberCanBeReturned.fgColor" value="cd5c5c" />
+        <font key="StationsSheetNumberCanBeReturned.font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberCanBeReturned.marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberCanBeReturned.padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetNumberCanBeReturned.press#derive" value="StationsSheetNumberAvailable.press" />
+        <val key="StationsSheetNumberCanBeReturned.press#fgColor" value="cd5c5c" />
+        <font key="StationsSheetNumberCanBeReturned.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberCanBeReturned.press#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.press#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberCanBeReturned.press#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.press#padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetNumberCanBeReturned.sel#derive" value="StationsSheetNumberAvailable.sel" />
+        <val key="StationsSheetNumberCanBeReturned.sel#fgColor" value="cd5c5c" />
+        <font key="StationsSheetNumberCanBeReturned.sel#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="3.0" />
+        <val key="StationsSheetNumberCanBeReturned.sel#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.sel#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetNumberCanBeReturned.sel#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetNumberCanBeReturned.sel#padding" value="0.0,0.0,1.0,1.0" />
+        <val key="StationsSheetText.dis#fgColor" value="808080" />
+        <font key="StationsSheetText.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetText.dis#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.dis#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetText.dis#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.dis#padding" value="0.3,0.3,0.3,0.3" />
+        <val key="StationsSheetText.fgColor" value="808080" />
+        <font key="StationsSheetText.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetText.marUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetText.padUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.padding" value="0.3,0.3,0.3,0.3" />
+        <val key="StationsSheetText.press#fgColor" value="808080" />
+        <font key="StationsSheetText.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetText.press#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.press#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetText.press#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.press#padding" value="0.3,0.3,0.3,0.3" />
+        <val key="StationsSheetText.sel#fgColor" value="808080" />
+        <font key="StationsSheetText.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="StationsSheetText.sel#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.sel#margin" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetText.sel#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetText.sel#padding" value="0.3,0.3,0.3,0.3" />
         <val key="TakePowerBankButton.align" value="4" />
         <val key="TakePowerBankButton.bgColor" value="ffffff" />
         <border key="TakePowerBankButton.border" type="image" i1="TakePowerBankButtonTop_1.png" i2="TakePowerBankButtonBottom_1.png" i3="TakePowerBankButtonLeft_1.png" i4="TakePowerBankButtonRight_1.png" i5="TakePowerBankButtonTopL_1.png" i6="TakePowerBankButtonTopR_1.png" i7="TakePowerBankButtonBottomL_1.png" i8="TakePowerBankButtonBottomR_1.png" i9="TakePowerBankButtonCenter_1.png" />

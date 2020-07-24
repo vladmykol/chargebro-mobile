@@ -25,11 +25,10 @@
             <entry key="Login" value="&#x412;&#x445;&#x456;&#x434;" />
             <entry key="Don't wait - Take&amp;Charge" value="&#x41d;&#x435; &#x447;&#x435;&#x43a;&#x430;&#x439; - &#x411;&#x435;&#x440;&#x438; &#x456; &#x417;&#x430;&#x440;&#x44f;&#x434;&#x436;&#x430;&#x439;" />
             <entry key="User already exists" value="&#x41a;&#x43e;&#x440;&#x438;&#x441;&#x442;&#x443;&#x432;&#x430;&#x447; &#x437; &#x442;&#x430;&#x43a;&#x438;&#x43c; &#x43d;&#x43e;&#x43c;&#x435;&#x440;&#x43e;&#x43c; &#x432;&#x436;&#x435; &#x437;&#x430;&#x440;&#x435;&#x454;&#x441;&#x442;&#x440;&#x43e;&#x432;&#x430;&#x43d;&#x438;&#x439;" />
-            <entry key="Cafe Sova" value="&#x41a;&#x430;&#x444;&#x435; &#x421;&#x43e;&#x432;&#x430;" />
             <entry key="No Internet connection" value="&#x41d;&#x435;&#x43c;&#x430;&#x454; &#x437;'&#x454;&#x434;&#x43d;&#x430;&#x43d;&#x43d;&#x44f; &#x437; &#x406;&#x43d;&#x442;&#x435;&#x440;&#x43d;&#x435;&#x442;&#x43e;&#x43c;" />
             <entry key="No available power banks" value="&#x41d;&#x435; &#x43b;&#x438;&#x448;&#x438;&#x43b;&#x43e;&#x441;&#x44f; &#x437;&#x430;&#x440;&#x44f;&#x434;&#x436;&#x435;&#x43d;&#x438;&#x445; powerbank-&#x456;&#x432;" />
             <entry key="Show" value="&#x41f;&#x43e;&#x43a;&#x430;&#x437;&#x430;&#x442;&#x438;" />
-            <entry key="We need your mobile number to send SMS with PIN code" value="&#x41d;&#x430;&#x43c; &#x43f;&#x43e;&#x442;&#x440;&#x456;&#x431;&#x43d;&#x435; &#x432;&#x430;&#x448; &#x43d;&#x43e;&#x43c;&#x435;&#x440; &#x442;&#x435;&#x43b;&#x435;&#x444;&#x43e;&#x43d;&#x443;, &#x449;&#x43e;&#x431; &#x432;&#x456;&#x434;&#x456;&#x441;&#x43b;&#x430;&#x442;&#x438; &#x421;&#x41c;&#x421; &#x437; &#x41f;&#x406;&#x41d; &#x43a;&#x43e;&#x434;&#x43e;&#x43c;" />
+            <entry key="We need your mobile number to send SMS with PIN code" value="&#x41d;&#x430;&#x43c; &#x43f;&#x43e;&#x442;&#x440;&#x456;&#x431;&#x435;&#x43d; &#x432;&#x430;&#x448; &#x43d;&#x43e;&#x43c;&#x435;&#x440; &#x442;&#x435;&#x43b;&#x435;&#x444;&#x43e;&#x43d;&#x443;, &#x449;&#x43e;&#x431; &#x432;&#x456;&#x434;&#x456;&#x441;&#x43b;&#x430;&#x442;&#x438; &#x421;&#x41c;&#x421; &#x437; &#x41f;&#x406;&#x41d;-&#x43a;&#x43e;&#x434;&#x43e;&#x43c;" />
             <entry key="Create new account" value="&#x421;&#x442;&#x432;&#x43e;&#x440;&#x438;&#x442;&#x438; &#x43d;&#x43e;&#x432;&#x438;&#x439; &#x430;&#x43a;&#x430;&#x443;&#x43d;&#x442;" />
             <entry key="Support" value="&#x414;&#x43e;&#x43f;&#x43e;&#x43c;&#x43e;&#x433;&#x430;" />
             <entry key="What's new?" value="&#x429;&#x43e; &#x43d;&#x43e;&#x432;&#x43e;&#x433;&#x43e;?" />
@@ -37,22 +36,23 @@
             <entry key="ok" value="&#x414;&#x43e;&#x431;&#x440;&#x435;" />
             <entry key="Running out of charge? No need to look for a socket or wait while your gadget is charging. Just take our power bank and go. Free charging for 30 min with an annual subscription" value="&#x420;&#x43e;&#x437;&#x440;&#x44f;&#x434;&#x438;&#x432;&#x441;&#x44f; &#x433;&#x430;&#x434;&#x436;&#x435;&#x442;? &#x41d;&#x435; &#x442;&#x440;&#x435;&#x431;&#x430; &#x448;&#x443;&#x43a;&#x430;&#x442;&#x438; &#x440;&#x43e;&#x437;&#x435;&#x442;&#x43a;&#x438; &#x430;&#x431;&#x43e; &#x447;&#x435;&#x43a;&#x430;&#x442;&#x438; &#x43f;&#x43e;&#x43a;&#x438; &#x442;&#x432;&#x456;&#x439; &#x433;&#x430;&#x434;&#x436;&#x435;&#x442; &#x437;&#x430;&#x440;&#x44f;&#x434;&#x436;&#x430;&#x454;&#x442;&#x44c;&#x441;&#x44f;. &#x41f;&#x440;&#x43e;&#x441;&#x442;&#x43e; &#x432;&#x456;&#x437;&#x44c;&#x43c;&#x438; &#x43d;&#x430;&#x448; powerbank &#x456; &#x439;&#x434;&#x438; &#x434;&#x430;&#x43b;&#x456;. &#x411;&#x435;&#x437;&#x43a;&#x43e;&#x448;&#x442;&#x43e;&#x432;&#x43d;&#x430; &#x437;&#x430;&#x440;&#x44f;&#x434;&#x43a;&#x430; &#x43f;&#x435;&#x440;&#x448;&#x456; 30&#x445;&#x432; &#x437; &#x440;&#x456;&#x447;&#x43d;&#x43e;&#x44e; &#x43f;&#x456;&#x434;&#x43f;&#x438;&#x441;&#x43a;&#x43e;&#x44e;" />
             <entry key="SMS code is incorrect" value="&#x41d;&#x435;&#x432;&#x456;&#x440;&#x43d;&#x438;&#x439; &#x41f;&#x406;&#x41d;-&#x43a;&#x43e;&#x434;" />
-            <entry key="Hide" value="&#x421;&#x445;&#x43e;&#x432;&#x430;&#x442;&#x438;" />
-            <entry key="Sign out" value="&#x412;&#x438;&#x439;&#x442;&#x438;" />
-            <entry key="Welcome Stranger" value="&#x41f;&#x440;&#x438;&#x432;&#x456;&#x442; &#x43d;&#x435;&#x437;&#x43d;&#x430;&#x439;&#x43e;&#x43c;&#x435;&#x446;&#x44c;" />
             <entry key="Register" value="&#x420;&#x435;&#x454;&#x441;&#x442;&#x440;&#x430;&#x446;&#x456;&#x44f;" />
+            <entry key="Welcome Stranger" value="&#x41f;&#x440;&#x438;&#x432;&#x456;&#x442; &#x43d;&#x435;&#x437;&#x43d;&#x430;&#x439;&#x43e;&#x43c;&#x435;&#x446;&#x44c;" />
+            <entry key="Sign out" value="&#x412;&#x438;&#x439;&#x442;&#x438;" />
+            <entry key="Hide" value="&#x421;&#x445;&#x43e;&#x432;&#x430;&#x442;&#x438;" />
             <entry key="No connection with server. Please try latter" value="&#x41d;&#x435;&#x43c;&#x430;&#x454; &#x437;&#x432;'&#x44f;&#x437;&#x43a;&#x443; &#x437; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x43e;&#x43c;. &#x411;&#x443;&#x434;&#x44c; &#x43b;&#x430;&#x441;&#x43a;&#x430; &#x441;&#x43f;&#x440;&#x43e;&#x431;&#x443;&#x439;&#x442;&#x435; &#x43f;&#x456;&#x437;&#x43d;&#x456;&#x448;&#x435;" />
             <entry key="User is frozen for some time" value="&#x41a;&#x43e;&#x440;&#x438;&#x441;&#x442;&#x443;&#x432;&#x430;&#x447; &#x442;&#x438;&#x43c;&#x447;&#x430;&#x441;&#x43e;&#x432;&#x43e; &#x437;&#x430;&#x431;&#x43b;&#x43a;&#x43e;&#x432;&#x430;&#x43d;&#x438;&#x439;" />
             <entry key="select" value="&#x412;&#x438;&#x431;&#x440;&#x430;&#x442;&#x438;" />
-            <entry key="Tiraspolska 58, Misto Kvitiv" value="&#x432;&#x443;&#x43b;. &#x422;&#x438;&#x440;&#x430;&#x441;&#x43f;&#x43e;&#x43b;&#x44c;&#x441;&#x44c;&#x43a;&#x430; 58, &#x416;&#x41a; &#x41c;&#x456;&#x441;&#x442;&#x43e; &#x41a;&#x432;&#x456;&#x442;&#x456;&#x432;" />
+            <entry key="Kvitka cafe and bar" value="&#x41a;&#x432;&#x456;&#x442;&#x43a;&#x430; &#x43a;&#x430;&#x444;&#x435; &#x442;&#x430; &#x431;&#x430;&#x440;" />
             <entry key="Resend code" value="&#x41f;&#x435;&#x440;&#x435;&#x441;&#x43b;&#x430;&#x442;&#x438; &#x43a;&#x43e;&#x434;" />
-            <entry key="I accept" value="&#x42f; &#x43f;&#x440;&#x438;&#x439;&#x43c;&#x430;&#x44e;" />
             <entry key="menu" value="&#x41c;&#x435;&#x43d;&#x44e;" />
+            <entry key="I accept" value="&#x42f; &#x43f;&#x440;&#x438;&#x439;&#x43c;&#x430;&#x44e;" />
+            <entry key="Tiraspolska 60, Misto Kvitiv" value="&#x432;&#x443;&#x43b;. &#x422;&#x438;&#x440;&#x430;&#x441;&#x43f;&#x43e;&#x43b;&#x44c;&#x441;&#x44c;&#x43a;&#x430; 58, &#x416;&#x41a; &#x41c;&#x456;&#x441;&#x442;&#x43e; &#x41a;&#x432;&#x456;&#x442;&#x456;&#x432;" />
             <entry key="Legal" value="&#x412;&#x441;&#x456; &#x43f;&#x440;&#x430;&#x432;&#x430; &#x437;&#x430;&#x445;&#x438;&#x449;&#x435;&#x43d;&#x456;" />
             <entry key="powerbank sharing solution" value="powerbank &#x448;&#x435;&#x440;&#x456;&#x43d;&#x433; &#x441;&#x435;&#x440;&#x432;&#x456;&#x441;" />
-            <entry key="Step 1 from 3" value="&#x41a;&#x440;&#x43e;&#x43a; 1 &#x437; 3" />
-            <entry key="Welcome to" value="&#x412;&#x456;&#x442;&#x430;&#x44e; &#x432;" />
             <entry key="Forgot password" value="&#x417;&#x430;&#x431;&#x443;&#x43b;&#x438; &#x43f;&#x430;&#x440;&#x43e;&#x43b;&#x44c;?" />
+            <entry key="Welcome to" value="&#x412;&#x456;&#x442;&#x430;&#x44e; &#x432;" />
+            <entry key="Step 1 from 3" value="&#x41a;&#x440;&#x43e;&#x43a; 1 &#x437; 3" />
         </lang>
     </l10n>
 </resource>
