@@ -39,6 +39,7 @@ import com.codename1.util.SuccessCallback;
 import com.mykovol.takeandcharge.form.LoginForm;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.RegisterCreditCardStep3;
+import com.mykovol.takeandcharge.form.RegisterMobileNumberStep1;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
@@ -287,7 +288,7 @@ public class CommonCode {
 
     private static Command getRegisterCommand() {
         return getCommand("Register", FontImage.MATERIAL_PERSON_ADD, evt -> {
-            new LoginForm().show();
+            new RegisterMobileNumberStep1().show();
         });
     }
 

@@ -283,6 +283,7 @@ public class DraggablePanel extends Container {
             }
         } else {
             Component draggedCmp = attachedForm.getComponentAt(e.getX(), e.getY());
+            System.out.println(draggedCmp);
             if (draggedCmp == null || (!draggedCmp.isChildOf(this) && draggedCmp != screenBlocking)) {
                 return;
             }

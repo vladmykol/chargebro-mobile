@@ -140,8 +140,7 @@ public class RentSocketService extends WebSocket {
     private void authAction(short messageCode, String responseMessage) {
         if (messageCode != MESSAGE_CODE_OK) {
             System.out.println("websocket authentication issue - " + responseMessage);
-            autoReconnect(0);
-            close();
+            UserService.logout();
         } else {
             System.out.println("authenticated in websocket server " + responseMessage);
             callSerially(() ->  MainForm.get().refreshRentContent());

@@ -140,13 +140,14 @@ public class RegisterVerificationCodeStep2 extends Form {
         termsCheckBox.setGap(2);
         termsCheckBox.setOppositeSide(false);
         termsCheckBox.getAllStyles().setPaddingRight(0.7f);
+        termsCheckBox.setSelected(true);
         termsLink.getAllStyles().setPaddingLeft(0);
         box.add(BoxLayout.encloseX(termsCheckBox, termsLink));
 
         termsLink.addActionListener(evt -> {
             new BrowserPopUp(getCurrentForm(),
                     "Terms&Conditions",
-                    "https://www.termsandconditionsgenerator.com/")
+                    "http://your-domain.example.com/policy")
                     .show();
         });
 

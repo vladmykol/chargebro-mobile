@@ -6,8 +6,8 @@
     mapTileLoadingImage: "main-logo.png";
     /*menuPrefSizeBool: true;*/
     menuImageSize: 6;
-    sideSwipeSensitiveInt: 50;
-    sideSwipeActivationInt:50;
+    sideSwipeSensitiveInt: 100;
+    sideSwipeActivationInt:100;
     sideMenuTensileDragBool: false;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part1.png";
@@ -20,6 +20,7 @@
     dontSpendTimeImage: "dont-spend-time.png";
     powerBankPhotoImage: "power-bank-photo.png";
     mapPointImage: "map-point.png";
+    mapPoint2Image: "map-point2.png";
     chargingStationImage: "charging-station.png";
     mobileNumberImage: "mobile-number.png";
     registerImage: "register.png";
@@ -28,11 +29,6 @@
 }
 
 /*====================== Common ==========================*/
-
-InfinityAnimation {
-    border-radius: 2mm;
-    box-shadow: 0.5mm 0.5mm 4mm 0.1mm;
-}
 
 Form {
     background: white;
@@ -206,7 +202,7 @@ ShowMeButton {
 }
 
 ShowMeButton.pressed {
-    box-shadow: 0mm 0mm 1.7mm 0mm #8FC0C5;
+    box-shadow: 0mm 0mm 1.9mm 0mm #8FC0C5;
 }
 
 /*====================== Bottom panel ==========================*/
@@ -313,7 +309,7 @@ DraggableIcon {
 ErrorText {
     background: #f34c4c;
     color: white;
-    padding: 0.2mm 0mm;
+    padding: 0.2mm 1mm;
     margin: 0mm;
     text-align: center;
     font-family: "native:MainRegular";
@@ -383,6 +379,18 @@ RegisterTextField {
     /*color: black;*/
 }
 
+AlreadyHaveAnAccountButton {
+    cn1-derive: RegisterLabel;
+    color: #2775a4;
+    text-align: center;
+    font-size: 2.5mm
+}
+
+AlreadyHaveAnAccountButton.pressed {
+    font-weight: bold;
+}
+
+
 ResendCodeLabel {
     cn1-derive: RegisterLabel;
     text-align: left;
@@ -411,6 +419,9 @@ TermsLink.pressed {
     font-weight: bold;
 }
 
+
+
+
 /*====================== Gif Loader ==========================*/
 LoadImage {
     /*background: white;*/
@@ -427,7 +438,7 @@ SheetTitle {
     font-family: "native:MainRegular";
     font-size: 4mm;
     /*color: #8FC0C5;*/
-    color: #497b7d;
+    color: black;
 }
 
 StationsSheetImage {
@@ -468,6 +479,15 @@ StationsSheetNumberCanBeReturned {
     color: indianred;
 }
 
+GetDirectionButton{
+    color: #0479f5;
+    font-size: 6mm;
+    padding: 3mm;
+    margin: 0mm 2mm 0mm 2mm;
+}
 
+GetDirectionButton.pressed {
+    color: grey;
+}
 
 /* End G:\JAVA007\take&charge\mobile\css\theme.css */

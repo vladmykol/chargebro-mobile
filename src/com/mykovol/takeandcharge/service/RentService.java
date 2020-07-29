@@ -26,11 +26,16 @@ package com.mykovol.takeandcharge.service;
 import com.codename1.components.ToastBar;
 import com.codename1.ext.codescan.CodeScanner;
 import com.codename1.ext.codescan.ScanResult;
+import com.codename1.io.Log;
+import com.codename1.io.Preferences;
 import com.codename1.io.rest.Rest;
+import com.codename1.maps.Coord;
+import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.ErrorResponse;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
+import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.LoginForm;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 import org.littlemonkey.qrscanner.QRScanner;
@@ -85,6 +90,38 @@ public class RentService {
 
     }
 
+    public static void getStationsNearBy(Coord coord, final Callback<List<StationInfo>> callback) {
+        Rest.get(GlobalConst.getServerUrl() + STATIONS_URL)
+                .bearer(UserService.getToken())
+                .queryParam("x", String.valueOf(coord.getLatitude()))
+                .queryParam("y", String.valueOf(coord.getLongitude()))
+                .acceptJson()
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsPropertyList(stationList -> {
+                    List<StationInfo> responseData = (List<StationInfo>) (List<?>) stationList.getResponseData();
+                    callback.onSucess(responseData);
+                }, StationInfo.class);
+
+    }
+
+    public static void getRemainingPowerBanks(String stationId, final Callback<Integer> callback) {
+        Rest.get(GlobalConst.getServerUrl() + STATIONS_CAPACITY_URL)
+                .bearer(UserService.getToken())
+                .pathParam("id", stationId)
+                .acceptJson()
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsString(response -> {
+                    int remainingPowerBanks = Integer.parseInt(response.getResponseData());
+                    callback.onSucess(remainingPowerBanks);
+                });
+    }
+
     public static void rent(final Callback<String> callback) {
         if (!UserService.isLoggedIn()) {
             new LoginForm().show();
@@ -95,29 +132,42 @@ public class RentService {
         if (CodeScanner.getInstance() == null) {
             ToastBar.showErrorMessage("CodeScanner is not supported on this platform");
         } else {
-            if (Display.getInstance().isSimulator()) {
-                sendRentRequest("STWA312001000005", callback);
-            } else {
-                // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option
+            boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutCameraUse", false);
+            boolean isUserAgreeToGiveCameraAccess = true;
+            if (!isUserNotifiedAboutLocationUse) {
+                isUserAgreeToGiveCameraAccess = Dialog.show("Permission required", "Please allow using of your camera to scan QR code", "OK", "Cancel");
+            }
+
+            if (isUserAgreeToGiveCameraAccess) {
+                if (Display.getInstance().isSimulator()) {
+                    sendRentRequest("STWA312001000005", callback);
+                } else {
+                    // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option
 //                Dialog.show("QR code scanning", "Please point the camera at the QR code", "OK", null);
 //                ToastBar.showInfoMessage("Please point the camera at the QR code");
-                QRScanner.scanQRCode(new ScanResult() {
-                    @Override
-                    public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
-                        String stationId = contents.substring(contents.indexOf("id=") + 3);
-                        sendRentRequest(stationId, callback);
-                    }
+                    QRScanner.scanQRCode(new ScanResult() {
+                        @Override
+                        public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
+                            Preferences.set("isUserNotifiedAboutCameraUse", true);
+                            String stationId = contents.substring(contents.indexOf("id=") + 3);
+                            sendRentRequest(stationId, callback);
+                        }
 
-                    @Override
-                    public void scanCanceled() {
-                        ToastBar.showInfoMessage("Scan canceled");
-                    }
+                        @Override
+                        public void scanCanceled() {
+                            Preferences.set("isUserNotifiedAboutCameraUse", true);
+                            callback.onError(null, null, 0, "Scan is cancelled lease ensure you allowed access to your camera");
+                        }
 
-                    @Override
-                    public void scanError(int errorCode, String message) {
-                        ToastBar.showInfoMessage("Scan ERROR");
-                    }
-                });
+                        @Override
+                        public void scanError(int errorCode, String message) {
+                            callback.onError(null, null, errorCode, "Error when scanning a QR code");
+                            Log.e(new RuntimeException("QR scanning error -" + errorCode + message));
+                        }
+                    });
+                }
+            } else {
+                callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
             }
         }
     }

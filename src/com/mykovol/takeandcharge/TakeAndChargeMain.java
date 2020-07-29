@@ -95,8 +95,8 @@ public class TakeAndChargeMain {
         if (current != null) {
             current.show();
         } else {
-            new SplashScreen().show();
-//            MainForm.get().show();
+//            new SplashScreen().show();
+            MainForm.get().show();
 //            new RegisterMobileNumberStep1().show();
         }
     }

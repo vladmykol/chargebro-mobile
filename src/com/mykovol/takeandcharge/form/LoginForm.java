@@ -25,19 +25,13 @@ import com.codename1.components.SpanLabel;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
-import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.service.UserService;
-import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FabProgress;
-
-import static com.codename1.ui.CN.callSerially;
-import static com.codename1.ui.CN.getCurrentForm;
 
 /**
  * The Login form
@@ -48,18 +42,25 @@ public class LoginForm extends Form {
 
     private final TextField loginField = new TextField("", "380 (93) 123-45-56", 20, TextField.NUMERIC);
     private final TextField passwordField = new TextField("", "Password", 20, TextField.PASSWORD);
+    private final SpanLabel errorLabel = new SpanLabel("Password error", "ErrorLabel");
+
+
+    public void setPredefinedPhone(String phoneNumber) {
+        loginField.setText(phoneNumber);
+        loginField.setEditable(false);
+        setEditOnShow(passwordField);
+    }
 
     public LoginForm() {
-        super(new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE));
+        super(new BorderLayout());
 //        CommonCode.removeTransitionsTemporarily(previous);
         setToolbar(new Toolbar(true));
         getToolbar().addCommandToRightBar(constructCloseCommand());
 
-        setSafeArea(true);
         Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
         Label logoImageHolder = new ScaleImageLabel(LogoImage);
         logoImageHolder.setUIID("TextAlignCenter");
-        logoImageHolder.getAllStyles().setMarginTop(2);
+        logoImageHolder.getAllStyles().setMarginTop(10);
         logoImageHolder.setName("LogoImageName");
 
         Container welcomeText = FlowLayout.encloseCenter(
@@ -81,8 +82,7 @@ public class LoginForm extends Form {
         FontImage.setMaterialIcon(loginIcon, FontImage.MATERIAL_PHONE, 3);
         FontImage.setMaterialIcon(passwordIcon, FontImage.MATERIAL_LOCK_OUTLINE, 3);
 
-        SpanLabel error = new SpanLabel("Password error", "ErrorLabel");
-        error.setVisible(false);
+        errorLabel.setHidden(true);
 
 //        Validator validator = new Validator();
 //        validator.addConstraint(login, new LengthConstraint(1, "cannot be blank"));
@@ -108,7 +108,7 @@ public class LoginForm extends Form {
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
 //        validator.addSubmitButtons(fab);
         fab.bindFabToContainer(this);
-        ActionListener<?> loginButtonAction = loginButtonAction(loginField, passwordField, error, fab);
+        ActionListener<?> loginButtonAction = loginButtonAction(loginField, passwordField, fab);
         fab.addActionListener(loginButtonAction);
         passwordField.addActionListener(loginButtonAction);
 
@@ -120,9 +120,9 @@ public class LoginForm extends Form {
                         add(BorderLayout.WEST, loginIcon),
                 BorderLayout.center(passwordField).
                         add(BorderLayout.WEST, passwordIcon),
-                error
+                errorLabel
         );
-        add(BorderLayout.NORTH, mainContainer);
+        add(BorderLayout.CENTER, mainContainer);
         add(BorderLayout.SOUTH, registerOrForgot);
         setScrollableY(true);
 
@@ -144,7 +144,7 @@ public class LoginForm extends Form {
         });
     }
 
-    private ActionListener<?> loginButtonAction(TextField login, TextField password, SpanLabel error, FloatingActionButton fab) {
+    private ActionListener<?> loginButtonAction(TextField login, TextField password, FloatingActionButton fab) {
         return evt -> {
             if (FabProgress.isInProgress()) return;
             FabProgress.bind(fab);
@@ -161,13 +161,17 @@ public class LoginForm extends Form {
 
                 @Override
                 public void loginFailed(String errorMessage) {
-                    error.setText(errorMessage);
-                    error.setVisible(true);
-                    error.getParent().revalidateWithAnimationSafety();
+                    showError(errorMessage);
                     FabProgress.stop();
                 }
             });
         };
+    }
+
+    public void showError(String errorMessage) {
+        errorLabel.setText(errorMessage);
+        errorLabel.setHidden(false);
+        errorLabel.getParent().revalidateWithAnimationSafety();
     }
 
 }

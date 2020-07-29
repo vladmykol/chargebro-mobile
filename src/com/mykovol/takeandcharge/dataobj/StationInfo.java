@@ -21,31 +21,30 @@
  * need additional information or have any questions.
  */
 
-package com.mykovol.takeandcharge.service;
+package com.mykovol.takeandcharge.dataobj;
+
+import com.codename1.properties.*;
 
 /**
- * Global settings used in the application
+ * Property object representing a user
  *
  * @author Shai Almog
  */
-public final class GlobalConst {
-    public static final boolean LOCAL = true;
+public class StationInfo implements PropertyBusinessObject {
+    public final Property<String, StationInfo> id = new Property<>("id");
+    public final DoubleProperty<StationInfo> locationX = new DoubleProperty<>("locationX");
+    public final DoubleProperty<StationInfo> locationY = new DoubleProperty<>("locationY");
+    public final IntProperty<StationInfo> maxCapacity = new IntProperty<>("maxCapacity");
+    public final Property<String, StationInfo> placeName = new Property<>("placeName");
+    public final Property<String, StationInfo> address = new Property<>("address");
+    public final Property<String, StationInfo> mapUrl = new Property<>("mapUrl");
 
-    public static final String RENT_URL = "/rent";
-    public static final String PAY_URL = "/pay/checkout";
-    public static final String RENT_HISTORY_URL = RENT_URL + "/history";
-    public static final String STATIONS_URL = "/stations";
-    public static final String STATIONS_CAPACITY_URL = STATIONS_URL + "/{id}/capacity";
-    public static final String SERVER_SOCKET_URL = "/socket/rent";
+    private final PropertyIndex idx = new PropertyIndex(this, "StationInfo", id, locationX,
+            locationY, maxCapacity, placeName, address, mapUrl);
 
-    private static final String API_AUTH = "/auth";
-    public static final String API_LOGIN = API_AUTH + "/login";
-    public static final String API_REGISTER_INIT = API_AUTH + "/register";
-    public static final String API_REGISTER = API_AUTH + "/singup";
-    public static final String API_LOGOUT = API_AUTH + "/logout";
-
-    public static String getServerUrl() {
-        if (LOCAL) return "http://192.168.0.124:10381";
-        else return "https://server.your-domain.example.com";
+    @Override
+    public PropertyIndex getPropertyIndex() {
+        return idx;
     }
+
 }

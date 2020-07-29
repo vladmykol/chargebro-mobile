@@ -35,13 +35,17 @@ import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.util.Callback;
 import com.codename1.util.SuccessCallback;
-import com.mykovol.takeandcharge.dataobj.*;
+import com.mykovol.takeandcharge.dataobj.ErrorResponse;
+import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
+import com.mykovol.takeandcharge.dataobj.User;
+import com.mykovol.takeandcharge.dataobj.UserLogin;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.tools.CommonCode;
 
 import java.io.IOException;
 
 import static com.codename1.ui.CN.addToQueue;
+import static com.codename1.ui.CN.callSerially;
 import static com.mykovol.takeandcharge.service.GlobalConst.*;
 
 /**
@@ -74,11 +78,13 @@ public class UserService {
 
     public static void logout() {
         Preferences.set("token", null);
-        CommonCode.refreshCommands();
         RentSocketService.get().autoReconnect(0);
         RentSocketService.get().close();
-        MainForm.get().removeAllRentRows();
-        MainForm.get().refreshContext();
+        callSerially(() -> {
+            CommonCode.refreshCommands();
+            MainForm.get().removeAllRentRows();
+            MainForm.get().refreshContext();
+        });
     }
 
     public static boolean isLoggedIn() {
@@ -100,7 +106,7 @@ public class UserService {
                 }, RegisterInitResponse.class);
     }
 
-    public static void registerUser(User request, final Callback<String>  callback) {
+    public static void registerUser(User request, final Callback<String> callback) {
         Rest.post(GlobalConst.getServerUrl() + API_REGISTER)
 //                .bearer(UserService.getToken())
                 .acceptJson()

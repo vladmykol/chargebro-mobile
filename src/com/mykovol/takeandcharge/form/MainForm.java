@@ -26,11 +26,8 @@ package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.googlemaps.MapContainer;
-import com.codename1.io.Preferences;
+import com.codename1.io.Log;
 import com.codename1.io.Util;
-import com.codename1.location.Location;
-import com.codename1.location.LocationListener;
-import com.codename1.location.LocationManager;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -41,12 +38,17 @@ import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
+import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.component.ShowMyLocationButton;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.DraggablePanel;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The main form of the application containing the map code
@@ -58,11 +60,16 @@ public class MainForm extends Form {
     private static final Coord ukraineCoord = new Coord(50.480471, 30.412376);
     private static MainForm instance;
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
+    private final ShowMyLocationButton showMyLocationButton = new ShowMyLocationButton(mapContainer);
     //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
     private final ScanButton scanButton = new ScanButton("TakePowerBankButton");
     private final Button draggablePanelScreenBlocker = new Button();
     private final Button sideMenuScreenBlocker = new Button();
     private final DraggablePanel draggablePanel;
+    private final StationInfoSheet stationInfoSheet = new StationInfoSheet();
+    private final Image stationPointImage = Resources.getGlobalResources().getImage("map-point2.png");
+    private final Map<String, MapContainer.MapObject> mapMarkers = new HashMap<>();
+    private Coord previousCoord = new Coord(ukraineCoord.getLatitude(), ukraineCoord.getLongitude());
 
     private MainForm() {
         super(new LayeredLayout());
@@ -86,7 +93,7 @@ public class MainForm extends Form {
         add(BorderLayout.south(scanButton));
 
 
-        add(BorderLayout.north(FlowLayout.encloseRightBottom(new ShowMyLocationButton(mapContainer))));
+        add(BorderLayout.north(FlowLayout.encloseRightBottom(showMyLocationButton)));
 
         draggablePanelScreenBlocker.setVisible(false);
         add(draggablePanelScreenBlocker);
@@ -112,7 +119,8 @@ public class MainForm extends Form {
     @Override
     public void show() {
         super.show();
-        mapContainer.setShowMyLocation(Preferences.get("showMyLocation", false));
+        showMyLocationButton.refreshState();
+
         refreshRentContent();
     }
 
@@ -122,32 +130,15 @@ public class MainForm extends Form {
     }
 
     private void initMap() {
-        Coord lastCoord = ukraineCoord;
-        LocationManager lm = LocationManager.getLocationManager();
-        if (!Display.getInstance().isSimulator() && lm.isGPSEnabled()) {
-            Location lastKnownLocation = lm.getLastKnownLocation();
-            lastCoord = new Coord(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        }
-        mapContainer.setCameraPosition(lastCoord);
-        mapContainer.zoom(lastCoord, mapContainer.getMinZoom() + 13);
+        Coord defaultLocation = ukraineCoord;
 
-        if (!Display.getInstance().isSimulator()) {
-            LocationManager.getLocationManager().setLocationListener(new LocationListener() {
-                @Override
-                public void locationUpdated(Location location) {
-                    mapContainer.setCameraPosition(new Coord(location.getLatitude(), location.getLongitude()));
-//                        mapContainer.zoom(new Coord(location.getLatitude(), location.getLongitude()), getDefaultZoom(mapContainer));
-                    LocationManager.getLocationManager().setLocationListener(null);
-                }
+        mapContainer.setCameraPosition(defaultLocation);
+        mapContainer.zoom(defaultLocation, mapContainer.getMinZoom() + 10);
 
-                @Override
-                public void providerStateChanged(int newState) {
-                }
-            });
-        }
-
-        initStationsOnMap();
+        addMapListenerToDrawStationsOnMap();
+        refreshMarkersOnMap(defaultLocation);
     }
+
 
     public void showErrorDraggablePanel(String error) {
         draggablePanel.showError(error);
@@ -166,18 +157,43 @@ public class MainForm extends Form {
     }
 
 
-    private void initStationsOnMap() {
-        Image placeImage = Resources.getGlobalResources().getImage("map-point.png");
+    private void addMapListenerToDrawStationsOnMap() {
+        mapContainer.addMapListener((source, zoom, center) -> {
+            double x = previousCoord.getLatitude() - center.getLatitude();
+            double y = previousCoord.getLongitude() - center.getLongitude();
+            double size = Math.abs(x * y);
+            if (size > 0.1) {
+                previousCoord = center;
 
-        mapContainer.addMarker(
-                EncodedImage.createFromImage(placeImage, false),
-                ukraineCoord, null,
-                "Station position on the map",
-                evt -> {
-                    StationInfoSheet sheet = new StationInfoSheet();
-                    sheet.show();
+                refreshMarkersOnMap(center);
+            }
+        });
+    }
+
+    private void refreshMarkersOnMap(Coord position) {
+        Log.p("Station update");
+        RentService.getStationsNearBy(position, new Callback<List<StationInfo>>() {
+            @Override
+            public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                Log.p("cannot get station location update - " + errorCode + errorMessage);
+            }
+
+            @Override
+            public void onSucess(List<StationInfo> stations) {
+                for (StationInfo station : stations) {
+                    if (!mapMarkers.containsKey(station.id.get())) {
+                        mapMarkers.put(station.id.get(),
+                                mapContainer.addMarker(
+                                        EncodedImage.createFromImage(stationPointImage, false),
+                                        new Coord(station.locationX.get(), station.locationY.get()), "some text here",
+                                        "and some long text here",
+                                        evt -> {
+                                            stationInfoSheet.show(station);
+                                        }));
+                    }
                 }
-        );
+            }
+        });
     }
 
     public void refreshContext() {
@@ -213,7 +229,7 @@ public class MainForm extends Form {
                     }
                 });
             } else {
-                new LoginForm().show();
+                new RegisterMobileNumberStep1().show();
             }
         }
 
@@ -222,8 +238,8 @@ public class MainForm extends Form {
                 setText(" Take&Charge");
                 FontImage.setMaterialIcon(this, FontImage.MATERIAL_CROP_FREE);
             } else {
-                setText("Login");
-                FontImage.setMaterialIcon(this, FontImage.MATERIAL_PERSON);
+                setText("Register");
+                FontImage.setMaterialIcon(this, FontImage.MATERIAL_PERSON_ADD);
             }
         }
     }
