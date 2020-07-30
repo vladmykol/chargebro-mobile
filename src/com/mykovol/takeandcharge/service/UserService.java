@@ -78,12 +78,11 @@ public class UserService {
 
     public static void logout() {
         Preferences.set("token", null);
-        RentSocketService.get().autoReconnect(0);
-        RentSocketService.get().close();
+        RentSocketService.get().disconnect();
         callSerially(() -> {
             CommonCode.refreshCommands();
             MainForm.get().removeAllRentRows();
-            MainForm.get().refreshContext();
+            MainForm.get().refreshScanButton();
         });
     }
 
@@ -144,7 +143,7 @@ public class UserService {
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
                     RentSocketService.get().reconnect();
-                    MainForm.get().refreshContext();
+                    MainForm.get().refreshScanButton();
                     CommonCode.refreshCommands();
                     callback.loginSuccessful();
                 });

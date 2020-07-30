@@ -3,12 +3,12 @@
 #Constants {
     includeNativeBool: true;
     /*sideMenuImage: "menu.png";*/
-    mapTileLoadingImage: "main-logo.png";
     /*menuPrefSizeBool: true;*/
     menuImageSize: 6;
     sideSwipeSensitiveInt: 100;
     sideSwipeActivationInt:100;
     sideMenuTensileDragBool: false;
+    buttonRippleBool:false;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part1.png";
     splashLogo2Image: "splash-logo-part2.png";
@@ -20,11 +20,9 @@
     dontSpendTimeImage: "dont-spend-time.png";
     powerBankPhotoImage: "power-bank-photo.png";
     mapPointImage: "map-point.png";
-    mapPoint2Image: "map-point2.png";
-    chargingStationImage: "charging-station.png";
+    /*chargingStationImage: "charging-station.png";*/
     mobileNumberImage: "mobile-number.png";
-    registerImage: "register.png";
-    cafeSovaImage: "sova.jpg";
+    noLogoImage: "no-logo.png";
     /*multi size images end*/
 }
 
@@ -67,11 +65,6 @@ Toolbar {
     padding: 2mm;
 }
 
-SideMenu {
-    /*background: linear-gradient(90deg, rgba(255, 0, 0, 0.6), blue);;*/
-    /*color: #8FC0C5;*/
-}
-
 TextAlignCenter {
     text-align: center;
     margin: 0mm;
@@ -96,7 +89,7 @@ ToastBarMessage {
 /*====================== Login Form ==========================*/
 
 WelcomeText {
-    padding: 0mm;
+    padding: 1.5mm 0mm 0mm 1mm;
     margin: 0mm;
     font-family: "native:MainLight";
     font-size: 4mm;
@@ -105,8 +98,9 @@ WelcomeText {
 
 WelcomeText2 {
     cn1-derive: WelcomeText;
+    padding: 1.5mm 1mm 0mm 0mm;
     font-weight: bold;
-    color: #80acb1;
+    color: cadetblue;
 }
 
 
@@ -171,7 +165,8 @@ StationPlaceOnMap {
 TakePowerBankButton {
     cn1-derive: Button;
     color: white;
-    background: #8FC0C5;
+    background: cadetblue;
+    /*background: linear-gradient(0deg, cadetblue, #5873B8);*/
     padding: 3mm 8mm 4mm 7mm;
     margin: 0mm 7mm;
     border-radius: 5mm;
@@ -195,7 +190,7 @@ ShowMeButton {
     font-size: 3.2mm;
     border: 0px solid #000000;
     border-radius: 2.2mm;
-    color: #8FC0C5;
+    color: cadetblue;
     box-shadow: 0mm 0mm 1.5mm 0mm #8FC0C5;
     /*box-shadow: 1mm 1mm 5mm 0.1mm;*/
     text-align: center;
@@ -230,6 +225,7 @@ BottomPanelUnfolded {
     background: white;
     padding: 0mm;
     margin: 0mm;
+    /*box-shadow: 0mm 0mm 1.5mm 0mm #8FC0C5;*/
     border: 0.1mm solid lightgrey;
     border-radius: 3mm 3mm 0mm 0mm;
 }
@@ -240,12 +236,12 @@ BottomPanelFolded {
     margin: 0mm;
 }
 
-UnderBottomPanel {
-    padding: 0mm;
-    margin: 0mm;
-    /*border-radius: 2mm;*/
-    /*box-shadow: 0mm -0.5mm 3.5mm -1mm;*/
-}
+/*UnderBottomPanel {*/
+/*    padding: 0mm;*/
+/*    margin: 0mm;*/
+/*    !*border-radius: 2mm;*!*/
+/*    !*box-shadow: 0mm -0.5mm 3.5mm -1mm;*!*/
+/*}*/
 
 PanelHeader {
     color: #8FC0C5;
@@ -266,6 +262,7 @@ PanelText {
 PanelImage {
     padding: 0mm;
     margin: 0mm 1mm;
+    text-align: center;
 }
 
 RentBorder {
@@ -434,23 +431,26 @@ LoadImage {
 }
 
 /*====================== Stations sheet ==========================*/
-SheetTitle {
+StationsSheetTitle {
     font-family: "native:MainRegular";
     font-size: 4mm;
     /*color: #8FC0C5;*/
-    color: black;
+    padding: 0mm;
+    margin: 2mm 1mm 0mm 1mm;
+    color: cadetblue;
+    text-align: center;
 }
 
 StationsSheetImage {
-    margin: 1mm;
+    margin: 0mm 2mm 1mm 1mm;
 }
 
 StationsSheetAddress {
     font-family: "native:MainLight";
     font-size: 2.5mm;
     text-align: left;
-    margin: 2mm 0mm;
-    padding: 0mm 0mm 0mm 1mm;
+    margin: 1mm;
+    padding: 0mm;
     color: black;
 }
 
@@ -481,9 +481,9 @@ StationsSheetNumberCanBeReturned {
 
 GetDirectionButton{
     color: #0479f5;
-    font-size: 6mm;
+    font-size: 4mm;
     padding: 3mm;
-    margin: 0mm 2mm 0mm 2mm;
+    margin: 0mm 2mm;
 }
 
 GetDirectionButton.pressed {

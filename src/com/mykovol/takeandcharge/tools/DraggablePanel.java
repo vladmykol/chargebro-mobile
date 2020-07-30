@@ -23,7 +23,6 @@
 
 package com.mykovol.takeandcharge.tools;
 
-import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
 import com.codename1.io.Log;
 import com.codename1.ui.*;
@@ -35,6 +34,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
+import com.mykovol.takeandcharge.form.component.BottomPanel;
 import com.mykovol.takeandcharge.form.component.RentBoard;
 import com.mykovol.takeandcharge.form.component.RentContent;
 import com.mykovol.takeandcharge.service.RentService;
@@ -50,17 +50,18 @@ import static com.codename1.ui.util.Resources.getGlobalResources;
 public class DraggablePanel extends Container {
     public static final int MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE = 15;
     public static final int minPanelHeight = (int) Math.round(getDisplayHeight() * (MIN_PANEL_HEIGHT_SCREEN_PERCENTAGE / 100.0));
-    private final Container contentHolder = new Container(BoxLayout.y());
+    //    private final Container contentHolder = new Container(BoxLayout.y());
     private final Container defaultContent = new Container(BoxLayout.y());
-    private final Container bottomPanel = BorderLayout.center(contentHolder);
+    //    private final Container bottomPanel = new Container(BoxLayout.y());
+    private final Container bottomPanel = new BottomPanel(minPanelHeight);
     private final Label draggableImage = new Label(getGlobalResources().getImage("vertical-draggable.png"), "DraggableIcon");
     private final SpanLabel errorLabel = new SpanLabel("something went wrong", "ErrorText");
     private final String defaultTopTitleText = "What's new?";
     private final Label topPanelTitle = new Label(defaultTopTitleText, "BottomPanelFoldedTopText");
-    private final Container header = BoxLayout.encloseYCenter(draggableImage, errorLabel);
+    private final Container bottomPanelHeader = BoxLayout.encloseYCenter(draggableImage, errorLabel);
     private final Button screenBlocking;
+    private final Button bottomScreenBlocking;
     private final Form attachedForm;
-    private final Toolbar toolbar;
     private RentContent rentContent = new RentContent();
     private int firstX = -1, firstY = -1;
     private boolean isDraggingBottomPanel;
@@ -68,16 +69,18 @@ public class DraggablePanel extends Container {
     private volatile boolean isInMove = false;
 
 
-    public DraggablePanel(Button screenBlocking, Form currentForm, Toolbar toolbar) {
+    public DraggablePanel(Button screenBlocking,
+                          Button bottomDraggablePanelScreenBlocker,
+                          Form currentForm) {
         super(new BorderLayout());
         this.screenBlocking = screenBlocking;
+        this.bottomScreenBlocking = bottomDraggablePanelScreenBlocker;
         this.attachedForm = currentForm;
-        this.toolbar = toolbar;
 
-        constructTopPanel();
-        constructContent();
         addSwipeListeners();
+        initTopPanel();
         add(SOUTH, bottomPanel);
+        initBottomPanel();
     }
 
     private void initBottomPanel() {
@@ -139,9 +142,9 @@ public class DraggablePanel extends Container {
     public void addRentRow(String serialNumber, long elapsedTime) {
         RentBoard rentBoard = rentContent.addRow(serialNumber, elapsedTime);
         getCurrentForm().registerAnimated(rentBoard);
-        if (!rentContent.isChildOf(contentHolder)) {
+        if (!rentContent.isChildOf(bottomPanel)) {
             topPanelTitle.setText(rentContent.getTitleText());
-            contentHolder.replaceAndWait(defaultContent, rentContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
+            bottomPanel.replaceAndWait(defaultContent, rentContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
         } else {
             rentContent.animateRentContent(500);
         }
@@ -150,7 +153,7 @@ public class DraggablePanel extends Container {
     public void removeRentRow(RentBoard rentBoard) {
         getCurrentForm().deregisterAnimated(rentBoard);
         rentBoard.remove();
-//        if (rentContent.isChildOf(contentHolder)) {
+//        if (rentContent.isChildOf(bottomPanel)) {
         if (rentContent.noRentRows()) {
             setDefaultContent();
         } else {
@@ -166,8 +169,8 @@ public class DraggablePanel extends Container {
 
     private void setDefaultContent() {
         topPanelTitle.setText(defaultTopTitleText);
-        if (rentContent.isChildOf(contentHolder)) {
-            contentHolder.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
+        if (rentContent.isChildOf(bottomPanel)) {
+            bottomPanel.replaceAndWait(rentContent, defaultContent, CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 500));
         }
 //        revalidateWithAnimationSafety();
     }
@@ -179,45 +182,20 @@ public class DraggablePanel extends Container {
     }
 
 
-    private void constructContent() {
-        bottomPanel.setUIID("UnderBottomPanel");
-        bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
-
-        SpanLabel headerText = new SpanLabel("Don't wait - Take&Charge", "PanelHeader");
-        headerText.setEnabled(false);
-        SpanLabel articleText = new SpanLabel("Running out of charge? No need to look for a socket or wait while your gadget is charging. Just take our power bank and go. Free charging for 30 min with an annual subscription",
-                "PanelText");
-        articleText.setEnabled(false);
-
-        ScaleImageLabel articlePhoto = new ScaleImageLabel(getGlobalResources().getImage("dont-spend-time.png"));
-        articlePhoto.setUIID("PanelImage");
-
-
-        contentHolder.setUIID("BottomPanelUnfolded");
-//        contentHolder.setBlockLead(true);
-//        setScrollableY(true);
-//        setScrollVisible(false);
-        contentHolder.setScrollableY(true);
-        contentHolder.setScrollVisible(false);
-        errorLabel.setHidden(true, true);
-        errorLabel.setEnabled(false);
-        contentHolder.addAll(header, defaultContent.addAll(articlePhoto, headerText, articleText));
-    }
-
     public void showError(String errorText) {
         if (errorText == null) return;
         if (!errorText.equals(errorLabel.getText())) errorLabel.setText(errorText.trim());
         if (errorLabel.isHidden()) {
             errorLabel.setHidden(false, false);
-            contentHolder.animateLayout(700);
+            bottomPanel.animateLayoutAndWait(700);
             UITimer.timer(5000, false, getComponentForm(), () -> {
                 errorLabel.setHidden(true, false);
-                contentHolder.animateLayout(700);
+                bottomPanel.animateLayoutAndWait(700);
             });
         }
     }
 
-    private void constructTopPanel() {
+    private void initTopPanel() {
         Button back = new Button("", "BottomPanelFoldedTopText");
         float size = Float.parseFloat(getUIManager().getThemeConstant("menuImageSize", "4.5"));
         FontImage.setMaterialIcon(back, FontImage.MATERIAL_ARROW_BACK, size);
@@ -268,17 +246,19 @@ public class DraggablePanel extends Container {
             e.consume();
             boolean isDruggingUp = SOUTH.equals(getBottomPanelPosition());
             if (isDruggingUp) {
-                if (bottomPanel.getHeight() > minPanelHeight) {
+                if (bottomPanel.getHeight() > minPanelHeight + 3) {
+                    removeSwipeListeners();
                     draggableImage.remove();
                     bottomPanel.remove();
                     rentContent.hideTitle();
                     screenBlocking.setVisible(true);
                     getCurrentForm().getToolbar().setHidden(true);
 //                    mainContainer.revalidateWithAnimationSafety();
-                    contentHolder.setUIID("BottomPanelFolded");
+                    bottomPanel.setUIID("BottomPanelFolded");
                     add(NORTH, topToolbarPanel);
                     add(CENTER, bottomPanel);
-                    animateLayout(100);
+                    animateLayoutAndWait(100);
+                    addSwipeListeners();
                 } else {
                     bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
                     revalidateWithAnimationSafety();
@@ -311,17 +291,17 @@ public class DraggablePanel extends Container {
             }
         } else {
             Component draggedCmp = attachedForm.getComponentAt(e.getX(), e.getY());
-            System.out.println(draggedCmp);
-            if (draggedCmp == null || (!draggedCmp.isChildOf(this) && draggedCmp != screenBlocking)) {
-                return;
+            if (draggedCmp != null &&
+                    (draggedCmp.isChildOf(this)
+                            || draggedCmp == screenBlocking
+                            || draggedCmp == bottomScreenBlocking)) {
+                if (firstX == -1) {
+                    firstX = e.getX();
+                    firstY = e.getY();
+                }
+                e.consume();
+                isDraggingBottomPanel = true;
             }
-
-            if (firstX == -1) {
-                firstX = e.getX();
-                firstY = e.getY();
-            }
-            e.consume();
-            isDraggingBottomPanel = true;
         }
     }
 

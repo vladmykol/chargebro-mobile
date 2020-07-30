@@ -124,6 +124,8 @@ public class LoginForm extends Form {
         );
         add(BorderLayout.CENTER, mainContainer);
         add(BorderLayout.SOUTH, registerOrForgot);
+//        mainContainer.setScrollableY(true);
+//        mainContainer.setScrollVisible(false);
         setScrollableY(true);
 
         setEditOnShow(loginField);

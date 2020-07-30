@@ -3,7 +3,6 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
-import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -19,14 +18,15 @@ public class StationInfoSheet extends Sheet {
 
     private final Label availablePowerBanksNumber = new Label("0", "StationsSheetNumberAvailable");
     private final Label cabBeReturnedPowerBanksNumber = new Label("0", "StationsSheetNumberCanBeReturned");
-    private final SpanLabel addressLabel = new SpanLabel("Tiraspolska 60, Misto Kvitiv", "StationsSheetAddress");
+    private final SpanLabel addressLabel = new SpanLabel("", "StationsSheetAddress");
+    private final SpanLabel title = new SpanLabel("", "StationsSheetTitle");
     private final SpanLabel errorLabel = new SpanLabel("something went wrong", "ErrorText");
-    private String directionUrl;
     private final ScaleImageLabel placeLogoImageLabel;
     private final Container availableContainer;
+    private String directionUrl;
 
     StationInfoSheet() {
-        super(null, "Kvitka cafe and bar");
+        super(null, "");
         setPosition(BorderLayout.NORTH);
         Container cnt = getContentPane();
         errorLabel.setEnabled(false);
@@ -37,7 +37,7 @@ public class StationInfoSheet extends Sheet {
 
 
         int size = Display.getInstance().convertToPixels(1f);
-        Image placeImage = Effects.dropshadow(Resources.getGlobalResources().getImage("sova.jpg"), 15, 120, size, size);
+        Image placeImage = Effects.dropshadow(Resources.getGlobalResources().getImage("no-logo.png"), 10, 120, size, size);
         placeLogoImageLabel = new ScaleImageLabel(placeImage);
         placeLogoImageLabel.setUIID("StationsSheetImage");
 

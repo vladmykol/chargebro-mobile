@@ -40,7 +40,6 @@ public class RegisterCreditCardStep3 extends Form {
 
     public RegisterCreditCardStep3(String url) {
         super(new BorderLayout());
-        Form previous = getCurrentForm();
 //        CommonCode.removeTransitionsTemporarily(previous);
         setToolbar(new Toolbar(false));
         getToolbar().setTitle("Add your credit card");

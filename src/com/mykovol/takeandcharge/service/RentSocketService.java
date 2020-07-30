@@ -64,8 +64,13 @@ public class RentSocketService extends WebSocket {
 
     @Override
     public void reconnect() {
-        super.reconnect();
         autoReconnect(10000);
+        super.reconnect();
+    }
+
+    public void disconnect() {
+        autoReconnect(0);
+        close();
     }
 
     @Override
@@ -141,8 +146,9 @@ public class RentSocketService extends WebSocket {
         if (messageCode != MESSAGE_CODE_OK) {
             Log.p("websocket authentication issue - " + responseMessage);
         } else {
-            System.out.println("authenticated in websocket server " + responseMessage);
-            callSerially(() ->  MainForm.get().refreshRentContent());
+            Log.p("authenticated in websocket server " + responseMessage);
+            MainForm.get().refreshRentContent();
+            MainForm.get().refreshMarkersOnMap();
         }
     }
 

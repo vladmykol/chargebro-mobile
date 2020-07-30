@@ -36,10 +36,7 @@ import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.util.Callback;
 import com.codename1.util.SuccessCallback;
-import com.mykovol.takeandcharge.form.LoginForm;
-import com.mykovol.takeandcharge.form.MainForm;
-import com.mykovol.takeandcharge.form.RegisterCreditCardStep3;
-import com.mykovol.takeandcharge.form.RegisterMobileNumberStep1;
+import com.mykovol.takeandcharge.form.*;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
@@ -55,10 +52,12 @@ import static com.codename1.ui.CN.getCurrentForm;
  */
 public class CommonCode {
     private final static Command loginCommand = getLoginCommand();
+    private final static Command priceCommand = getPriceCommand();
     private final static Command registerCommand = getRegisterCommand();
     private final static Command addPaymentMethodCommand = getAddPaymentMethod();
     private final static Command supportCommand = getSupportCommand();
     private final static Command signOutCommandCommand = getSignOutCommand();
+    private final static Button profile = new Button("", "AvatarBlock");
     private static Image avatar;
 
     public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
@@ -138,14 +137,9 @@ public class CommonCode {
     }
 
     public static void constructSideMenu(Toolbar tb, Button screenBlocking) {
-        Button userAndAvatar = new Button("Welcome Stranger", "AvatarBlock");
-//        userAndAvatar.setIcon(getAvatar(i -> userAndAvatar.setIcon(i)));
-//        userAndAvatar.setGap(convertToPixels(4));
-//        userAndAvatar.addActionListener(e -> new EditAccountForm().show());
-        tb.addComponentToSideMenu(userAndAvatar);
+        tb.addComponentToSideMenu(profile);
 
         refreshCommands(tb);
-
 
         Button legalButton = new Button("Legal", "Legal");
         Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1", "Legal"), legalButton);
@@ -169,21 +163,47 @@ public class CommonCode {
     }
 
     private static void refreshCommands(Toolbar tb) {
+        refreshProfile();
         tb.removeCommand(loginCommand);
         tb.removeCommand(registerCommand);
         tb.removeCommand(addPaymentMethodCommand);
+        tb.removeCommand(priceCommand);
         tb.removeCommand(supportCommand);
         tb.removeCommand(signOutCommandCommand);
+
 
         if (UserService.isLoggedIn()) {
             tb.addCommandToLeftSideMenu(addPaymentMethodCommand);
             tb.addCommandToLeftSideMenu(supportCommand);
+            tb.addCommandToLeftSideMenu(priceCommand);
             tb.addCommandToLeftSideMenu(signOutCommandCommand);
         } else {
             tb.addCommandToLeftSideMenu(loginCommand);
             tb.addCommandToLeftSideMenu(registerCommand);
+            tb.addCommandToLeftSideMenu(priceCommand);
             tb.addCommandToLeftSideMenu(supportCommand);
         }
+    }
+
+    private static void refreshProfile() {
+        if (UserService.isLoggedIn()) {
+            profile.setText("Welcome back!");
+        } else {
+            profile.setText("Welcome!");
+        }
+
+//        userAndAvatar.setIcon(getAvatar(i -> userAndAvatar.setIcon(i)));
+//        userAndAvatar.setGap(convertToPixels(4));
+//        userAndAvatar.addActionListener(e -> new EditAccountForm().show());
+    }
+
+    private static Command getPriceCommand() {
+        return getCommand("Price", FontImage.MATERIAL_MONEY, evt -> {
+            new BrowserPopUp(getCurrentForm(),
+                    "Price",
+                    "https://takeandcharge.space/#pricing")
+                    .show();
+        });
     }
 
     public static void refreshCommands() {

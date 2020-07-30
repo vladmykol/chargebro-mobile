@@ -19,10 +19,9 @@
 
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.ui.BrowserComponent;
-import com.codename1.ui.Display;
-import com.codename1.ui.FontImage;
-import com.codename1.ui.Form;
+import com.codename1.components.FloatingActionButton;
+import com.codename1.components.ToastBar;
+import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.mykovol.takeandcharge.tools.CommonCode;
@@ -35,6 +34,8 @@ import com.mykovol.takeandcharge.tools.CommonCode;
 public class BrowserPopUp extends Form {
     public BrowserPopUp(Form previousForm, String title, String url) {
         super(new BorderLayout());
+        setToolbar(new Toolbar(false));
+
         setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
 //        MorphTransition morph = MorphTransition.create(400).
 //                morph("LogoImageName");
@@ -47,10 +48,26 @@ public class BrowserPopUp extends Form {
 //            previous.show();
 //        });123
 
-        CommonCode.removeTransitionsTemporarily(previousForm);
+        FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_DONE);
+        fab.bindFabToContainer(this);
+        fab.addActionListener(evt -> {
+//            ToastBar.showMessage("Congrats! Now you can take a powerbank", FontImage.MATERIAL_INFO);
+            MainForm.get().show();
+        });
+
+//        CommonCode.removeTransitionsTemporarily(previousForm);
 
         BrowserComponent browser = new BrowserComponent();
         browser.setURL(url);
+        browser.addBrowserNavigationCallback(url1 -> {
+            if (!url1.equals(url)) {
+                MainForm.get().show();
+                return false;
+            } else
+                return true;
+        });
+
+
         add(BorderLayout.CENTER, browser);
 
     }

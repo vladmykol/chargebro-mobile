@@ -91,8 +91,8 @@ public class RentService {
     }
 
     public static void getStationsNearBy(Coord coord, final Callback<List<StationInfo>> callback) {
-        Rest.get(GlobalConst.getServerUrl() + STATIONS_URL)
-                .bearer(UserService.getToken())
+        Rest.get(GlobalConst.getServerUrl() + STATIONS_NEARBY_URL)
+//                .bearer(UserService.getToken())
                 .queryParam("x", String.valueOf(coord.getLatitude()))
                 .queryParam("y", String.valueOf(coord.getLongitude()))
                 .acceptJson()
