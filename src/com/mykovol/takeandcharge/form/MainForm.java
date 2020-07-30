@@ -37,6 +37,7 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.component.ShowMyLocationButton;
@@ -73,6 +74,7 @@ public class MainForm extends Form {
 
     private MainForm() {
         super(new LayeredLayout());
+        setTransitionOutAnimator(CommonTransitions.createEmpty());
 
         setToolbar(new Toolbar(true));
         getToolbar().getMenuBar().setTactileTouch(true);
@@ -81,11 +83,11 @@ public class MainForm extends Form {
         draggablePanel = new DraggablePanel(draggablePanelScreenBlocker, this, getToolbar());
         setName("MapForm");
         setScrollableY(false);
-        setTransitionOutAnimator(CommonTransitions.createEmpty());
 
         mapContainer.setShowMyLocation(false);
         add(mapContainer);
-        initMap();
+
+        add(BorderLayout.south(scanButton));
 
         ScaleImageLabel gradient = new ScaleImageLabel(Resources.getGlobalResources().getImage("gradient-overlay.png"));
         gradient.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
@@ -104,9 +106,9 @@ public class MainForm extends Form {
 
         sideMenuScreenBlocker.setVisible(false);
         add(sideMenuScreenBlocker);
-        CommonCode.constructSideMenu(getToolbar(), sideMenuScreenBlocker);
 
-//        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
+        CommonCode.constructSideMenu(getToolbar(), sideMenuScreenBlocker);
+        initMap();
     }
 
     public static MainForm get() {
@@ -118,10 +120,10 @@ public class MainForm extends Form {
 
     @Override
     public void show() {
-        super.show();
+        RentSocketService.get().reconnect();
         showMyLocationButton.refreshState();
-
-        refreshRentContent();
+        super.show();
+        refreshMarkersOnMap(ukraineCoord);
     }
 
     public void suspend() {
@@ -130,13 +132,13 @@ public class MainForm extends Form {
     }
 
     private void initMap() {
-        Coord defaultLocation = ukraineCoord;
-
-        mapContainer.setCameraPosition(defaultLocation);
-        mapContainer.zoom(defaultLocation, mapContainer.getMinZoom() + 10);
+        mapContainer.setCameraPosition(ukraineCoord);
+        mapContainer.zoom(ukraineCoord, mapContainer.getMinZoom() + 10);
 
         addMapListenerToDrawStationsOnMap();
-        refreshMarkersOnMap(defaultLocation);
+//        UITimer.timer(7000, false, getComponentForm(), () -> {
+//refreshMarkersOnMap(ukraineCoord);
+//        });
     }
 
 
@@ -170,7 +172,11 @@ public class MainForm extends Form {
         });
     }
 
-    private void refreshMarkersOnMap(Coord position) {
+    public void refreshMarkersOnMap() {
+        refreshMarkersOnMap(ukraineCoord);
+    }
+
+    public void refreshMarkersOnMap(Coord position) {
         Log.p("Station update");
         RentService.getStationsNearBy(position, new Callback<List<StationInfo>>() {
             @Override
@@ -182,14 +188,16 @@ public class MainForm extends Form {
             public void onSucess(List<StationInfo> stations) {
                 for (StationInfo station : stations) {
                     if (!mapMarkers.containsKey(station.id.get())) {
-                        mapMarkers.put(station.id.get(),
-                                mapContainer.addMarker(
-                                        EncodedImage.createFromImage(stationPointImage, false),
-                                        new Coord(station.locationX.get(), station.locationY.get()), "some text here",
-                                        "and some long text here",
-                                        evt -> {
-                                            stationInfoSheet.show(station);
-                                        }));
+                        callSerially(() -> {
+                                mapMarkers.put(station.id.get(),
+                                        mapContainer.addMarker(
+                                                EncodedImage.createFromImage(stationPointImage, false),
+                                                new Coord(station.locationX.get(), station.locationY.get()), "some text here",
+                                                "and some long text here",
+                                                evt -> {
+                                                    stationInfoSheet.show(station);
+                                                }));
+                        });
                     }
                 }
             }

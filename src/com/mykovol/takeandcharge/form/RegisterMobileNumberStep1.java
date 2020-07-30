@@ -59,7 +59,7 @@ public class RegisterMobileNumberStep1 extends Form {
     private final Container errorContainer = BoxLayout.encloseX(errorText, errorTimeLabel);
     private final FloatingActionButton submitButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
     private final SpanLabel mobileNumber = new SpanLabel("We need your mobile number to send SMS with PIN code", RegisterStyle.LABEL);
-    private final Button alreadyHaveAccountButton = new Button("Already have an account", "AlreadyHaveAnAccountButton");
+//    private final Button alreadyHaveAccountButton = new Button("Already have an account", "AlreadyHaveAnAccountButton");
 
 
     public RegisterMobileNumberStep1() {
@@ -84,7 +84,7 @@ public class RegisterMobileNumberStep1 extends Form {
                 null,
                 countryCodeButton));
         add(errorContainer);
-        add(BoxLayout.encloseXCenter(alreadyHaveAccountButton));
+//        add(BoxLayout.encloseXCenter(alreadyHaveAccountButton));
         submitButton.bindFabToContainer(this);
         setScrollableY(true);
     }
@@ -111,9 +111,9 @@ public class RegisterMobileNumberStep1 extends Form {
         errorText.getAllStyles().setPaddingRight(1);
         errorTimeLabel.getAllStyles().setPaddingLeft(0);
 
-        alreadyHaveAccountButton.addActionListener(evt -> {
-            new LoginForm().show();
-        });
+//        alreadyHaveAccountButton.addActionListener(evt -> {
+//            new LoginForm().show();
+//        });
     }
 
     private Validator createPhoneNumberValidator() {

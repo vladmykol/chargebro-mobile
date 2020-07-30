@@ -481,7 +481,7 @@ GetDirectionButton{
     color: #0479f5;
     font-size: 6mm;
     padding: 3mm;
-    margin: 0mm 2mm 0mm 2mm;
+    margin: 0mm 2mm;
 }
 
 GetDirectionButton.pressed {

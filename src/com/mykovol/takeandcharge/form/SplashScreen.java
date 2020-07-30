@@ -8,7 +8,6 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.mykovol.takeandcharge.service.RentSocketService;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.layouts.BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE;
@@ -58,19 +57,25 @@ public class SplashScreen extends Form {
 
             callSerially(() -> {
                 animateTitle();
-                callSerially(RentSocketService::get);
-                animateSubTitle();
+                MainForm.get();
+                callSerially(() -> {
+                    animateSubTitle();
 //                mainContainer.add(BoxLayout.encloseXCenter(new InfiniteProgress()));
 
-                AnimationManager a = getAnimationManager();
-                if (a != null) {
-                    a.flushAnimation(new Runnable() {
-                        @Override
-                        public void run() {
-                            MainForm.get().show();
-                        }
-                    });
-                }
+                    callSerially(() -> {
+                        MainForm.get().show();
+                            });
+
+//                    AnimationManager a = getAnimationManager();
+//                    if (a != null) {
+//                        a.flushAnimation(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                MainForm.get().show();
+//                            }
+//                        });
+//                    }
+                });
             });
 
 

@@ -156,7 +156,7 @@ public class RentService {
                         @Override
                         public void scanCanceled() {
                             Preferences.set("isUserNotifiedAboutCameraUse", true);
-                            callback.onError(null, null, 0, "Scan is cancelled lease ensure you allowed access to your camera");
+                            callback.onError(null, null, 0, "Scan is cancelled");
                         }
 
                         @Override
@@ -185,7 +185,7 @@ public class RentService {
                         return;
                     }
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
-//                    System.out.println("Error:" + errorData.getResponseCode() + responseData.message.get());
+//                    Log.p(("Error:" + errorData.getResponseCode() + responseData.message.get());
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsString(resp -> {

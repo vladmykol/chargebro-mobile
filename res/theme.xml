@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <resource majorVersion="1" minorVersion="11" useXmlUI="false">
-    <image name="charging-station.png" type="multi"  />
     <image name="dont-spend-time.png" type="multi"  />
     <image name="facebook.png" type="multi"  />
     <image name="google.png" type="multi"  />
     <image name="gradient-overlay.png" type="multi"  />
-    <image name="InfinityAnimationBottom_1.png" type="multi"  />
-    <image name="InfinityAnimationBottomL_1.png" type="multi"  />
-    <image name="InfinityAnimationBottomR_1.png" type="multi"  />
-    <image name="InfinityAnimationCenter_1.png" type="multi"  />
-    <image name="InfinityAnimationLeft_1.png" type="multi"  />
-    <image name="InfinityAnimationRight_1.png" type="multi"  />
-    <image name="InfinityAnimationTop_1.png" type="multi"  />
-    <image name="InfinityAnimationTopL_1.png" type="multi"  />
-    <image name="InfinityAnimationTopR_1.png" type="multi"  />
     <image name="main-logo.png" type="multi"  />
-    <image name="map-point.png" type="multi"  />
     <image name="map-point2.png" type="multi"  />
     <image name="mobile-number.png" type="multi"  />
+    <image name="no-logo.png" type="multi"  />
     <image name="power-bank-photo.png" type="multi"  />
-    <image name="register.png" type="multi"  />
     <image name="RentBorderBottom_1.png" type="multi"  />
     <image name="RentBorderBottomL_1.png" type="multi"  />
     <image name="RentBorderBottomR_1.png" type="multi"  />
@@ -48,7 +37,6 @@
     <image name="ShowMeButtonTopL_2.png" type="multi"  />
     <image name="ShowMeButtonTopR_1.png" type="multi"  />
     <image name="ShowMeButtonTopR_2.png" type="multi"  />
-    <image name="sova.jpg" type="multi"  />
     <image name="splash-logo-part1.png" type="multi"  />
     <image name="splash-logo-part2.png" type="multi"  />
     <image name="TakePowerBankButtonBottom_1.png" type="multi"  />
@@ -70,8 +58,7 @@
     <image name="TakePowerBankButtonTopR_1.png" type="multi"  />
     <image name="TakePowerBankButtonTopR_2.png" type="multi"  />
     <theme name="Theme">
-        <val key="@cafeSovaImage" value="sova.jpg" />
-        <val key="@chargingStationImage" value="charging-station.png" />
+        <val key="@buttonRippleBool" value="false" />
         <val key="@dontSpendTimeImage" value="dont-spend-time.png" />
         <val key="@facebookImage" value="facebook.png" />
         <val key="@googleImage" value="google.png" />
@@ -79,18 +66,48 @@
         <val key="@imageMetadata" value="{}" />
         <val key="@includeNativeBool" value="true" />
         <val key="@mailLogoImage" value="main-logo.png" />
-        <val key="@mapPointImage" value="map-point.png" />
-        <val key="@mapTileLoadingImage" value="main-logo.png" />
         <val key="@menuImageSize" value="6" />
         <val key="@mobileNumberImage" value="mobile-number.png" />
+        <val key="@noLogoImage" value="no-logo.png" />
         <val key="@powerBankPhotoImage" value="power-bank-photo.png" />
-        <val key="@registerImage" value="register.png" />
         <val key="@sideMenuTensileDragBool" value="false" />
-        <val key="@sideSwipeActivationInt" value="50" />
-        <val key="@sideSwipeSensitiveInt" value="50" />
+        <val key="@sideSwipeActivationInt" value="100" />
+        <val key="@sideSwipeSensitiveInt" value="100" />
         <val key="@splashLogo1Image" value="splash-logo-part1.png" />
         <val key="@splashLogo2Image" value="splash-logo-part2.png" />
         <val key="@verticalDraggableImage" value="vertical-draggable.png" />
+        <val key="AlreadyHaveAnAccountButton.align" value="4" />
+        <val key="AlreadyHaveAnAccountButton.derive" value="RegisterLabel" />
+        <val key="AlreadyHaveAnAccountButton.dis#align" value="4" />
+        <val key="AlreadyHaveAnAccountButton.dis#derive" value="RegisterLabel.dis" />
+        <val key="AlreadyHaveAnAccountButton.dis#fgColor" value="2775a4" />
+        <font key="AlreadyHaveAnAccountButton.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="AlreadyHaveAnAccountButton.dis#marUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.dis#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="AlreadyHaveAnAccountButton.dis#padUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.dis#padding" value="1.3,1.3,2.0,2.0" />
+        <val key="AlreadyHaveAnAccountButton.fgColor" value="2775a4" />
+        <font key="AlreadyHaveAnAccountButton.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="AlreadyHaveAnAccountButton.marUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.margin" value="0.0,0.0,0.0,0.0" />
+        <val key="AlreadyHaveAnAccountButton.padUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.padding" value="1.3,1.3,2.0,2.0" />
+        <val key="AlreadyHaveAnAccountButton.press#align" value="4" />
+        <val key="AlreadyHaveAnAccountButton.press#derive" value="RegisterLabel.press" />
+        <val key="AlreadyHaveAnAccountButton.press#fgColor" value="2775a4" />
+        <font key="AlreadyHaveAnAccountButton.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="AlreadyHaveAnAccountButton.press#marUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.press#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="AlreadyHaveAnAccountButton.press#padUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.press#padding" value="1.3,1.3,2.0,2.0" />
+        <val key="AlreadyHaveAnAccountButton.sel#align" value="4" />
+        <val key="AlreadyHaveAnAccountButton.sel#derive" value="RegisterLabel.sel" />
+        <val key="AlreadyHaveAnAccountButton.sel#fgColor" value="2775a4" />
+        <font key="AlreadyHaveAnAccountButton.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
+        <val key="AlreadyHaveAnAccountButton.sel#marUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.sel#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="AlreadyHaveAnAccountButton.sel#padUnit" value="2,2,2,2" />
+        <val key="AlreadyHaveAnAccountButton.sel#padding" value="1.3,1.3,2.0,2.0" />
         <val key="AvatarBlock.align" value="1" />
         <val key="AvatarBlock.bgColor" value="8fc0c5" />
         <val key="AvatarBlock.dis#align" value="1" />
@@ -320,14 +337,14 @@
         <val key="ErrorText.dis#marUnit" value="2,2,2,2" />
         <val key="ErrorText.dis#margin" value="0.0,0.0,0.0,0.0" />
         <val key="ErrorText.dis#padUnit" value="2,2,2,2" />
-        <val key="ErrorText.dis#padding" value="0.2,0.2,0.0,0.0" />
+        <val key="ErrorText.dis#padding" value="0.2,0.2,1.0,1.0" />
         <val key="ErrorText.dis#transparency" value="255" />
         <val key="ErrorText.fgColor" value="ffffff" />
         <font key="ErrorText.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="2.5" />
         <val key="ErrorText.marUnit" value="2,2,2,2" />
         <val key="ErrorText.margin" value="0.0,0.0,0.0,0.0" />
         <val key="ErrorText.padUnit" value="2,2,2,2" />
-        <val key="ErrorText.padding" value="0.2,0.2,0.0,0.0" />
+        <val key="ErrorText.padding" value="0.2,0.2,1.0,1.0" />
         <val key="ErrorText.press#align" value="4" />
         <val key="ErrorText.press#bgColor" value="f34c4c" />
         <val key="ErrorText.press#fgColor" value="ffffff" />
@@ -335,7 +352,7 @@
         <val key="ErrorText.press#marUnit" value="2,2,2,2" />
         <val key="ErrorText.press#margin" value="0.0,0.0,0.0,0.0" />
         <val key="ErrorText.press#padUnit" value="2,2,2,2" />
-        <val key="ErrorText.press#padding" value="0.2,0.2,0.0,0.0" />
+        <val key="ErrorText.press#padding" value="0.2,0.2,1.0,1.0" />
         <val key="ErrorText.press#transparency" value="255" />
         <val key="ErrorText.sel#align" value="4" />
         <val key="ErrorText.sel#bgColor" value="f34c4c" />
@@ -344,7 +361,7 @@
         <val key="ErrorText.sel#marUnit" value="2,2,2,2" />
         <val key="ErrorText.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="ErrorText.sel#padUnit" value="2,2,2,2" />
-        <val key="ErrorText.sel#padding" value="0.2,0.2,0.0,0.0" />
+        <val key="ErrorText.sel#padding" value="0.2,0.2,1.0,1.0" />
         <val key="ErrorText.sel#transparency" value="255" />
         <val key="ErrorText.transparency" value="255" />
         <val key="FloatingActionButton.bgColor" value="8fc0c5" />
@@ -395,14 +412,30 @@
         <val key="Form.sel#fgColor" value="8fc0c5" />
         <val key="Form.sel#transparency" value="255" />
         <val key="Form.transparency" value="255" />
-        <border key="InfinityAnimation.border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
-        <border key="InfinityAnimation.dis#border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
-        <val key="InfinityAnimation.dis#transparency" value="0" />
-        <border key="InfinityAnimation.press#border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
-        <val key="InfinityAnimation.press#transparency" value="0" />
-        <border key="InfinityAnimation.sel#border" type="image" i1="InfinityAnimationTop_1.png" i2="InfinityAnimationBottom_1.png" i3="InfinityAnimationLeft_1.png" i4="InfinityAnimationRight_1.png" i5="InfinityAnimationTopL_1.png" i6="InfinityAnimationTopR_1.png" i7="InfinityAnimationBottomL_1.png" i8="InfinityAnimationBottomR_1.png" i9="InfinityAnimationCenter_1.png" />
-        <val key="InfinityAnimation.sel#transparency" value="0" />
-        <val key="InfinityAnimation.transparency" value="0" />
+        <val key="GetDirectionButton.dis#fgColor" value="479f5" />
+        <font key="GetDirectionButton.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="GetDirectionButton.dis#marUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.dis#margin" value="0.0,0.0,2.0,2.0" />
+        <val key="GetDirectionButton.dis#padUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.dis#padding" value="3.0,3.0,3.0,3.0" />
+        <val key="GetDirectionButton.fgColor" value="479f5" />
+        <font key="GetDirectionButton.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="GetDirectionButton.marUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.margin" value="0.0,0.0,2.0,2.0" />
+        <val key="GetDirectionButton.padUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.padding" value="3.0,3.0,3.0,3.0" />
+        <val key="GetDirectionButton.press#fgColor" value="808080" />
+        <font key="GetDirectionButton.press#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="GetDirectionButton.press#marUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.press#margin" value="0.0,0.0,2.0,2.0" />
+        <val key="GetDirectionButton.press#padUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.press#padding" value="3.0,3.0,3.0,3.0" />
+        <val key="GetDirectionButton.sel#fgColor" value="479f5" />
+        <font key="GetDirectionButton.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="GetDirectionButton.sel#marUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.sel#margin" value="0.0,0.0,2.0,2.0" />
+        <val key="GetDirectionButton.sel#padUnit" value="2,2,2,2" />
+        <val key="GetDirectionButton.sel#padding" value="3.0,3.0,3.0,3.0" />
         <val key="Legal.derive" value="Label" />
         <val key="Legal.dis#derive" value="Label.dis" />
         <val key="Legal.dis#fgColor" value="808080" />
@@ -459,6 +492,8 @@
         <val key="PanelHeader.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="PanelHeader.sel#padUnit" value="2,2,2,2" />
         <val key="PanelHeader.sel#padding" value="1.0,1.0,3.0,3.0" />
+        <val key="PanelImage.align" value="4" />
+        <val key="PanelImage.dis#align" value="4" />
         <val key="PanelImage.dis#marUnit" value="2,2,2,2" />
         <val key="PanelImage.dis#margin" value="0.0,0.0,1.0,1.0" />
         <val key="PanelImage.dis#padUnit" value="2,2,2,2" />
@@ -467,10 +502,12 @@
         <val key="PanelImage.margin" value="0.0,0.0,1.0,1.0" />
         <val key="PanelImage.padUnit" value="2,2,2,2" />
         <val key="PanelImage.padding" value="0.0,0.0,0.0,0.0" />
+        <val key="PanelImage.press#align" value="4" />
         <val key="PanelImage.press#marUnit" value="2,2,2,2" />
         <val key="PanelImage.press#margin" value="0.0,0.0,1.0,1.0" />
         <val key="PanelImage.press#padUnit" value="2,2,2,2" />
         <val key="PanelImage.press#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="PanelImage.sel#align" value="4" />
         <val key="PanelImage.sel#marUnit" value="2,2,2,2" />
         <val key="PanelImage.sel#margin" value="0.0,0.0,1.0,1.0" />
         <val key="PanelImage.sel#padUnit" value="2,2,2,2" />
@@ -719,28 +756,20 @@
         <val key="ResendCodeLabel.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="ResendCodeLabel.sel#padUnit" value="2,2,2,2" />
         <val key="ResendCodeLabel.sel#padding" value="1.3,1.3,2.0,2.0" />
-        <val key="SheetTitle.dis#fgColor" value="497b7d" />
-        <font key="SheetTitle.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
-        <val key="SheetTitle.fgColor" value="497b7d" />
-        <font key="SheetTitle.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
-        <val key="SheetTitle.press#fgColor" value="497b7d" />
-        <font key="SheetTitle.press#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
-        <val key="SheetTitle.sel#fgColor" value="497b7d" />
-        <font key="SheetTitle.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
         <val key="ShowMeButton.align" value="4" />
         <val key="ShowMeButton.bgColor" value="ffffff" />
         <border key="ShowMeButton.border" type="image" i1="ShowMeButtonTop_1.png" i2="ShowMeButtonBottom_1.png" i3="ShowMeButtonLeft_1.png" i4="ShowMeButtonRight_1.png" i5="ShowMeButtonTopL_1.png" i6="ShowMeButtonTopR_1.png" i7="ShowMeButtonBottomL_1.png" i8="ShowMeButtonBottomR_1.png" i9="ShowMeButtonCenter_1.png" />
         <val key="ShowMeButton.dis#align" value="4" />
         <val key="ShowMeButton.dis#bgColor" value="ffffff" />
         <border key="ShowMeButton.dis#border" type="image" i1="ShowMeButtonTop_1.png" i2="ShowMeButtonBottom_1.png" i3="ShowMeButtonLeft_1.png" i4="ShowMeButtonRight_1.png" i5="ShowMeButtonTopL_1.png" i6="ShowMeButtonTopR_1.png" i7="ShowMeButtonBottomL_1.png" i8="ShowMeButtonBottomR_1.png" i9="ShowMeButtonCenter_1.png" />
-        <val key="ShowMeButton.dis#fgColor" value="8fc0c5" />
+        <val key="ShowMeButton.dis#fgColor" value="5f9ea0" />
         <font key="ShowMeButton.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="3.2" />
         <val key="ShowMeButton.dis#marUnit" value="2,2,2,2" />
         <val key="ShowMeButton.dis#margin" value="13.0,13.0,2.0,2.0" />
         <val key="ShowMeButton.dis#padUnit" value="2,2,2,2" />
         <val key="ShowMeButton.dis#padding" value="2.0,2.0,2.0,2.0" />
         <val key="ShowMeButton.dis#transparency" value="0" />
-        <val key="ShowMeButton.fgColor" value="8fc0c5" />
+        <val key="ShowMeButton.fgColor" value="5f9ea0" />
         <font key="ShowMeButton.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="3.2" />
         <val key="ShowMeButton.marUnit" value="2,2,2,2" />
         <val key="ShowMeButton.margin" value="13.0,13.0,2.0,2.0" />
@@ -749,7 +778,7 @@
         <val key="ShowMeButton.press#align" value="4" />
         <val key="ShowMeButton.press#bgColor" value="ffffff" />
         <border key="ShowMeButton.press#border" type="image" i1="ShowMeButtonTop_2.png" i2="ShowMeButtonBottom_2.png" i3="ShowMeButtonLeft_2.png" i4="ShowMeButtonRight_2.png" i5="ShowMeButtonTopL_2.png" i6="ShowMeButtonTopR_2.png" i7="ShowMeButtonBottomL_2.png" i8="ShowMeButtonBottomR_2.png" i9="ShowMeButtonCenter_2.png" />
-        <val key="ShowMeButton.press#fgColor" value="8fc0c5" />
+        <val key="ShowMeButton.press#fgColor" value="5f9ea0" />
         <font key="ShowMeButton.press#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="3.2" />
         <val key="ShowMeButton.press#marUnit" value="2,2,2,2" />
         <val key="ShowMeButton.press#margin" value="13.0,13.0,2.0,2.0" />
@@ -759,7 +788,7 @@
         <val key="ShowMeButton.sel#align" value="4" />
         <val key="ShowMeButton.sel#bgColor" value="ffffff" />
         <border key="ShowMeButton.sel#border" type="image" i1="ShowMeButtonTop_1.png" i2="ShowMeButtonBottom_1.png" i3="ShowMeButtonLeft_1.png" i4="ShowMeButtonRight_1.png" i5="ShowMeButtonTopL_1.png" i6="ShowMeButtonTopR_1.png" i7="ShowMeButtonBottomL_1.png" i8="ShowMeButtonBottomR_1.png" i9="ShowMeButtonCenter_1.png" />
-        <val key="ShowMeButton.sel#fgColor" value="8fc0c5" />
+        <val key="ShowMeButton.sel#fgColor" value="5f9ea0" />
         <font key="ShowMeButton.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="3.2" />
         <val key="ShowMeButton.sel#marUnit" value="2,2,2,2" />
         <val key="ShowMeButton.sel#margin" value="13.0,13.0,2.0,2.0" />
@@ -892,37 +921,37 @@
         <val key="StationsSheetAddress.dis#fgColor" value="0" />
         <font key="StationsSheetAddress.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="StationsSheetAddress.dis#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.dis#margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.dis#margin" value="1.0,1.0,1.0,1.0" />
         <val key="StationsSheetAddress.dis#padUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.dis#padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetAddress.dis#padding" value="0.0,0.0,0.0,0.0" />
         <val key="StationsSheetAddress.fgColor" value="0" />
         <font key="StationsSheetAddress.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="StationsSheetAddress.marUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.margin" value="1.0,1.0,1.0,1.0" />
         <val key="StationsSheetAddress.padUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetAddress.padding" value="0.0,0.0,0.0,0.0" />
         <val key="StationsSheetAddress.press#align" value="1" />
         <val key="StationsSheetAddress.press#fgColor" value="0" />
         <font key="StationsSheetAddress.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="StationsSheetAddress.press#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.press#margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.press#margin" value="1.0,1.0,1.0,1.0" />
         <val key="StationsSheetAddress.press#padUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.press#padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetAddress.press#padding" value="0.0,0.0,0.0,0.0" />
         <val key="StationsSheetAddress.sel#align" value="1" />
         <val key="StationsSheetAddress.sel#fgColor" value="0" />
         <font key="StationsSheetAddress.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="StationsSheetAddress.sel#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.sel#margin" value="2.0,2.0,0.0,0.0" />
+        <val key="StationsSheetAddress.sel#margin" value="1.0,1.0,1.0,1.0" />
         <val key="StationsSheetAddress.sel#padUnit" value="2,2,2,2" />
-        <val key="StationsSheetAddress.sel#padding" value="0.0,0.0,1.0,0.0" />
+        <val key="StationsSheetAddress.sel#padding" value="0.0,0.0,0.0,0.0" />
         <val key="StationsSheetImage.dis#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.dis#margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetImage.dis#margin" value="0.0,0.0,2.0,2.0" />
         <val key="StationsSheetImage.marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetImage.margin" value="0.0,0.0,2.0,2.0" />
         <val key="StationsSheetImage.press#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.press#margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetImage.press#margin" value="0.0,0.0,2.0,2.0" />
         <val key="StationsSheetImage.sel#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.sel#margin" value="1.0,1.0,1.0,1.0" />
+        <val key="StationsSheetImage.sel#margin" value="0.0,0.0,2.0,2.0" />
         <val key="StationsSheetNumberAvailable.derive" value="StationsSheetText" />
         <val key="StationsSheetNumberAvailable.dis#derive" value="StationsSheetText.dis" />
         <val key="StationsSheetNumberAvailable.dis#fgColor" value="8000" />
@@ -1003,12 +1032,40 @@
         <val key="StationsSheetText.sel#margin" value="0.0,0.0,1.0,0.0" />
         <val key="StationsSheetText.sel#padUnit" value="2,2,2,2" />
         <val key="StationsSheetText.sel#padding" value="0.3,0.3,0.3,0.3" />
+        <val key="StationsSheetTitle.align" value="4" />
+        <val key="StationsSheetTitle.dis#align" value="4" />
+        <val key="StationsSheetTitle.dis#fgColor" value="5f9ea0" />
+        <font key="StationsSheetTitle.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="StationsSheetTitle.dis#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.dis#margin" value="2.0,0.0,1.0,1.0" />
+        <val key="StationsSheetTitle.dis#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.dis#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="StationsSheetTitle.fgColor" value="5f9ea0" />
+        <font key="StationsSheetTitle.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="StationsSheetTitle.marUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.margin" value="2.0,0.0,1.0,1.0" />
+        <val key="StationsSheetTitle.padUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.padding" value="0.0,0.0,0.0,0.0" />
+        <val key="StationsSheetTitle.press#align" value="4" />
+        <val key="StationsSheetTitle.press#fgColor" value="5f9ea0" />
+        <font key="StationsSheetTitle.press#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="StationsSheetTitle.press#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.press#margin" value="2.0,0.0,1.0,1.0" />
+        <val key="StationsSheetTitle.press#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.press#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="StationsSheetTitle.sel#align" value="4" />
+        <val key="StationsSheetTitle.sel#fgColor" value="5f9ea0" />
+        <font key="StationsSheetTitle.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="4.0" />
+        <val key="StationsSheetTitle.sel#marUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.sel#margin" value="2.0,0.0,1.0,1.0" />
+        <val key="StationsSheetTitle.sel#padUnit" value="2,2,2,2" />
+        <val key="StationsSheetTitle.sel#padding" value="0.0,0.0,0.0,0.0" />
         <val key="TakePowerBankButton.align" value="4" />
-        <val key="TakePowerBankButton.bgColor" value="8fc0c5" />
+        <val key="TakePowerBankButton.bgColor" value="5f9ea0" />
         <border key="TakePowerBankButton.border" type="image" i1="TakePowerBankButtonTop_1.png" i2="TakePowerBankButtonBottom_1.png" i3="TakePowerBankButtonLeft_1.png" i4="TakePowerBankButtonRight_1.png" i5="TakePowerBankButtonTopL_1.png" i6="TakePowerBankButtonTopR_1.png" i7="TakePowerBankButtonBottomL_1.png" i8="TakePowerBankButtonBottomR_1.png" i9="TakePowerBankButtonCenter_1.png" />
         <val key="TakePowerBankButton.derive" value="Button" />
         <val key="TakePowerBankButton.dis#align" value="4" />
-        <val key="TakePowerBankButton.dis#bgColor" value="8fc0c5" />
+        <val key="TakePowerBankButton.dis#bgColor" value="5f9ea0" />
         <border key="TakePowerBankButton.dis#border" type="image" i1="TakePowerBankButtonTop_1.png" i2="TakePowerBankButtonBottom_1.png" i3="TakePowerBankButtonLeft_1.png" i4="TakePowerBankButtonRight_1.png" i5="TakePowerBankButtonTopL_1.png" i6="TakePowerBankButtonTopR_1.png" i7="TakePowerBankButtonBottomL_1.png" i8="TakePowerBankButtonBottomR_1.png" i9="TakePowerBankButtonCenter_1.png" />
         <val key="TakePowerBankButton.dis#derive" value="Button.dis" />
         <val key="TakePowerBankButton.dis#fgColor" value="ffffff" />
@@ -1025,7 +1082,7 @@
         <val key="TakePowerBankButton.padUnit" value="2,2,2,2" />
         <val key="TakePowerBankButton.padding" value="3.0,4.0,7.0,8.0" />
         <val key="TakePowerBankButton.press#align" value="4" />
-        <val key="TakePowerBankButton.press#bgColor" value="8fc0c5" />
+        <val key="TakePowerBankButton.press#bgColor" value="5f9ea0" />
         <border key="TakePowerBankButton.press#border" type="image" i1="TakePowerBankButtonTop_2.png" i2="TakePowerBankButtonBottom_2.png" i3="TakePowerBankButtonLeft_2.png" i4="TakePowerBankButtonRight_2.png" i5="TakePowerBankButtonTopL_2.png" i6="TakePowerBankButtonTopR_2.png" i7="TakePowerBankButtonBottomL_2.png" i8="TakePowerBankButtonBottomR_2.png" i9="TakePowerBankButtonCenter_2.png" />
         <val key="TakePowerBankButton.press#derive" value="Button.press" />
         <val key="TakePowerBankButton.press#fgColor" value="ffffff" />
@@ -1036,7 +1093,7 @@
         <val key="TakePowerBankButton.press#padding" value="3.0,4.0,7.0,8.0" />
         <val key="TakePowerBankButton.press#transparency" value="0" />
         <val key="TakePowerBankButton.sel#align" value="4" />
-        <val key="TakePowerBankButton.sel#bgColor" value="8fc0c5" />
+        <val key="TakePowerBankButton.sel#bgColor" value="5f9ea0" />
         <border key="TakePowerBankButton.sel#border" type="image" i1="TakePowerBankButtonTop_1.png" i2="TakePowerBankButtonBottom_1.png" i3="TakePowerBankButtonLeft_1.png" i4="TakePowerBankButtonRight_1.png" i5="TakePowerBankButtonTopL_1.png" i6="TakePowerBankButtonTopR_1.png" i7="TakePowerBankButtonBottomL_1.png" i8="TakePowerBankButtonBottomR_1.png" i9="TakePowerBankButtonCenter_1.png" />
         <val key="TakePowerBankButton.sel#derive" value="Button.sel" />
         <val key="TakePowerBankButton.sel#fgColor" value="ffffff" />
@@ -1227,78 +1284,62 @@
         <val key="Toolbar.sel#fgColor" value="8fc0c5" />
         <val key="Toolbar.sel#padUnit" value="2,2,2,2" />
         <val key="Toolbar.sel#padding" value="2.0,2.0,2.0,2.0" />
-        <val key="UnderBottomPanel.dis#marUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.dis#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="UnderBottomPanel.dis#padUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.dis#padding" value="0.0,0.0,0.0,0.0" />
-        <val key="UnderBottomPanel.marUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.margin" value="0.0,0.0,0.0,0.0" />
-        <val key="UnderBottomPanel.padUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.padding" value="0.0,0.0,0.0,0.0" />
-        <val key="UnderBottomPanel.press#marUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.press#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="UnderBottomPanel.press#padUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.press#padding" value="0.0,0.0,0.0,0.0" />
-        <val key="UnderBottomPanel.sel#marUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.sel#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="UnderBottomPanel.sel#padUnit" value="2,2,2,2" />
-        <val key="UnderBottomPanel.sel#padding" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.align" value="1" />
         <val key="WelcomeText.dis#align" value="1" />
         <font key="WelcomeText.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText.dis#marUnit" value="2,2,2,2" />
         <val key="WelcomeText.dis#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.dis#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.dis#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="WelcomeText.dis#padding" value="1.5,0.0,1.0,0.0" />
         <font key="WelcomeText.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText.marUnit" value="2,2,2,2" />
         <val key="WelcomeText.margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.padding" value="0.0,0.0,0.0,0.0" />
+        <val key="WelcomeText.padding" value="1.5,0.0,1.0,0.0" />
         <val key="WelcomeText.press#align" value="1" />
         <font key="WelcomeText.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText.press#marUnit" value="2,2,2,2" />
         <val key="WelcomeText.press#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.press#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.press#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="WelcomeText.press#padding" value="1.5,0.0,1.0,0.0" />
         <val key="WelcomeText.sel#align" value="1" />
         <font key="WelcomeText.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText.sel#marUnit" value="2,2,2,2" />
         <val key="WelcomeText.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.sel#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.sel#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="WelcomeText.sel#padding" value="1.5,0.0,1.0,0.0" />
         <val key="WelcomeText2.align" value="1" />
         <val key="WelcomeText2.derive" value="WelcomeText" />
         <val key="WelcomeText2.dis#align" value="1" />
         <val key="WelcomeText2.dis#derive" value="WelcomeText.dis" />
-        <val key="WelcomeText2.dis#fgColor" value="80acb1" />
+        <val key="WelcomeText2.dis#fgColor" value="5f9ea0" />
         <font key="WelcomeText2.dis#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText2.dis#marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.dis#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.dis#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.dis#padding" value="0.0,0.0,0.0,0.0" />
-        <val key="WelcomeText2.fgColor" value="80acb1" />
+        <val key="WelcomeText2.dis#padding" value="1.5,0.0,0.0,1.0" />
+        <val key="WelcomeText2.fgColor" value="5f9ea0" />
         <font key="WelcomeText2.font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText2.marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.padding" value="0.0,0.0,0.0,0.0" />
+        <val key="WelcomeText2.padding" value="1.5,0.0,0.0,1.0" />
         <val key="WelcomeText2.press#align" value="1" />
         <val key="WelcomeText2.press#derive" value="WelcomeText.press" />
-        <val key="WelcomeText2.press#fgColor" value="80acb1" />
+        <val key="WelcomeText2.press#fgColor" value="5f9ea0" />
         <font key="WelcomeText2.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText2.press#marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.press#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.press#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.press#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="WelcomeText2.press#padding" value="1.5,0.0,0.0,1.0" />
         <val key="WelcomeText2.sel#align" value="1" />
         <val key="WelcomeText2.sel#derive" value="WelcomeText.sel" />
-        <val key="WelcomeText2.sel#fgColor" value="80acb1" />
+        <val key="WelcomeText2.sel#fgColor" value="5f9ea0" />
         <font key="WelcomeText2.sel#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText2.sel#marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.sel#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.sel#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="WelcomeText2.sel#padding" value="1.5,0.0,0.0,1.0" />
     </theme>
     <image name="vertical-draggable.png" type="multi"  />
 </resource>

@@ -29,12 +29,13 @@ package com.mykovol.takeandcharge.service;
  * @author Shai Almog
  */
 public final class GlobalConst {
-    public static final boolean LOCAL = true;
+    public static final boolean LOCAL = false;
 
     public static final String RENT_URL = "/rent";
     public static final String PAY_URL = "/pay/checkout";
     public static final String RENT_HISTORY_URL = RENT_URL + "/history";
     public static final String STATIONS_URL = "/stations";
+    public static final String STATIONS_NEARBY_URL = STATIONS_URL + "/nearby";
     public static final String STATIONS_CAPACITY_URL = STATIONS_URL + "/{id}/capacity";
     public static final String SERVER_SOCKET_URL = "/socket/rent";
 

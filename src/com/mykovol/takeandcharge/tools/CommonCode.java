@@ -154,7 +154,7 @@ public class CommonCode {
         tb.setComponentToSideMenuSouth(legal);
 ////
 //        tb.getLeftSideMenuButton().addActionListener(evt -> {
-//            System.out.println("screen blocking");
+//            Log.p(("screen blocking");
 //            screenBlocking.setVisible(true);
 //        });
 //
@@ -163,7 +163,7 @@ public class CommonCode {
 //        screenBlocking.addActionListener(evt -> {
 //            if (!tb.getMenuBar().isMenuShowing()) {
 //                screenBlocking.setVisible(false);
-//                System.out.println("screen blocking false");
+//                Log.p(("screen blocking false");
 //            }
 //        });
     }

@@ -74,10 +74,11 @@ public class TakeAndChargeMain {
 //                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
 //                            "OK", null);
             }
-//            if (!Display.getInstance().getCurrent().equals(MainForm.get())) {
-//                MainForm.get().show();
-//            }
-            ToastBar.showErrorMessage(errorMsg);
+            if (Display.getInstance().getCurrent().equals(MainForm.get())) {
+                MainForm.get().showErrorDraggablePanel(errorMsg);
+            } else {
+                ToastBar.showErrorMessage(errorMsg);
+            }
 //            MainForm.get().showErrorDraggablePanel(errorMsg);
             FabProgress.stop();
             MainGifLoader.get().stop();

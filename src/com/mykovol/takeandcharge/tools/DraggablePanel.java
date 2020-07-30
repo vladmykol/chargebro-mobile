@@ -25,6 +25,7 @@ package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
+import com.codename1.io.Log;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
@@ -79,8 +80,35 @@ public class DraggablePanel extends Container {
         add(SOUTH, bottomPanel);
     }
 
+    private void initBottomPanel() {
+//        bottomPanel.setUIID("UnderBottomPanel");
+//        bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
+
+        SpanLabel articleHeaderText = new SpanLabel("Don't wait - Take&Charge", "PanelHeader");
+        articleHeaderText.setEnabled(false);
+        SpanLabel articleText = new SpanLabel("Running out of charge? No need to look for a socket or wait while your gadget is charging. Just take our power bank and go. Free charging for 30 min with an annual subscription",
+                "PanelText");
+        articleText.setEnabled(false);
+
+        Label articlePhoto = new Label(getGlobalResources().getImage("dont-spend-time.png"));
+        articlePhoto.setUIID("PanelImage");
+
+
+        bottomPanel.setUIID("BottomPanelUnfolded");
+//        bottomPanel.setBlockLead(true);
+//        setScrollableY(true);
+//        setScrollVisible(false);
+        bottomPanel.setScrollableY(true);
+        bottomPanel.setShouldCalcPreferredSize(false);
+        bottomPanel.setScrollVisible(false);
+        errorLabel.setHidden(true, true);
+        errorLabel.setEnabled(false);
+        bottomPanel.addAll(bottomPanelHeader, defaultContent.addAll(articlePhoto, articleHeaderText, articleText));
+    }
+
     public void refreshRentContent() {
         if (UserService.isLoggedIn()) {
+            Log.p("refresh rent content");
             RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -93,15 +121,15 @@ public class DraggablePanel extends Container {
                     for (RentHistory rentHistory : rentHistoryList) {
                         String serialNumber = rentHistory.powerBankId.get();
                         long timeElapsed = rentHistory.rentPeriodMs.getLong();
-                        RentBoard existingRentRow = visibleRentBoards.remove(serialNumber);
-                        if (existingRentRow == null) {
-                            addRentRow(serialNumber, timeElapsed);
-                        } else {
-                            existingRentRow.updateElapsedTime(timeElapsed);
-                        }
+                            RentBoard existingRentRow = visibleRentBoards.remove(serialNumber);
+                            if (existingRentRow == null) {
+                                addRentRow(serialNumber, timeElapsed);
+                            } else {
+                                existingRentRow.updateElapsedTime(timeElapsed);
+                            }
                     }
                     for (RentBoard showedButNotExistingRentRow : visibleRentBoards.values()) {
-                        removeRentRow(showedButNotExistingRentRow);
+                            removeRentRow(showedButNotExistingRentRow);
                     }
                 }
             });
@@ -131,7 +159,7 @@ public class DraggablePanel extends Container {
     }
 
     public void removeRentRow(String serialNumber) {
-        System.out.println("remove rent row" + serialNumber);
+        Log.p("remove rent row" + serialNumber);
         RentBoard rentBoard = rentContent.findRentBoardByName(serialNumber);
         if (rentBoard != null) removeRentRow(rentBoard);
     }
@@ -201,25 +229,25 @@ public class DraggablePanel extends Container {
     }
 
     private void backButtonAction(ActionEvent evt) {
-        if (isInMove) return;
-        isInMove = true;
-        removeSwipeListeners();
-        attachedForm.getToolbar().setHidden(false);
-        revalidateWithAnimationSafety();
-        topToolbarPanel.setY(-topToolbarPanel.getHeight());
-        rentContent.showTitle();
-        contentHolder.addComponent(0, draggableImage);
-        bottomPanel.setY(getDisplayHeight() - minPanelHeight);
-        animateUnlayoutAndWait(200, 255);
-        topToolbarPanel.remove();
-        bottomPanel.remove();
-        contentHolder.setUIID("BottomPanelUnfolded");
-        add(SOUTH, bottomPanel);
-        bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
-        screenBlocking.setVisible(false);
-        animateLayoutAndWait(100);
-        addSwipeListeners();
-        isInMove = false;
+            if (isInMove) return;
+            isInMove = true;
+            removeSwipeListeners();
+            attachedForm.getToolbar().setHidden(false);
+            revalidateWithAnimationSafety();
+            topToolbarPanel.setY(-topToolbarPanel.getHeight());
+            rentContent.showTitle();
+            bottomPanel.addComponent(0, draggableImage);
+            bottomPanel.setY(getDisplayHeight() - minPanelHeight);
+            animateUnlayoutAndWait(200, 255);
+            topToolbarPanel.remove();
+            bottomPanel.remove();
+            bottomPanel.setUIID("BottomPanelUnfolded");
+            add(SOUTH, bottomPanel);
+//        bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
+            screenBlocking.setVisible(false);
+            animateLayoutAndWait(100);
+            addSwipeListeners();
+            isInMove = false;
     }
 
 
@@ -233,7 +261,7 @@ public class DraggablePanel extends Container {
         attachedForm.removePointerReleasedListener(this::processReleaseEvent);
     }
 
-    private void processReleaseEvent(ActionEvent e) {
+    private synchronized void processReleaseEvent(ActionEvent e) {
         if (isInMove) return;
         isInMove = true;
         if (isDraggingBottomPanel) {

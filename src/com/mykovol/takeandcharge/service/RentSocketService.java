@@ -51,7 +51,7 @@ public class RentSocketService extends WebSocket {
     public RentSocketService() {
         super(GlobalConst.getServerUrl() + SERVER_SOCKET_URL);
         autoReconnect(10000);
-        et = EasyThread.start("Websocket");
+//        et = EasyThread.start("Websocket");
         connect();
     }
 
@@ -74,10 +74,10 @@ public class RentSocketService extends WebSocket {
     }
 
     private void sendAuthInfo() {
-        if (!et.isThisIt()) {
-            et.run(this::sendAuthInfo);
-            return;
-        }
+//        if (!et.isThisIt()) {
+//            et.run(this::sendAuthInfo);
+//            return;
+//        }
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              DataOutputStream dos = new DataOutputStream(bos)) {
             dos.writeShort(MESSAGE_TYPE_AUTH);
@@ -124,7 +124,7 @@ public class RentSocketService extends WebSocket {
                     returnPowerBankAction(message);
                     break;
                 default:
-                    System.out.println("not defined message type from webSocket server " + messageCode + " " + message);
+                    Log.p("not defined message type from webSocket server " + messageCode + " " + message);
             }
 
         } catch (IOException err) {
@@ -139,8 +139,7 @@ public class RentSocketService extends WebSocket {
 
     private void authAction(short messageCode, String responseMessage) {
         if (messageCode != MESSAGE_CODE_OK) {
-            System.out.println("websocket authentication issue - " + responseMessage);
-            UserService.logout();
+            Log.p("websocket authentication issue - " + responseMessage);
         } else {
             System.out.println("authenticated in websocket server " + responseMessage);
             callSerially(() ->  MainForm.get().refreshRentContent());

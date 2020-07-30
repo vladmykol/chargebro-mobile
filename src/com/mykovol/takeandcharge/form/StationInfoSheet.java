@@ -9,7 +9,6 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.plaf.RoundBorder;
-import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Effects;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
@@ -31,8 +30,7 @@ public class StationInfoSheet extends Sheet {
         setPosition(BorderLayout.NORTH);
         Container cnt = getContentPane();
         errorLabel.setEnabled(false);
-        errorLabel.getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
-        errorLabel.getAllStyles().setMarginTop(3);
+//        errorLabel.stripMarginAndPadding();
 //        setLeadComponent(cnt);
 //        cnt.setLayout(BoxLayout.y());
         cnt.setScrollableY(false);
@@ -64,9 +62,13 @@ public class StationInfoSheet extends Sheet {
                 RoundBorder.create().color(0xffffffff).shadowOpacity(60)
         );
 
-        cnt.addAll(BoxLayout.encloseX(placeLogoImageLabel, infoContainer)
-                , FlowLayout.encloseRightBottom(getDirectionButton));
-        add(BorderLayout.NORTH, errorLabel);
+//        title.setSafeArea(true);
+        title.setEnabled(false);
+
+        cnt.addAll(BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
+                FlowLayout.encloseLeftMiddle(errorLabel),
+                FlowLayout.encloseRightBottom(getDirectionButton));
+        add(BorderLayout.NORTH, title);
 
 //        cnt.addPointerPressedListener(this::getDirectionButtonAction);
 //        infoContainer.addPointerPressedListener(this::getDirectionButtonAction);
@@ -80,17 +82,26 @@ public class StationInfoSheet extends Sheet {
     }
 
     public void show(StationInfo stationInfo) {
-        errorLabel.setHidden(true, false);
+        errorLabel.setVisible(false);
         directionUrl = stationInfo.mapUrl.get();
+        title.setText(stationInfo.placeName.get());
         addressLabel.setText(stationInfo.address.get());
+        getContentPane().revalidate();
         super.show();
         RentService.getRemainingPowerBanks(stationInfo.id.get(), new Callback<Integer>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                errorLabel.setText(errorMessage);
+//                callSerially(() -> {
+                if (errorCode == 401) {
+                    errorLabel.setText("You must login first");
+                } else {
+                    errorLabel.setText(errorMessage);
+                }
                 availablePowerBanksNumber.setText("0");
                 cabBeReturnedPowerBanksNumber.setText("0");
-                errorLabel.setHidden(false, false);
+                errorLabel.setVisible(true);
+                errorLabel.getParent().animateLayoutFade(200, 0);
+//                });
             }
 
             @Override
@@ -99,9 +110,12 @@ public class StationInfoSheet extends Sheet {
                 String canBeReturnedString = String.valueOf(stationInfo.maxCapacity.getInt() - remainingPowerBanks);
                 if (!availablePowerBanksNumber.getText().equals(remainingPowerBanksString) ||
                         !cabBeReturnedPowerBanksNumber.getText().equals(canBeReturnedString)) {
+//                    callSerially(() -> {
                     availablePowerBanksNumber.setText(remainingPowerBanksString);
                     cabBeReturnedPowerBanksNumber.setText(canBeReturnedString);
-                    availableContainer.animateLayoutFade(200,100);
+                    availableContainer.animateLayoutFadeAndWait(200, 0);
+//                    });
+
                 }
             }
         });
