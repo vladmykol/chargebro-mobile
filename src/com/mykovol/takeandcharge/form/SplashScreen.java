@@ -54,7 +54,6 @@ public class SplashScreen extends Form {
         callSerially(() -> {
             animateLogoIconAppearance();
 
-
             callSerially(() -> {
                 animateTitle();
                 MainForm.get();
@@ -64,7 +63,7 @@ public class SplashScreen extends Form {
 
                     callSerially(() -> {
                         MainForm.get().show();
-                            });
+                    });
 
 //                    AnimationManager a = getAnimationManager();
 //                    if (a != null) {

@@ -83,18 +83,36 @@ public class DraggablePanel extends Container {
         initBottomPanel();
     }
 
+    private void addNewsToDefaultPanel(String imageName, String headerText, String text) {
+        if (defaultContent.getComponentCount()>0) {
+            Label panelDelimiter = new Label("", "PanelDelimiter");
+            panelDelimiter.setShowEvenIfBlank(true);
+            defaultContent.addAll(panelDelimiter);
+        }
+
+        Label articlePhoto = new Label(getGlobalResources().getImage(imageName));
+        articlePhoto.setUIID("PanelImage");
+
+        SpanLabel articleHeaderText = new SpanLabel(headerText, "PanelHeader");
+        articleHeaderText.setEnabled(false);
+        TextArea articleText = new TextArea(text);
+        articleText.setUIID("PanelText");
+        articleText.setEnabled(false);
+
+        defaultContent.addAll(articlePhoto, articleHeaderText, articleText);
+    }
+
     private void initBottomPanel() {
 //        bottomPanel.setUIID("UnderBottomPanel");
 //        bottomPanel.setPreferredSize(new Dimension(getDisplayWidth(), minPanelHeight));
 
-        SpanLabel articleHeaderText = new SpanLabel("Don't wait - Take&Charge", "PanelHeader");
-        articleHeaderText.setEnabled(false);
-        SpanLabel articleText = new SpanLabel("Running out of charge? No need to look for a socket or wait while your gadget is charging. Just take our power bank and go. Free charging for 30 min with an annual subscription",
-                "PanelText");
-        articleText.setEnabled(false);
+        addNewsToDefaultPanel("dont-spend-time.png", "Don't wait - Take&Charge",
+                "Running out of charge? No need to look for a socket or wait while your gadget is charging. " +
+                        "Just take our power bank and go. Free charging for 30 min with an annual subscription");
 
-        Label articlePhoto = new Label(getGlobalResources().getImage("dont-spend-time.png"));
-        articlePhoto.setUIID("PanelImage");
+        addNewsToDefaultPanel("like-idea.png", "Do like this idea? Than join us!",
+                "We are growing, open mind company and if you want to become part of a team or satisfy your clients with handy power banks, we can make it possible. " +
+                        "Contact us now");
 
 
         bottomPanel.setUIID("BottomPanelUnfolded");
@@ -106,7 +124,7 @@ public class DraggablePanel extends Container {
         bottomPanel.setScrollVisible(false);
         errorLabel.setHidden(true, true);
         errorLabel.setEnabled(false);
-        bottomPanel.addAll(bottomPanelHeader, defaultContent.addAll(articlePhoto, articleHeaderText, articleText));
+        bottomPanel.addAll(bottomPanelHeader, defaultContent);
     }
 
     public void refreshRentContent() {

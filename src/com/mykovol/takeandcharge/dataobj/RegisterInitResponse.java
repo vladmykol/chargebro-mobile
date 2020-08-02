@@ -37,8 +37,9 @@ public class RegisterInitResponse implements PropertyBusinessObject {
     public final IntProperty<RegisterInitResponse> validForMin = new IntProperty<>("validForMin");
     public final Property<String, RegisterInitResponse> code = new Property<>("code");
     public final Property<String, RegisterInitResponse> token = new Property<>("token");
+    public final Property<String, RegisterInitResponse> warningMessage = new Property<>("warningMessage");
 
-    private final PropertyIndex idx = new PropertyIndex(this, "RegisterInitResponse", validForMin, code, token);
+    private final PropertyIndex idx = new PropertyIndex(this, "RegisterInitResponse", validForMin, code, token, warningMessage);
 
     @Override
     public PropertyIndex getPropertyIndex() {

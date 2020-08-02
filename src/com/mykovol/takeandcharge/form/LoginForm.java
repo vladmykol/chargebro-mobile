@@ -40,15 +40,16 @@ import com.mykovol.takeandcharge.tools.FabProgress;
  */
 public class LoginForm extends Form {
 
-    private final TextField loginField = new TextField("", "380 (93) 123-45-56", 20, TextField.NUMERIC);
+    private final TextField loginField = new TextField("", "(093) 123-45-56", 20, TextField.NUMERIC);
     private final TextField passwordField = new TextField("", "Password", 20, TextField.PASSWORD);
     private final SpanLabel errorLabel = new SpanLabel("Password error", "ErrorLabel");
 
 
-    public void setPredefinedPhone(String phoneNumber) {
+    public void setPredefinedInfo(String phoneNumber, String message) {
         loginField.setText(phoneNumber);
         loginField.setEditable(false);
         setEditOnShow(passwordField);
+        showError(message);
     }
 
     public LoginForm() {
@@ -89,12 +90,16 @@ public class LoginForm extends Form {
 //        validator.addConstraint(password, new LengthConstraint(4, "at least 4 symbols"));
 
         Button forgot = new Button("Forgot password", "ForgotPasRegisterLabel");
-        Button newAccountButton = new Button("Create new account", "ForgotPasRegisterLabel");
-        Container registerOrForgot = BoxLayout.encloseY(forgot, newAccountButton);
-        newAccountButton.getAllStyles().setMarginBottom(3);
+//        Button newAccountButton = new Button("Create new account", "ForgotPasRegisterLabel");
+        Container registerOrForgot = BoxLayout.encloseY(forgot);
+//        newAccountButton.getAllStyles().setMarginBottom(3);
 
-        newAccountButton.addActionListener(evt -> {
-            new RegisterMobileNumberStep1().show();
+//        newAccountButton.addActionListener(evt -> {
+//            new RegisterMobileNumberStep1().show();
+//        });
+
+        forgot.addActionListener(evt -> {
+
         });
 
         // We remove the extra space for low resolution devices so things fit better
@@ -152,7 +157,7 @@ public class LoginForm extends Form {
             FabProgress.bind(fab);
             setEditOnShow(null);
 
-            UserService.login(login.getText(), password.getText(), new LoginCallback() {
+            UserService.login(""+login.getText(), password.getText(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
@@ -170,7 +175,7 @@ public class LoginForm extends Form {
         };
     }
 
-    public void showError(String errorMessage) {
+    private void showError(String errorMessage) {
         errorLabel.setText(errorMessage);
         errorLabel.setHidden(false);
         errorLabel.getParent().revalidateWithAnimationSafety();

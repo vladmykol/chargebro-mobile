@@ -3,7 +3,10 @@ package com.mykovol.takeandcharge;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
 import com.codename1.l10n.L10NManager;
-import com.codename1.ui.*;
+import com.codename1.ui.Dialog;
+import com.codename1.ui.Display;
+import com.codename1.ui.Form;
+import com.codename1.ui.Toolbar;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.form.MainForm;
@@ -94,7 +97,12 @@ public class TakeAndChargeMain {
 
     public void start() {
         if (current != null) {
-            current.show();
+            try {
+                current.show();
+            } catch (Exception e) {
+                Log.e(e);
+                MainForm.get().show();
+            }
         } else {
             new SplashScreen().show();
 //            MainForm.get().show();
@@ -108,7 +116,10 @@ public class TakeAndChargeMain {
             ((Dialog) current).dispose();
             current = getCurrentForm();
         }
-        MainForm.get().suspend();
+        if (current instanceof SplashScreen) {
+            current = MainForm.get();
+        }
+        MainForm.suspend();
     }
 
     public void destroy() {

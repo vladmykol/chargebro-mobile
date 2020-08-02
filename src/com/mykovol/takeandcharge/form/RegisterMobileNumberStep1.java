@@ -70,9 +70,9 @@ public class RegisterMobileNumberStep1 extends Form {
 
         initComponents();
         attachComponentsToForm();
-        setScrollableY(true);
 
         setEditOnShow(phoneNumber);
+        Validator.setValidateOnEveryKey(false);
     }
 
     private void attachComponentsToForm() {
@@ -160,7 +160,7 @@ public class RegisterMobileNumberStep1 extends Form {
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     if (errorCode == 409) {
                         LoginForm loginForm = new LoginForm();
-                        loginForm.setPredefinedPhone(digitsPhone);
+                        loginForm.setPredefinedInfo(digitsPhone, "This number is already registered. Please enter your password");
                         loginForm.show();
                     } else {
                         errorText.setText(errorMessage);

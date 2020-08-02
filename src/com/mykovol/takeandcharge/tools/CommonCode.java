@@ -44,6 +44,8 @@ import java.io.IOException;
 
 import static com.codename1.ui.CN.convertToPixels;
 import static com.codename1.ui.CN.getCurrentForm;
+import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
@@ -146,6 +148,13 @@ public class CommonCode {
         legal.setLeadComponent(legalButton);
         legal.setUIID("SideNavigationPanel");
         tb.setComponentToSideMenuSouth(legal);
+
+        legalButton.addActionListener(evt -> {
+            new BrowserPopUp(getCurrentForm(),
+                    "Terms&Conditions",
+                    POLICY_URL)
+                    .show();
+        });
 ////
 //        tb.getLeftSideMenuButton().addActionListener(evt -> {
 //            Log.p(("screen blocking");
@@ -201,7 +210,7 @@ public class CommonCode {
         return getCommand("Price", FontImage.MATERIAL_MONEY, evt -> {
             new BrowserPopUp(getCurrentForm(),
                     "Price",
-                    "https://takeandcharge.space/#pricing")
+                    PRICE_URL)
                     .show();
         });
     }

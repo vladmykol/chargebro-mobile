@@ -5,8 +5,9 @@
     <image name="facebook.png" type="multi"  />
     <image name="google.png" type="multi"  />
     <image name="gradient-overlay.png" type="multi"  />
+    <image name="like-idea.png" type="multi"  />
     <image name="main-logo.png" type="multi"  />
-    <image name="map-point2.png" type="multi"  />
+    <image name="map-point.png" type="multi"  />
     <image name="mobile-number.png" type="multi"  />
     <image name="no-logo.png" type="multi"  />
     <image name="power-bank-photo.png" type="multi"  />
@@ -66,6 +67,7 @@
         <val key="@imageMetadata" value="{}" />
         <val key="@includeNativeBool" value="true" />
         <val key="@mailLogoImage" value="main-logo.png" />
+        <val key="@mapPointImage" value="map-point.png" />
         <val key="@menuImageSize" value="6" />
         <val key="@mobileNumberImage" value="mobile-number.png" />
         <val key="@noLogoImage" value="no-logo.png" />
@@ -80,13 +82,13 @@
         <val key="AlreadyHaveAnAccountButton.derive" value="RegisterLabel" />
         <val key="AlreadyHaveAnAccountButton.dis#align" value="4" />
         <val key="AlreadyHaveAnAccountButton.dis#derive" value="RegisterLabel.dis" />
-        <val key="AlreadyHaveAnAccountButton.dis#fgColor" value="2775a4" />
+        <val key="AlreadyHaveAnAccountButton.dis#fgColor" value="5f9ea0" />
         <font key="AlreadyHaveAnAccountButton.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="AlreadyHaveAnAccountButton.dis#marUnit" value="2,2,2,2" />
         <val key="AlreadyHaveAnAccountButton.dis#margin" value="0.0,0.0,0.0,0.0" />
         <val key="AlreadyHaveAnAccountButton.dis#padUnit" value="2,2,2,2" />
         <val key="AlreadyHaveAnAccountButton.dis#padding" value="1.3,1.3,2.0,2.0" />
-        <val key="AlreadyHaveAnAccountButton.fgColor" value="2775a4" />
+        <val key="AlreadyHaveAnAccountButton.fgColor" value="5f9ea0" />
         <font key="AlreadyHaveAnAccountButton.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="AlreadyHaveAnAccountButton.marUnit" value="2,2,2,2" />
         <val key="AlreadyHaveAnAccountButton.margin" value="0.0,0.0,0.0,0.0" />
@@ -94,7 +96,7 @@
         <val key="AlreadyHaveAnAccountButton.padding" value="1.3,1.3,2.0,2.0" />
         <val key="AlreadyHaveAnAccountButton.press#align" value="4" />
         <val key="AlreadyHaveAnAccountButton.press#derive" value="RegisterLabel.press" />
-        <val key="AlreadyHaveAnAccountButton.press#fgColor" value="2775a4" />
+        <val key="AlreadyHaveAnAccountButton.press#fgColor" value="5f9ea0" />
         <font key="AlreadyHaveAnAccountButton.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="AlreadyHaveAnAccountButton.press#marUnit" value="2,2,2,2" />
         <val key="AlreadyHaveAnAccountButton.press#margin" value="0.0,0.0,0.0,0.0" />
@@ -102,7 +104,7 @@
         <val key="AlreadyHaveAnAccountButton.press#padding" value="1.3,1.3,2.0,2.0" />
         <val key="AlreadyHaveAnAccountButton.sel#align" value="4" />
         <val key="AlreadyHaveAnAccountButton.sel#derive" value="RegisterLabel.sel" />
-        <val key="AlreadyHaveAnAccountButton.sel#fgColor" value="2775a4" />
+        <val key="AlreadyHaveAnAccountButton.sel#fgColor" value="5f9ea0" />
         <font key="AlreadyHaveAnAccountButton.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="AlreadyHaveAnAccountButton.sel#marUnit" value="2,2,2,2" />
         <val key="AlreadyHaveAnAccountButton.sel#margin" value="0.0,0.0,0.0,0.0" />
@@ -464,6 +466,38 @@
         <val key="Legal.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="Legal.sel#padUnit" value="2,2,2,2" />
         <val key="Legal.sel#padding" value="2.0,2.0,2.0,2.0" />
+        <val key="MobileNumber.align" value="4" />
+        <val key="MobileNumber.derive" value="RegisterLabel" />
+        <val key="MobileNumber.dis#align" value="4" />
+        <val key="MobileNumber.dis#derive" value="RegisterLabel.dis" />
+        <val key="MobileNumber.dis#fgColor" value="0" />
+        <font key="MobileNumber.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
+        <val key="MobileNumber.dis#marUnit" value="2,2,2,2" />
+        <val key="MobileNumber.dis#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="MobileNumber.dis#padUnit" value="2,2,2,2" />
+        <val key="MobileNumber.dis#padding" value="1.3,1.3,2.0,2.0" />
+        <val key="MobileNumber.fgColor" value="0" />
+        <font key="MobileNumber.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
+        <val key="MobileNumber.marUnit" value="2,2,2,2" />
+        <val key="MobileNumber.margin" value="0.0,0.0,0.0,0.0" />
+        <val key="MobileNumber.padUnit" value="2,2,2,2" />
+        <val key="MobileNumber.padding" value="1.3,1.3,2.0,2.0" />
+        <val key="MobileNumber.press#align" value="4" />
+        <val key="MobileNumber.press#derive" value="RegisterLabel.press" />
+        <val key="MobileNumber.press#fgColor" value="0" />
+        <font key="MobileNumber.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
+        <val key="MobileNumber.press#marUnit" value="2,2,2,2" />
+        <val key="MobileNumber.press#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="MobileNumber.press#padUnit" value="2,2,2,2" />
+        <val key="MobileNumber.press#padding" value="1.3,1.3,2.0,2.0" />
+        <val key="MobileNumber.sel#align" value="4" />
+        <val key="MobileNumber.sel#derive" value="RegisterLabel.sel" />
+        <val key="MobileNumber.sel#fgColor" value="0" />
+        <font key="MobileNumber.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
+        <val key="MobileNumber.sel#marUnit" value="2,2,2,2" />
+        <val key="MobileNumber.sel#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="MobileNumber.sel#padUnit" value="2,2,2,2" />
+        <val key="MobileNumber.sel#padding" value="1.3,1.3,2.0,2.0" />
         <val key="PanelHeader.align" value="4" />
         <val key="PanelHeader.dis#align" value="4" />
         <val key="PanelHeader.dis#fgColor" value="8fc0c5" />
@@ -711,7 +745,7 @@
         <val key="ResendCodeButton.press#align" value="1" />
         <val key="ResendCodeButton.press#derive" value="ResendCodeLabel.press" />
         <val key="ResendCodeButton.press#fgColor" value="2775a4" />
-        <font key="ResendCodeButton.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
+        <font key="ResendCodeButton.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
         <val key="ResendCodeButton.press#marUnit" value="2,2,2,2" />
         <val key="ResendCodeButton.press#margin" value="0.0,0.0,0.0,0.0" />
         <val key="ResendCodeButton.press#padUnit" value="2,2,2,2" />
@@ -945,13 +979,13 @@
         <val key="StationsSheetAddress.sel#padUnit" value="2,2,2,2" />
         <val key="StationsSheetAddress.sel#padding" value="0.0,0.0,0.0,0.0" />
         <val key="StationsSheetImage.dis#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.dis#margin" value="0.0,0.0,2.0,2.0" />
+        <val key="StationsSheetImage.dis#margin" value="0.0,1.0,1.0,2.0" />
         <val key="StationsSheetImage.marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.margin" value="0.0,0.0,2.0,2.0" />
+        <val key="StationsSheetImage.margin" value="0.0,1.0,1.0,2.0" />
         <val key="StationsSheetImage.press#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.press#margin" value="0.0,0.0,2.0,2.0" />
+        <val key="StationsSheetImage.press#margin" value="0.0,1.0,1.0,2.0" />
         <val key="StationsSheetImage.sel#marUnit" value="2,2,2,2" />
-        <val key="StationsSheetImage.sel#margin" value="0.0,0.0,2.0,2.0" />
+        <val key="StationsSheetImage.sel#margin" value="0.0,1.0,1.0,2.0" />
         <val key="StationsSheetNumberAvailable.derive" value="StationsSheetText" />
         <val key="StationsSheetNumberAvailable.dis#derive" value="StationsSheetText.dis" />
         <val key="StationsSheetNumberAvailable.dis#fgColor" value="8000" />
@@ -1104,70 +1138,6 @@
         <val key="TakePowerBankButton.sel#padding" value="3.0,4.0,7.0,8.0" />
         <val key="TakePowerBankButton.sel#transparency" value="0" />
         <val key="TakePowerBankButton.transparency" value="0" />
-        <val key="TermsCheckBox.align" value="1" />
-        <val key="TermsCheckBox.derive" value="ResendCodeLabel" />
-        <val key="TermsCheckBox.dis#align" value="1" />
-        <val key="TermsCheckBox.dis#derive" value="ResendCodeLabel.dis" />
-        <val key="TermsCheckBox.dis#fgColor" value="0" />
-        <font key="TermsCheckBox.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsCheckBox.dis#marUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.dis#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsCheckBox.dis#padUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.dis#padding" value="1.3,1.3,2.0,2.0" />
-        <val key="TermsCheckBox.fgColor" value="0" />
-        <font key="TermsCheckBox.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsCheckBox.marUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsCheckBox.padUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.padding" value="1.3,1.3,2.0,2.0" />
-        <val key="TermsCheckBox.press#align" value="1" />
-        <val key="TermsCheckBox.press#derive" value="ResendCodeLabel.press" />
-        <val key="TermsCheckBox.press#fgColor" value="0" />
-        <font key="TermsCheckBox.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsCheckBox.press#marUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.press#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsCheckBox.press#padUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.press#padding" value="1.3,1.3,2.0,2.0" />
-        <val key="TermsCheckBox.sel#align" value="1" />
-        <val key="TermsCheckBox.sel#derive" value="ResendCodeLabel.sel" />
-        <val key="TermsCheckBox.sel#fgColor" value="0" />
-        <font key="TermsCheckBox.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsCheckBox.sel#marUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.sel#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsCheckBox.sel#padUnit" value="2,2,2,2" />
-        <val key="TermsCheckBox.sel#padding" value="1.3,1.3,2.0,2.0" />
-        <val key="TermsLink.align" value="1" />
-        <val key="TermsLink.derive" value="TermsCheckBox" />
-        <val key="TermsLink.dis#align" value="1" />
-        <val key="TermsLink.dis#derive" value="TermsCheckBox.dis" />
-        <val key="TermsLink.dis#fgColor" value="5fa0a5" />
-        <font key="TermsLink.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsLink.dis#marUnit" value="2,2,2,2" />
-        <val key="TermsLink.dis#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsLink.dis#padUnit" value="2,2,2,2" />
-        <val key="TermsLink.dis#padding" value="1.3,1.3,2.0,2.0" />
-        <val key="TermsLink.fgColor" value="5fa0a5" />
-        <font key="TermsLink.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsLink.marUnit" value="2,2,2,2" />
-        <val key="TermsLink.margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsLink.padUnit" value="2,2,2,2" />
-        <val key="TermsLink.padding" value="1.3,1.3,2.0,2.0" />
-        <val key="TermsLink.press#align" value="1" />
-        <val key="TermsLink.press#derive" value="TermsCheckBox.press" />
-        <val key="TermsLink.press#fgColor" value="5fa0a5" />
-        <font key="TermsLink.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsLink.press#marUnit" value="2,2,2,2" />
-        <val key="TermsLink.press#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsLink.press#padUnit" value="2,2,2,2" />
-        <val key="TermsLink.press#padding" value="1.3,1.3,2.0,2.0" />
-        <val key="TermsLink.sel#align" value="1" />
-        <val key="TermsLink.sel#derive" value="TermsCheckBox.sel" />
-        <val key="TermsLink.sel#fgColor" value="5fa0a5" />
-        <font key="TermsLink.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.4" />
-        <val key="TermsLink.sel#marUnit" value="2,2,2,2" />
-        <val key="TermsLink.sel#margin" value="0.0,0.0,0.0,0.0" />
-        <val key="TermsLink.sel#padUnit" value="2,2,2,2" />
-        <val key="TermsLink.sel#padding" value="1.3,1.3,2.0,2.0" />
         <val key="TextAlignCenter.align" value="4" />
         <val key="TextAlignCenter.dis#align" value="4" />
         <val key="TextAlignCenter.dis#marUnit" value="2,2,2,2" />

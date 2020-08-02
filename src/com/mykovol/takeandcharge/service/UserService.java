@@ -119,6 +119,10 @@ public class UserService {
                 .fetchAsJsonMap(resp -> {
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
+                    RentSocketService.get().reconnect();
+                    MainForm.get().refreshScanButton();
+                    CommonCode.refreshCommands();
+
                     callback.onSucess(null);
                 });
     }

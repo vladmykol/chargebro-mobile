@@ -29,7 +29,7 @@ package com.mykovol.takeandcharge.service;
  * @author Shai Almog
  */
 public final class GlobalConst {
-    public static final boolean LOCAL = false;
+    public static final boolean LOCAL = true;
 
     public static final String RENT_URL = "/rent";
     public static final String PAY_URL = "/pay/checkout";
@@ -49,4 +49,7 @@ public final class GlobalConst {
         if (LOCAL) return "http://192.168.0.124:10381";
         else return "https://server.your-domain.example.com";
     }
+
+    public static final String POLICY_URL = "https://takeandcharge.space/pravyla-ta-umovy";
+    public static final String PRICE_URL = "https://takeandcharge.space/#pricing";
 }

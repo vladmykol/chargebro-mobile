@@ -20,17 +20,13 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.FloatingActionButton;
-import com.codename1.components.ToastBar;
-import com.codename1.ui.*;
+import com.codename1.ui.BrowserComponent;
+import com.codename1.ui.FontImage;
+import com.codename1.ui.Form;
+import com.codename1.ui.Toolbar;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
-import com.mykovol.takeandcharge.tools.CommonCode;
 
-/**
- * The Login form
- *
- * @author Shai Almog
- */
 public class BrowserPopUp extends Form {
     public BrowserPopUp(Form previousForm, String title, String url) {
         super(new BorderLayout());
@@ -44,15 +40,12 @@ public class BrowserPopUp extends Form {
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
         getToolbar().addCommandToRightBar("", mat, e -> previousForm.show());
         getToolbar().setTitle(title);
-//        getToolbar().setBackCommand("", Toolbar.BackCommandPolicy.AS_ARROW, e -> {
-//            previous.show();
-//        });123
 
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_DONE);
         fab.bindFabToContainer(this);
         fab.addActionListener(evt -> {
 //            ToastBar.showMessage("Congrats! Now you can take a powerbank", FontImage.MATERIAL_INFO);
-            MainForm.get().show();
+            previousForm.show();
         });
 
 //        CommonCode.removeTransitionsTemporarily(previousForm);

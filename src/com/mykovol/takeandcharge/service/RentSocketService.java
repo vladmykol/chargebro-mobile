@@ -45,13 +45,11 @@ public class RentSocketService extends WebSocket {
     private static final short MESSAGE_CODE_ACCEPTED = 202;
     private static final short MESSAGE_CODE_UNAUTHORIZED = 401;
     private static RentSocketService instance;
-    private EasyThread et;
-    private WebSocket webSocket;
+    private final EasyThread et = EasyThread.start("Websocket");
 
     public RentSocketService() {
         super(GlobalConst.getServerUrl() + SERVER_SOCKET_URL);
         autoReconnect(10000);
-//        et = EasyThread.start("Websocket");
         connect();
     }
 
@@ -65,6 +63,7 @@ public class RentSocketService extends WebSocket {
     @Override
     public void reconnect() {
         autoReconnect(10000);
+        super.close();
         super.reconnect();
     }
 
@@ -79,10 +78,10 @@ public class RentSocketService extends WebSocket {
     }
 
     private void sendAuthInfo() {
-//        if (!et.isThisIt()) {
-//            et.run(this::sendAuthInfo);
-//            return;
-//        }
+        if (!et.isThisIt()) {
+            et.run(this::sendAuthInfo);
+            return;
+        }
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              DataOutputStream dos = new DataOutputStream(bos)) {
             dos.writeShort(MESSAGE_TYPE_AUTH);
@@ -148,7 +147,6 @@ public class RentSocketService extends WebSocket {
         } else {
             Log.p("authenticated in websocket server " + responseMessage);
             MainForm.get().refreshRentContent();
-            MainForm.get().refreshMarkersOnMap();
         }
     }
 

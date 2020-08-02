@@ -37,7 +37,6 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.component.ShowMyLocationButton;
@@ -102,7 +101,7 @@ public class MainForm extends Form {
                 .setBackgroundType(BACKGROUND_IMAGE_SCALED)
                 .setBgImage(Resources.getGlobalResources().getImage("gradient-overlay.png"))
                 .stripMarginAndPadding()
-                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight+7));
+                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight + 7));
         add(BorderLayout.south(bottomDraggablePanelScreenBlocker));
 
         add(BorderLayout.north(FlowLayout.encloseRightBottom(showMyLocationButton)));
@@ -135,17 +134,18 @@ public class MainForm extends Form {
         return instance;
     }
 
+    public static void suspend() {
+        if (instance != null) {
+            instance.mapContainer.setShowMyLocation(false);
+        }
+    }
+
     @Override
     public void show() {
         RentSocketService.get().reconnect();
         showMyLocationButton.refreshState();
         super.show();
         refreshMarkersOnMap(ukraineCoord);
-    }
-
-    public void suspend() {
-        mapContainer.setShowMyLocation(false);
-//        Preferences.set("preferredMapZoom", (int) mapContainer.getZoom());
     }
 
     private void initMap() {
@@ -189,12 +189,11 @@ public class MainForm extends Form {
         });
     }
 
-    public void refreshMarkersOnMap() {
-        refreshMarkersOnMap(ukraineCoord);
-    }
+//    public void refreshMarkersOnMap() {
+//        refreshMarkersOnMap(ukraineCoord);
+//    }
 
     public void refreshMarkersOnMap(Coord position) {
-        Log.p("Station update");
         RentService.getStationsNearBy(position, new Callback<List<StationInfo>>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -206,14 +205,14 @@ public class MainForm extends Form {
                 for (StationInfo station : stations) {
                     if (!mapMarkers.containsKey(station.id.get())) {
                         callSerially(() -> {
-                                mapMarkers.put(station.id.get(),
-                                        mapContainer.addMarker(
-                                                EncodedImage.createFromImage(stationPointImage, false),
-                                                new Coord(station.locationX.get(), station.locationY.get()), "some text here",
-                                                "and some long text here",
-                                                evt -> {
-                                                    stationInfoSheet.show(station);
-                                                }));
+                            mapMarkers.put(station.id.get(),
+                                    mapContainer.addMarker(
+                                            EncodedImage.createFromImage(stationPointImage, false),
+                                            new Coord(station.locationX.get(), station.locationY.get()), "some text here",
+                                            "and some long text here",
+                                            evt -> {
+                                                stationInfoSheet.show(station);
+                                            }));
                         });
                     }
                 }

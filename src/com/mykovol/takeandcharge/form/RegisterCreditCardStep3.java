@@ -61,7 +61,7 @@ public class RegisterCreditCardStep3 extends Form {
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_DONE);
         fab.bindFabToContainer(this);
         fab.addActionListener(evt -> {
-            ToastBar.showMessage("Congrats! Now you can take a powerbank", FontImage.MATERIAL_INFO);
+//            ToastBar.showMessage("Congrats! Now you can take a powerbank", FontImage.MATERIAL_INFO);
             MainForm.get().show();
         });
 

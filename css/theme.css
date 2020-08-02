@@ -21,6 +21,7 @@
     /*chargingStationImage: "charging-station.png";*/
     mobileNumberImage: "mobile-number.png";
     noLogoImage: "no-logo.png";
+    likeIdeaImage: "like-idea.png";
     /*multi size images end*/
 }
 
@@ -255,12 +256,18 @@ PanelText {
     padding: 0mm 2mm;
     font-family: "native:MainLight";
     font-size: 2.5mm;
+    text-align: center;
 }
 
 PanelImage {
     padding: 0mm;
     margin: 0mm 1mm;
     text-align: center;
+}
+
+PanelDelimiter{
+    border-bottom: 0.2mm solid rgba(128, 128, 128, 0.5);
+    margin: 3mm;
 }
 
 RentBorder {
@@ -374,9 +381,17 @@ RegisterTextField {
     /*color: black;*/
 }
 
+MobileNumber {
+    cn1-derive: RegisterLabel;
+    /*margin: 2mm 1mm;*/
+    font-size: 4mm;
+}
+
 AlreadyHaveAnAccountButton {
     cn1-derive: RegisterLabel;
-    color: #2775a4;
+    color: cadetblue;
+    /*border: 0.2mm solid cadetblue;*/
+    /*border-radius: 3mm;*/
     text-align: center;
     font-size: 2.5mm
 }
@@ -396,26 +411,6 @@ ResendCodeButton {
     cn1-derive: ResendCodeLabel;
     color: #2775a4;
 }
-
-ResendCodeButton.pressed {
-    font-weight: bold;
-}
-
-TermsCheckBox {
-    cn1-derive: ResendCodeLabel;
-}
-
-TermsLink {
-    cn1-derive: TermsCheckBox;
-    color: #5fa0a5;
-}
-
-TermsLink.pressed {
-    font-weight: bold;
-}
-
-
-
 
 /*====================== Gif Loader ==========================*/
 LoadImage {

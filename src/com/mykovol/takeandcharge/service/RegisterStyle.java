@@ -32,8 +32,6 @@ public final class RegisterStyle {
     public static final String LABEL = "RegisterLabel";
     public static final String TEXT_FIELD = "RegisterTextField";
     public static final String ERROR_LABEL = "ErrorLabel";
-    public static final  String TERMS_LINK = "TermsLink";
-    public static final  String TERMS_CHECK_BOX = "TermsCheckBox";
 
     public static final  String MOBILE_NUMBER = "MobileNumber";
     public static final  String RESEND_LABEL = "ResendCodeLabel";

@@ -40,10 +40,13 @@ import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
 import com.mykovol.takeandcharge.dataobj.User;
 import com.mykovol.takeandcharge.service.RegisterStyle;
 import com.mykovol.takeandcharge.service.RentService;
+import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
 import static com.codename1.ui.CN.getCurrentForm;
+import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
 
 /**
  * Registering of a new user. Creating password
@@ -57,9 +60,9 @@ public class RegisterVerificationCodeStep2 extends Form {
     private final Label resentLabel = new Label("code is valid for", RegisterStyle.RESEND_LABEL);
     private final Button resendButton = new Button("Resend code", RegisterStyle.RESEND_BUTTON);
     private final TextField passwordField = new TextField("", "New password", 40, TextField.PASSWORD);
-    private final Button maskAndUnmaskPass = new Button("Show", RegisterStyle.TERMS_LINK);
+    private final Button maskAndUnmaskPass = new Button("Show", RegisterStyle.RESEND_BUTTON);
     private final CheckBox termsCheckBox = new CheckBox("I accept");
-    private final Button termsLink = new Button("Terms&Conditions", RegisterStyle.TERMS_LINK);
+    private final Button termsLink = new Button("Terms&Conditions", RegisterStyle.RESEND_BUTTON);
     private final String INCORRECT_PIN_ERROR_TEXT = "SMS code is incorrect";
     private final SpanLabel errorText = new SpanLabel(INCORRECT_PIN_ERROR_TEXT, RegisterStyle.ERROR_LABEL);
     private final User user = new User();
@@ -77,6 +80,14 @@ public class RegisterVerificationCodeStep2 extends Form {
         registerCode = response.code.get();
         smsCode.setMaxSize(registerCode.length());
         passwordField.setMaxSize(16);
+        if (response.warningMessage.get() != null) {
+            showError(response.warningMessage.get());
+            errorText.setVisible(true);
+        } else {
+            errorText.setVisible(false);
+        }
+        setEditOnShow(passwordField);
+        passwordField.setNextFocusDown(smsCode);
 
         setToolbar(new Toolbar(false));
         getToolbar().setTitle("Step 2 from 3");
@@ -84,7 +95,8 @@ public class RegisterVerificationCodeStep2 extends Form {
 
         Container box = new Container(BoxLayout.y());
         box.setScrollableY(true);
-        box.add(FlowLayout.encloseCenter(phoneNumberHolder));
+        setScrollableY(true);
+
 
 //        box.add(FlowLayout.encloseCenter(phoneNumberText));
 
@@ -102,18 +114,12 @@ public class RegisterVerificationCodeStep2 extends Form {
         FontImage.setMaterialIcon(smsIcon, FontImage.MATERIAL_CHAT_BUBBLE_OUTLINE, 3);
         FontImage.setMaterialIcon(passwordIcon, FontImage.MATERIAL_LOCK_OUTLINE, 3);
 
-
-        box.add(BorderLayout.center(smsCode).
-                add(BorderLayout.WEST, smsIcon));
-
         FontImage.setMaterialIcon(resendButton, FontImage.MATERIAL_REPLAY);
         Label resentTimeLabel = new Label("", RegisterStyle.RESEND_LABEL);
         resentLabel.getAllStyles().setPaddingRight(0.7f);
         resentTimeLabel.getAllStyles().setPaddingLeft(0);
         Container resendContainer = BoxLayout.encloseXRight(resentLabel, resentTimeLabel);
         startResendTimer(resendContainer, resentTimeLabel);
-        box.add(resendContainer);
-
 
         maskAndUnmaskPass.addActionListener(evt -> {
             if (passwordField.getConstraint() == TextField.PASSWORD) {
@@ -131,37 +137,39 @@ public class RegisterVerificationCodeStep2 extends Form {
             }
         });
 
-        box.add(BorderLayout.center(passwordField).
-                add(BorderLayout.WEST, passwordIcon));
-
-        box.add(BoxLayout.encloseXRight(maskAndUnmaskPass));
-
-        termsCheckBox.setUIID(RegisterStyle.TERMS_CHECK_BOX);
+        termsCheckBox.setUIID(RegisterStyle.RESEND_LABEL);
         termsCheckBox.setGap(2);
         termsCheckBox.setOppositeSide(false);
         termsCheckBox.getAllStyles().setPaddingRight(0.7f);
         termsCheckBox.setSelected(true);
         termsLink.getAllStyles().setPaddingLeft(0);
-        box.add(BoxLayout.encloseX(termsCheckBox, termsLink));
+
 
         termsLink.addActionListener(evt -> {
+            setTransitionOutAnimator(CommonTransitions.createEmpty());
             new BrowserPopUp(getCurrentForm(),
                     "Terms&Conditions",
-                    "http://your-domain.example.com/policy")
+                    POLICY_URL)
                     .show();
         });
 
-        errorText.setVisible(false);
+        box.add(FlowLayout.encloseCenter(phoneNumberHolder));
+
+        box.add(BorderLayout.center(passwordField).
+                add(BorderLayout.WEST, passwordIcon));
+        box.add(BoxLayout.encloseXRight(maskAndUnmaskPass));
+
+        box.add(BorderLayout.center(smsCode).
+                add(BorderLayout.WEST, smsIcon));
+        box.add(resendContainer);
+
+        box.add(BoxLayout.encloseX(termsCheckBox, termsLink));
         box.add(errorText);
         add(box);
 
         smsCode.addActionListener(evt -> {
-            passwordField.startEditingAsync();
+            smsCode.stopEditing();
         });
-        passwordField.addActionListener(evt -> {
-                    passwordField.stopEditing();
-                }
-        );
 
         resendButton.addActionListener(evt -> {
             previousForm.showBack();
@@ -171,56 +179,63 @@ public class RegisterVerificationCodeStep2 extends Form {
         fab.bindFabToContainer(this);
 
         fab.addActionListener(e -> {
-            if (FabProgress.isInProgress()) return;
-            errorText.setVisible(false);
-
-            if (!new RegisterValidator().validate()) {
-                return;
-            }
-
-            FabProgress.bind(fab);
-            resendContainer.setVisible(true);
-
-            user.password.set(passwordField.getText());
-            user.smsCode.set(smsCode.getText());
-
-            UserService.registerUser(user, new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    errorText.setText(errorCode + " " + errorMessage);
-                    errorText.setVisible(true);
-                    errorText.getParent().revalidateWithAnimationSafety();
-//                    revalidateWithAnimationSafety();
-                    FabProgress.stop();
-                }
-
-                @Override
-                public void onSucess(String response) {
-
-                    RentService.prepareCheckout(new Callback<String>() {
-                        @Override
-                        public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                            errorText.setText(errorCode + " " + errorMessage);
-                            errorText.setVisible(true);
-                            errorText.getParent().revalidateWithAnimationSafety();
-//                    revalidateWithAnimationSafety();
-                            FabProgress.stop();
-                        }
-
-                        @Override
-                        public void onSucess(String checkoutUrl) {
-                            new RegisterCreditCardStep3(checkoutUrl).show();
-                            FabProgress.stop();
-                        }
-                    });
-                }
-            });
+            getNextButtonAction(resendContainer, fab);
         });
     }
 
+    public void getNextButtonAction(Container resendContainer, FloatingActionButton fab) {
+        if (FabProgress.isInProgress()) return;
+        errorText.setVisible(false);
 
-    public void setSmsCode(String code) {
-        smsCode.setText(code);
+        if (!new RegisterValidator().validate()) {
+            System.out.println("123");
+            return;
+        }
+
+        FabProgress.bind(fab);
+        resendContainer.setVisible(true);
+
+        user.password.set(passwordField.getText());
+        user.smsCode.set(smsCode.getText());
+
+        UserService.registerUser(user, new Callback<String>() {
+            @Override
+            public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                showError(errorMessage);
+                errorText.getParent().createAnimateLayoutFade(200,100);
+                FabProgress.stop();
+            }
+
+            @Override
+            public void onSucess(String response) {
+
+//                String token = resp.getResponseData().get("token").toString();
+//                setToken(token);
+//                RentSocketService.get().reconnect();
+//                MainForm.get().refreshScanButton();
+//                CommonCode.refreshCommands();
+
+                RentService.prepareCheckout(new Callback<String>() {
+                    @Override
+                    public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                        showError(errorMessage);
+                        errorText.getParent().createAnimateLayoutFade(200,100);
+                        FabProgress.stop();
+                    }
+
+                    @Override
+                    public void onSucess(String checkoutUrl) {
+                        new RegisterCreditCardStep3(checkoutUrl).show();
+                        FabProgress.stop();
+                    }
+                });
+            }
+        });
+    }
+
+    public void showError(String errorMessage) {
+        errorText.setText(errorMessage);
+        errorText.setVisible(true);
     }
 
     private Command constructBackCommand(Form previousForm) {
@@ -291,28 +306,24 @@ public class RegisterVerificationCodeStep2 extends Form {
         }
 
         public boolean validate() {
-            boolean valid = true;
             setValidateOnEveryKey(true);
             validate(smsCode);
             validate(passwordField);
 
             if (!isCurrentlyValid(smsCode)) {
-                errorText.setText(INCORRECT_PIN_ERROR_TEXT);
-                valid = false;
+                showError(INCORRECT_PIN_ERROR_TEXT);
             } else if (!isCurrentlyValid(passwordField)) {
-                errorText.setText("Password should contain minimum 4 characters");
-                valid = false;
+                showError("Password should contain minimum 4 characters");
             } else if (!termsCheckBox.isSelected()) {
-                errorText.setText("Please accept Terms&Conditions");
-                valid = false;
+                showError("Please accept Terms&Conditions");
             }
 
-            if (!valid) {
-                errorText.setVisible(true);
-                errorText.getParent().revalidateWithAnimationSafety();
+            if (errorText.isVisible()) {
+                errorText.getParent().createAnimateLayoutFade(200,100);
+                return false;
             }
 
-            return valid;
+            return true;
         }
 
         private boolean isCurrentlyValid(Component cmp) {
