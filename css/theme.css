@@ -5,11 +5,10 @@
     menuImageSize: 6;
     sideSwipeSensitiveInt: 100;
     sideSwipeActivationInt:100;
-    sideMenuTensileDragBool: false;
     buttonRippleBool:false;
     /*multi size images. Name should end with Image to map as image resource*/
-    splashLogo1Image: "splash-logo-part1.png";
-    splashLogo2Image: "splash-logo-part2.png";
+    splashLogo1Image: "splash-logo-part-1.png";
+    splashLogo2Image: "splash-logo-part-2.png";
     mailLogoImage: "main-logo.png";
     googleImage: "google.png";
     facebookImage: "facebook.png";
@@ -88,7 +87,7 @@ ToastBarMessage {
 /*====================== Login Form ==========================*/
 
 WelcomeText {
-    padding: 1.5mm 0mm 0mm 1mm;
+    padding: 2mm 0mm 0mm 1mm;
     margin: 0mm;
     font-family: "native:MainLight";
     font-size: 4mm;
@@ -97,7 +96,7 @@ WelcomeText {
 
 WelcomeText2 {
     cn1-derive: WelcomeText;
-    padding: 1.5mm 1mm 0mm 0mm;
+    padding: 2mm 1mm 0mm 0mm;
     font-weight: bold;
     color: cadetblue;
 }
@@ -139,20 +138,20 @@ ErrorLabel {
 
 SplashTitle {
     padding: 0mm;
-    margin: 0mm;
+    margin: 3mm 1mm 1mm 1mm;
     color: #80acb1;
     text-align: center;
-    font-family: "native:MainThin";
+    font-family: "native:MainLight";
     font-weight: bold;
-    font-size: 6mm;
+    font-size: 5mm;
 }
 
 SplashSubTitle {
-    padding: 0mm;
+    cn1-derive: SplashTitle;
+    color: gray;
     margin: 0mm;
-    text-align: center;
-    font-family: "native:MainThin";
     font-size: 4mm;
+    font-weight: normal;
 }
 
 /*====================== Map Form ==========================*/

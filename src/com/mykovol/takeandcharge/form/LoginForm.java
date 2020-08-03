@@ -30,8 +30,13 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
+import com.codename1.ui.validation.LengthConstraint;
+import com.codename1.ui.validation.Validator;
+import com.mykovol.takeandcharge.form.component.LoginField;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FabProgress;
+
 
 /**
  * The Login form
@@ -40,17 +45,11 @@ import com.mykovol.takeandcharge.tools.FabProgress;
  */
 public class LoginForm extends Form {
 
-    private final TextField loginField = new TextField("", "(093) 123-45-56", 20, TextField.NUMERIC);
+    private final Validator validator = new Validator();
+    private final LoginField loginField = new LoginField();
     private final TextField passwordField = new TextField("", "Password", 20, TextField.PASSWORD);
     private final SpanLabel errorLabel = new SpanLabel("Password error", "ErrorLabel");
 
-
-    public void setPredefinedInfo(String phoneNumber, String message) {
-        loginField.setText(phoneNumber);
-        loginField.setEditable(false);
-        setEditOnShow(passwordField);
-        showError(message);
-    }
 
     public LoginForm() {
         super(new BorderLayout());
@@ -69,25 +68,18 @@ public class LoginForm extends Form {
                 new Label(" Take&Charge", "WelcomeText2")
         );
 
-        loginField.setUIID("CredentialsField");
         passwordField.setUIID("CredentialsField");
 
-        loginField.getAllStyles().setMargin(LEFT, 0);
         passwordField.getAllStyles().setMargin(LEFT, 0);
-        Label loginIcon = new Label("", "CredentialsField");
-        loginIcon.setShowEvenIfBlank(true);
         Label passwordIcon = new Label("", "CredentialsField");
         passwordIcon.setShowEvenIfBlank(true);
-        loginIcon.getAllStyles().setMargin(RIGHT, 0);
         passwordIcon.getAllStyles().setMargin(RIGHT, 0);
-        FontImage.setMaterialIcon(loginIcon, FontImage.MATERIAL_PHONE, 3);
         FontImage.setMaterialIcon(passwordIcon, FontImage.MATERIAL_LOCK_OUTLINE, 3);
 
-        errorLabel.setHidden(true);
+        errorLabel.setVisible(false);
 
-//        Validator validator = new Validator();
-//        validator.addConstraint(login, new LengthConstraint(1, "cannot be blank"));
-//        validator.addConstraint(password, new LengthConstraint(4, "at least 4 symbols"));
+        validator.addConstraint(passwordField, new LengthConstraint(4, "Password should contain at least 4 symbols"));
+        Validator.setValidateOnEveryKey(true);
 
         Button forgot = new Button("Forgot password", "ForgotPasRegisterLabel");
 //        Button newAccountButton = new Button("Create new account", "ForgotPasRegisterLabel");
@@ -113,7 +105,7 @@ public class LoginForm extends Form {
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
 //        validator.addSubmitButtons(fab);
         fab.bindFabToContainer(this);
-        ActionListener<?> loginButtonAction = loginButtonAction(loginField, passwordField, fab);
+        ActionListener<?> loginButtonAction = loginButtonAction(fab);
         fab.addActionListener(loginButtonAction);
         passwordField.addActionListener(loginButtonAction);
 
@@ -121,8 +113,7 @@ public class LoginForm extends Form {
                 logoImageHolder,
                 welcomeText,
                 spaceLabel,
-                BorderLayout.center(loginField).
-                        add(BorderLayout.WEST, loginIcon),
+                loginField,
                 BorderLayout.center(passwordField).
                         add(BorderLayout.WEST, passwordIcon),
                 errorLabel
@@ -133,8 +124,16 @@ public class LoginForm extends Form {
 //        mainContainer.setScrollVisible(false);
         setScrollableY(true);
 
-        setEditOnShow(loginField);
-        loginField.setNextFocusDown(passwordField);
+        setEditOnShow(loginField.getTextField());
+        loginField.getTextField().setNextFocusDown(passwordField);
+
+    }
+
+    public void setPredefinedInfo(String phoneNumber, String message) {
+        loginField.getTextField().setText(phoneNumber);
+        loginField.getTextField().setEditable(false);
+        setEditOnShow(passwordField);
+        showError(message);
     }
 
     private Command constructCloseCommand() {
@@ -151,25 +150,38 @@ public class LoginForm extends Form {
         });
     }
 
-    private ActionListener<?> loginButtonAction(TextField login, TextField password, FloatingActionButton fab) {
+    private ActionListener<?> loginButtonAction(FloatingActionButton fab) {
         return evt -> {
             if (FabProgress.isInProgress()) return;
-            FabProgress.bind(fab);
             setEditOnShow(null);
+            Validator.setValidateOnEveryKey(true);
 
-            UserService.login(""+login.getText(), password.getText(), new LoginCallback() {
+            errorLabel.setVisible(false);
+            if (!loginField.isValid()) {
+                showError(loginField.getErrorMessage());
+                return;
+            }
+            if (!validator.isValid()) {
+                showError(validator.getErrorMessage(passwordField));
+                return;
+            }
+
+            FabProgress.bind(fab);
+
+            UserService.login(loginField.getPhoneNumber(), passwordField.getText(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
 
                     MainForm.get().show();
+                    CommonCode.showWelcomeMessage();
                     FabProgress.stop();
                 }
 
                 @Override
                 public void loginFailed(String errorMessage) {
-                    showError(errorMessage);
                     FabProgress.stop();
+                    showError(errorMessage);
                 }
             });
         };
@@ -177,8 +189,9 @@ public class LoginForm extends Form {
 
     private void showError(String errorMessage) {
         errorLabel.setText(errorMessage);
-        errorLabel.setHidden(false);
-        errorLabel.getParent().revalidateWithAnimationSafety();
+        errorLabel.revalidateWithAnimationSafety();
+        errorLabel.setVisible(true);
+        errorLabel.animateLayoutFade(300, 0);
     }
 
 }

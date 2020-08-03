@@ -333,4 +333,8 @@ public class CommonCode {
         cmd.setMaterialIcon(materialIcon);
         return cmd;
     }
+
+    public static void showWelcomeMessage(){
+        Dialog.show("Welcome!", "Now you can scan QR code and take a powerbank","Ok", null);
+    }
 }

@@ -13,9 +13,9 @@ import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.layouts.BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE;
 
 public class SplashScreen extends Form {
-    private final ScaleImageLabel logoImage1 = new ScaleImageLabel(Resources.getGlobalResources().getImage("splash-logo-part1.png"));
+    private final ScaleImageLabel logoImage1 = new ScaleImageLabel(Resources.getGlobalResources().getImage("splash-logo-part-1.png"));
     private final Container animatedLogoImage1Container = BorderLayout.center(logoImage1);
-    private final Label logoImage2 = new Label(Resources.getGlobalResources().getImage("splash-logo-part2.png"));
+    private final Label logoImage2 = new Label(Resources.getGlobalResources().getImage("splash-logo-part-2.png"));
     private final Container animatedLogoImage2Container = BorderLayout.centerAbsolute(logoImage2);
 
     private final Label logoTitle = new Label("Take&Charge", "SplashTitle");
@@ -34,7 +34,7 @@ public class SplashScreen extends Form {
 //        getToolbar().setUIID("Container");
         setToolbar(new Toolbar(true));
         getToolbar().hideToolbar();
-        setTransitionOutAnimator(CommonTransitions.createEmpty());
+        setTransitionOutAnimator(CommonTransitions.createFade(300));
 
 //        MorphTransition morph = MorphTransition.create(400);
 //        setTransitionOutAnimator(morph);

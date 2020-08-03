@@ -7,7 +7,7 @@
     <image name="gradient-overlay.png" type="multi"  />
     <image name="like-idea.png" type="multi"  />
     <image name="main-logo.png" type="multi"  />
-    <image name="map-point.png" type="multi"  />
+    <image name="map-point2.png" type="multi"  />
     <image name="mobile-number.png" type="multi"  />
     <image name="no-logo.png" type="multi"  />
     <image name="power-bank-photo.png" type="multi"  />
@@ -38,8 +38,8 @@
     <image name="ShowMeButtonTopL_2.png" type="multi"  />
     <image name="ShowMeButtonTopR_1.png" type="multi"  />
     <image name="ShowMeButtonTopR_2.png" type="multi"  />
-    <image name="splash-logo-part1.png" type="multi"  />
-    <image name="splash-logo-part2.png" type="multi"  />
+    <image name="splash-logo-part-1.png" type="multi"  />
+    <image name="splash-logo-part-2.png" type="multi"  />
     <image name="TakePowerBankButtonBottom_1.png" type="multi"  />
     <image name="TakePowerBankButtonBottom_2.png" type="multi"  />
     <image name="TakePowerBankButtonBottomL_1.png" type="multi"  />
@@ -66,17 +66,16 @@
         <val key="@gradientImage" value="gradient-overlay.png" />
         <val key="@imageMetadata" value="{}" />
         <val key="@includeNativeBool" value="true" />
+        <val key="@likeIdeaImage" value="like-idea.png" />
         <val key="@mailLogoImage" value="main-logo.png" />
-        <val key="@mapPointImage" value="map-point.png" />
         <val key="@menuImageSize" value="6" />
         <val key="@mobileNumberImage" value="mobile-number.png" />
         <val key="@noLogoImage" value="no-logo.png" />
         <val key="@powerBankPhotoImage" value="power-bank-photo.png" />
-        <val key="@sideMenuTensileDragBool" value="false" />
         <val key="@sideSwipeActivationInt" value="100" />
         <val key="@sideSwipeSensitiveInt" value="100" />
-        <val key="@splashLogo1Image" value="splash-logo-part1.png" />
-        <val key="@splashLogo2Image" value="splash-logo-part2.png" />
+        <val key="@splashLogo1Image" value="splash-logo-part-1.png" />
+        <val key="@splashLogo2Image" value="splash-logo-part-2.png" />
         <val key="@verticalDraggableImage" value="vertical-draggable.png" />
         <val key="AlreadyHaveAnAccountButton.align" value="4" />
         <val key="AlreadyHaveAnAccountButton.derive" value="RegisterLabel" />
@@ -498,6 +497,18 @@
         <val key="MobileNumber.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="MobileNumber.sel#padUnit" value="2,2,2,2" />
         <val key="MobileNumber.sel#padding" value="1.3,1.3,2.0,2.0" />
+        <border key="PanelDelimiter.border" type="css" css="border-width:0px 0px 0.2mm 0px;border-style:none none solid none;border-color:#00000000 #00000000 #8080807f #00000000;"/>
+        <border key="PanelDelimiter.dis#border" type="css" css="border-width:0px 0px 0.2mm 0px;border-style:none none solid none;border-color:#00000000 #00000000 #8080807f #00000000;"/>
+        <val key="PanelDelimiter.dis#marUnit" value="2,2,2,2" />
+        <val key="PanelDelimiter.dis#margin" value="3.0,3.0,3.0,3.0" />
+        <val key="PanelDelimiter.marUnit" value="2,2,2,2" />
+        <val key="PanelDelimiter.margin" value="3.0,3.0,3.0,3.0" />
+        <border key="PanelDelimiter.press#border" type="css" css="border-width:0px 0px 0.2mm 0px;border-style:none none solid none;border-color:#00000000 #00000000 #8080807f #00000000;"/>
+        <val key="PanelDelimiter.press#marUnit" value="2,2,2,2" />
+        <val key="PanelDelimiter.press#margin" value="3.0,3.0,3.0,3.0" />
+        <border key="PanelDelimiter.sel#border" type="css" css="border-width:0px 0px 0.2mm 0px;border-style:none none solid none;border-color:#00000000 #00000000 #8080807f #00000000;"/>
+        <val key="PanelDelimiter.sel#marUnit" value="2,2,2,2" />
+        <val key="PanelDelimiter.sel#margin" value="3.0,3.0,3.0,3.0" />
         <val key="PanelHeader.align" value="4" />
         <val key="PanelHeader.dis#align" value="4" />
         <val key="PanelHeader.dis#fgColor" value="8fc0c5" />
@@ -546,15 +557,19 @@
         <val key="PanelImage.sel#margin" value="0.0,0.0,1.0,1.0" />
         <val key="PanelImage.sel#padUnit" value="2,2,2,2" />
         <val key="PanelImage.sel#padding" value="0.0,0.0,0.0,0.0" />
+        <val key="PanelText.align" value="4" />
+        <val key="PanelText.dis#align" value="4" />
         <font key="PanelText.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="PanelText.dis#padUnit" value="2,2,2,2" />
         <val key="PanelText.dis#padding" value="0.0,0.0,2.0,2.0" />
         <font key="PanelText.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="PanelText.padUnit" value="2,2,2,2" />
         <val key="PanelText.padding" value="0.0,0.0,2.0,2.0" />
+        <val key="PanelText.press#align" value="4" />
         <font key="PanelText.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="PanelText.press#padUnit" value="2,2,2,2" />
         <val key="PanelText.press#padding" value="0.0,0.0,2.0,2.0" />
+        <val key="PanelText.sel#align" value="4" />
         <font key="PanelText.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="2.5" />
         <val key="PanelText.sel#padUnit" value="2,2,2,2" />
         <val key="PanelText.sel#padding" value="0.0,0.0,2.0,2.0" />
@@ -895,25 +910,33 @@
         <val key="SideNavigationPanel.sel#transparency" value="255" />
         <val key="SideNavigationPanel.transparency" value="255" />
         <val key="SplashSubTitle.align" value="4" />
+        <val key="SplashSubTitle.derive" value="SplashTitle" />
         <val key="SplashSubTitle.dis#align" value="4" />
-        <font key="SplashSubTitle.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="4.0" />
+        <val key="SplashSubTitle.dis#derive" value="SplashTitle.dis" />
+        <val key="SplashSubTitle.dis#fgColor" value="808080" />
+        <font key="SplashSubTitle.dis#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="SplashSubTitle.dis#marUnit" value="2,2,2,2" />
         <val key="SplashSubTitle.dis#margin" value="0.0,0.0,0.0,0.0" />
         <val key="SplashSubTitle.dis#padUnit" value="2,2,2,2" />
         <val key="SplashSubTitle.dis#padding" value="0.0,0.0,0.0,0.0" />
-        <font key="SplashSubTitle.font" type="ttf" face="0" style="0" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="4.0" />
+        <val key="SplashSubTitle.fgColor" value="808080" />
+        <font key="SplashSubTitle.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="SplashSubTitle.marUnit" value="2,2,2,2" />
         <val key="SplashSubTitle.margin" value="0.0,0.0,0.0,0.0" />
         <val key="SplashSubTitle.padUnit" value="2,2,2,2" />
         <val key="SplashSubTitle.padding" value="0.0,0.0,0.0,0.0" />
         <val key="SplashSubTitle.press#align" value="4" />
-        <font key="SplashSubTitle.press#font" type="ttf" face="0" style="0" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="4.0" />
+        <val key="SplashSubTitle.press#derive" value="SplashTitle.press" />
+        <val key="SplashSubTitle.press#fgColor" value="808080" />
+        <font key="SplashSubTitle.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="SplashSubTitle.press#marUnit" value="2,2,2,2" />
         <val key="SplashSubTitle.press#margin" value="0.0,0.0,0.0,0.0" />
         <val key="SplashSubTitle.press#padUnit" value="2,2,2,2" />
         <val key="SplashSubTitle.press#padding" value="0.0,0.0,0.0,0.0" />
         <val key="SplashSubTitle.sel#align" value="4" />
-        <font key="SplashSubTitle.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="4.0" />
+        <val key="SplashSubTitle.sel#derive" value="SplashTitle.sel" />
+        <val key="SplashSubTitle.sel#fgColor" value="808080" />
+        <font key="SplashSubTitle.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="SplashSubTitle.sel#marUnit" value="2,2,2,2" />
         <val key="SplashSubTitle.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="SplashSubTitle.sel#padUnit" value="2,2,2,2" />
@@ -921,29 +944,29 @@
         <val key="SplashTitle.align" value="4" />
         <val key="SplashTitle.dis#align" value="4" />
         <val key="SplashTitle.dis#fgColor" value="80acb1" />
-        <font key="SplashTitle.dis#font" type="ttf" face="0" style="1" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="6.0" />
+        <font key="SplashTitle.dis#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="5.0" />
         <val key="SplashTitle.dis#marUnit" value="2,2,2,2" />
-        <val key="SplashTitle.dis#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="SplashTitle.dis#margin" value="3.0,1.0,1.0,1.0" />
         <val key="SplashTitle.dis#padUnit" value="2,2,2,2" />
         <val key="SplashTitle.dis#padding" value="0.0,0.0,0.0,0.0" />
         <val key="SplashTitle.fgColor" value="80acb1" />
-        <font key="SplashTitle.font" type="ttf" face="0" style="1" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="6.0" />
+        <font key="SplashTitle.font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="5.0" />
         <val key="SplashTitle.marUnit" value="2,2,2,2" />
-        <val key="SplashTitle.margin" value="0.0,0.0,0.0,0.0" />
+        <val key="SplashTitle.margin" value="3.0,1.0,1.0,1.0" />
         <val key="SplashTitle.padUnit" value="2,2,2,2" />
         <val key="SplashTitle.padding" value="0.0,0.0,0.0,0.0" />
         <val key="SplashTitle.press#align" value="4" />
         <val key="SplashTitle.press#fgColor" value="80acb1" />
-        <font key="SplashTitle.press#font" type="ttf" face="0" style="1" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="6.0" />
+        <font key="SplashTitle.press#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="5.0" />
         <val key="SplashTitle.press#marUnit" value="2,2,2,2" />
-        <val key="SplashTitle.press#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="SplashTitle.press#margin" value="3.0,1.0,1.0,1.0" />
         <val key="SplashTitle.press#padUnit" value="2,2,2,2" />
         <val key="SplashTitle.press#padding" value="0.0,0.0,0.0,0.0" />
         <val key="SplashTitle.sel#align" value="4" />
         <val key="SplashTitle.sel#fgColor" value="80acb1" />
-        <font key="SplashTitle.sel#font" type="ttf" face="0" style="1" size="0" name="native:MainThin" family="native:MainThin" sizeSettings="3" actualSize="6.0" />
+        <font key="SplashTitle.sel#font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="5.0" />
         <val key="SplashTitle.sel#marUnit" value="2,2,2,2" />
-        <val key="SplashTitle.sel#margin" value="0.0,0.0,0.0,0.0" />
+        <val key="SplashTitle.sel#margin" value="3.0,1.0,1.0,1.0" />
         <val key="SplashTitle.sel#padUnit" value="2,2,2,2" />
         <val key="SplashTitle.sel#padding" value="0.0,0.0,0.0,0.0" />
         <val key="StationPlaceOnMap.dis#fgColor" value="8fc0c5" />
@@ -1260,24 +1283,24 @@
         <val key="WelcomeText.dis#marUnit" value="2,2,2,2" />
         <val key="WelcomeText.dis#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.dis#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.dis#padding" value="1.5,0.0,1.0,0.0" />
+        <val key="WelcomeText.dis#padding" value="2.0,0.0,1.0,0.0" />
         <font key="WelcomeText.font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText.marUnit" value="2,2,2,2" />
         <val key="WelcomeText.margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.padding" value="1.5,0.0,1.0,0.0" />
+        <val key="WelcomeText.padding" value="2.0,0.0,1.0,0.0" />
         <val key="WelcomeText.press#align" value="1" />
         <font key="WelcomeText.press#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText.press#marUnit" value="2,2,2,2" />
         <val key="WelcomeText.press#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.press#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.press#padding" value="1.5,0.0,1.0,0.0" />
+        <val key="WelcomeText.press#padding" value="2.0,0.0,1.0,0.0" />
         <val key="WelcomeText.sel#align" value="1" />
         <font key="WelcomeText.sel#font" type="ttf" face="0" style="0" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText.sel#marUnit" value="2,2,2,2" />
         <val key="WelcomeText.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText.sel#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText.sel#padding" value="1.5,0.0,1.0,0.0" />
+        <val key="WelcomeText.sel#padding" value="2.0,0.0,1.0,0.0" />
         <val key="WelcomeText2.align" value="1" />
         <val key="WelcomeText2.derive" value="WelcomeText" />
         <val key="WelcomeText2.dis#align" value="1" />
@@ -1287,13 +1310,13 @@
         <val key="WelcomeText2.dis#marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.dis#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.dis#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.dis#padding" value="1.5,0.0,0.0,1.0" />
+        <val key="WelcomeText2.dis#padding" value="2.0,0.0,0.0,1.0" />
         <val key="WelcomeText2.fgColor" value="5f9ea0" />
         <font key="WelcomeText2.font" type="ttf" face="0" style="1" size="0" name="native:MainLight" family="native:MainLight" sizeSettings="3" actualSize="4.0" />
         <val key="WelcomeText2.marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.padding" value="1.5,0.0,0.0,1.0" />
+        <val key="WelcomeText2.padding" value="2.0,0.0,0.0,1.0" />
         <val key="WelcomeText2.press#align" value="1" />
         <val key="WelcomeText2.press#derive" value="WelcomeText.press" />
         <val key="WelcomeText2.press#fgColor" value="5f9ea0" />
@@ -1301,7 +1324,7 @@
         <val key="WelcomeText2.press#marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.press#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.press#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.press#padding" value="1.5,0.0,0.0,1.0" />
+        <val key="WelcomeText2.press#padding" value="2.0,0.0,0.0,1.0" />
         <val key="WelcomeText2.sel#align" value="1" />
         <val key="WelcomeText2.sel#derive" value="WelcomeText.sel" />
         <val key="WelcomeText2.sel#fgColor" value="5f9ea0" />
@@ -1309,7 +1332,7 @@
         <val key="WelcomeText2.sel#marUnit" value="2,2,2,2" />
         <val key="WelcomeText2.sel#margin" value="0.0,0.0,0.0,0.0" />
         <val key="WelcomeText2.sel#padUnit" value="2,2,2,2" />
-        <val key="WelcomeText2.sel#padding" value="1.5,0.0,0.0,1.0" />
+        <val key="WelcomeText2.sel#padding" value="2.0,0.0,0.0,1.0" />
     </theme>
     <image name="vertical-draggable.png" type="multi"  />
 </resource>

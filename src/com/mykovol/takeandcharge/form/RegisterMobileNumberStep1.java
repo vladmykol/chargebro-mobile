@@ -28,15 +28,12 @@ import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionListener;
-import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.codename1.ui.validation.RegexConstraint;
 import com.codename1.ui.validation.Validator;
 import com.codename1.util.Callback;
-import com.codename1.util.StringUtil;
 import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
+import com.mykovol.takeandcharge.form.component.LoginField;
 import com.mykovol.takeandcharge.service.RegisterStyle;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.FabProgress;
@@ -51,10 +48,8 @@ import static com.codename1.ui.CN.getCurrentForm;
 public class RegisterMobileNumberStep1 extends Form {
 
     private final Image logoImage = Resources.getGlobalResources().getImage("mobile-number.png");
-    private final TextField phoneNumber = new TextField("", "(93) 123-45-67", 40, TextField.PHONENUMBER);
-    private final String invalidPhoneError = "Please enter valid phone number";
     private final SpanLabel errorText = new SpanLabel("", RegisterStyle.ERROR_LABEL);
-    private final Button countryCodeButton = new Button("+380", RegisterStyle.TEXT_FIELD);
+    private final LoginField loginField = new LoginField();
     private final Label errorTimeLabel = new Label("", RegisterStyle.ERROR_LABEL);
     private final Container errorContainer = BoxLayout.encloseX(errorText, errorTimeLabel);
     private final FloatingActionButton submitButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
@@ -71,7 +66,7 @@ public class RegisterMobileNumberStep1 extends Form {
         initComponents();
         attachComponentsToForm();
 
-        setEditOnShow(phoneNumber);
+        setEditOnShow(loginField.getTextField());
         Validator.setValidateOnEveryKey(false);
     }
 
@@ -79,10 +74,7 @@ public class RegisterMobileNumberStep1 extends Form {
         add(BoxLayout.encloseXCenter(new Label(logoImage)));
         mobileNumber.setEnabled(false);
         add(mobileNumber);
-        add(BorderLayout.centerEastWest(
-                phoneNumber,
-                null,
-                countryCodeButton));
+        add(loginField);
         add(errorContainer);
 //        add(BoxLayout.encloseXCenter(alreadyHaveAccountButton));
         submitButton.bindFabToContainer(this);
@@ -90,21 +82,9 @@ public class RegisterMobileNumberStep1 extends Form {
     }
 
     private void initComponents() {
-        phoneNumber.setUIID(RegisterStyle.TEXT_FIELD);
-        countryCodeButton.getAllStyles().setMargin(RIGHT, 0);
-        phoneNumber.getAllStyles().setMargin(LEFT, 0);
-
-        Validator phoneNumberValidator = createPhoneNumberValidator();
-        ActionListener<?> submitAction = createSubmitAction(phoneNumberValidator);
+        ActionListener<?> submitAction = createSubmitAction();
         submitButton.addActionListener(submitAction);
-        phoneNumber.addActionListener(submitAction);
-
-        Style ps = phoneNumber.getUnselectedStyle();
-        Style cs = countryCodeButton.getUnselectedStyle();
-        int pl = cs.getPaddingLeft(isRTL());
-        int pr = cs.getPaddingRight(isRTL());
-        countryCodeButton.getAllStyles().setPaddingUnit(Style.UNIT_TYPE_PIXELS);
-        countryCodeButton.getAllStyles().setPadding(ps.getPaddingTop(), ps.getPaddingBottom(), pl, pr);
+        loginField.getTextField().addActionListener(submitAction);
 
         errorTimeLabel.setVisible(false);
         errorText.setVisible(false);
@@ -114,15 +94,6 @@ public class RegisterMobileNumberStep1 extends Form {
 //        alreadyHaveAccountButton.addActionListener(evt -> {
 //            new LoginForm().show();
 //        });
-    }
-
-    private Validator createPhoneNumberValidator() {
-        phoneNumber.setMaxSize(13);
-        String phoneRegExp = "^[1-9][0-9.-]{7}[0-9]$";
-        Validator validator = new Validator();
-        validator.addConstraint(phoneNumber, new RegexConstraint(phoneRegExp,
-                "Please enter valid phone number"));
-        return validator;
     }
 
     private Command getCloseCommand() {
@@ -139,33 +110,29 @@ public class RegisterMobileNumberStep1 extends Form {
         });
     }
 
-    private ActionListener<?> createSubmitAction(Validator validator) {
+    private ActionListener<?> createSubmitAction() {
         return e -> {
             if (FabProgress.isInProgress()) return;
-            phoneNumber.stopEditing();
+            loginField.getTextField().stopEditing();
             Validator.setValidateOnEveryKey(true);
 
             errorText.setVisible(false);
-            if (!validator.isValid()) {
-                errorText.setText(invalidPhoneError);
-                errorText.setVisible(true);
-                errorText.getParent().revalidateWithAnimationSafety();
+            if (!loginField.isValid()) {
+                showError(loginField.getErrorMessage());
                 return;
             }
             FabProgress.bind(submitButton);
-            String digitsPhone = StringUtil.replaceAll(countryCodeButton.getText() + phoneNumber.getText(), "+", "");
+            String formattedPhoneNumber = loginField.getFullPhoneNumber();
 
-            UserService.validateUserPhone(digitsPhone, new Callback<RegisterInitResponse>() {
+            UserService.validateUserPhone(loginField.getFullPhoneNumber(), new Callback<RegisterInitResponse>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     if (errorCode == 409) {
                         LoginForm loginForm = new LoginForm();
-                        loginForm.setPredefinedInfo(digitsPhone, "This number is already registered. Please enter your password");
+                        loginForm.setPredefinedInfo(loginField.getPhoneNumber(), "This number is already registered. Please enter your password");
                         loginForm.show();
                     } else {
-                        errorText.setText(errorMessage);
-                        errorText.setVisible(true);
-                        errorText.getParent().revalidateWithAnimationSafety();
+                        showError(errorMessage);
                     }
                     FabProgress.stop();
                 }
@@ -173,12 +140,19 @@ public class RegisterMobileNumberStep1 extends Form {
                 @Override
                 public void onSucess(RegisterInitResponse response) {
                     RegisterVerificationCodeStep2 step2Form = new RegisterVerificationCodeStep2(getCurrentForm(),
-                            digitsPhone, response);
+                            formattedPhoneNumber, response);
                     step2Form.show();
                     FabProgress.stop();
                 }
             });
         };
+    }
+
+    private void showError(String message) {
+        errorText.setText(message);
+        errorText.revalidateWithAnimationSafety();
+        errorText.setVisible(true);
+        errorText.animateLayoutFade(300, 0);
     }
 
 //    public void startResendTimer(Container resendContainer, Label resentTimeLabel) {

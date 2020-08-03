@@ -42,7 +42,7 @@ public class RegisterCreditCardStep3 extends Form {
         super(new BorderLayout());
 //        CommonCode.removeTransitionsTemporarily(previous);
         setToolbar(new Toolbar(false));
-        getToolbar().setTitle("Add your credit card");
+        getToolbar().setTitle("Choose payment method");
 
         setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
@@ -63,6 +63,7 @@ public class RegisterCreditCardStep3 extends Form {
         fab.addActionListener(evt -> {
 //            ToastBar.showMessage("Congrats! Now you can take a powerbank", FontImage.MATERIAL_INFO);
             MainForm.get().show();
+            Dialog.show("Congratulations!", "Now you can scan QR code and take a powerbank","Ok", null);
         });
 
         add(BorderLayout.CENTER, browser);

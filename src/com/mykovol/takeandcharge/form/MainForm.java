@@ -70,10 +70,11 @@ public class MainForm extends Form {
     //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
     private final ScanButton scanButton = new ScanButton("TakePowerBankButton");
     private final Button draggablePanelScreenBlocker = new Button();
-    private final Button bottomDraggablePanelScreenBlocker = new Button();
+    private final Button sheetInfoScreenBlocker = new Button();
+    private final Button draggablePanelScreenBottomBlocker = new Button();
     private final Button sideMenuScreenBlocker = new Button();
     private final DraggablePanel draggablePanel;
-    private final StationInfoSheet stationInfoSheet = new StationInfoSheet();
+    private final StationInfoSheet stationInfoSheet = new StationInfoSheet(sheetInfoScreenBlocker);
     private final Image stationPointImage = Resources.getGlobalResources().getImage("map-point.png");
     private final Map<String, MapContainer.MapObject> mapMarkers = new HashMap<>();
     private Coord previousCoord = new Coord(ukraineCoord.getLatitude(), ukraineCoord.getLongitude());
@@ -86,7 +87,8 @@ public class MainForm extends Form {
         getToolbar().setTactileTouch(true);
 
         draggablePanel = new DraggablePanel(draggablePanelScreenBlocker,
-                bottomDraggablePanelScreenBlocker,
+                draggablePanelScreenBottomBlocker,
+                scanButton,
                 this);
         setName("MapForm");
         setScrollableY(false);
@@ -96,13 +98,13 @@ public class MainForm extends Form {
 
         add(BorderLayout.south(scanButton));
 
-        $(bottomDraggablePanelScreenBlocker)
+        $(draggablePanelScreenBottomBlocker)
                 .setUIID("Container")
                 .setBackgroundType(BACKGROUND_IMAGE_SCALED)
                 .setBgImage(Resources.getGlobalResources().getImage("gradient-overlay.png"))
                 .stripMarginAndPadding()
                 .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight + 7));
-        add(BorderLayout.south(bottomDraggablePanelScreenBlocker));
+        add(BorderLayout.south(draggablePanelScreenBottomBlocker));
 
         add(BorderLayout.north(FlowLayout.encloseRightBottom(showMyLocationButton)));
 
@@ -111,6 +113,12 @@ public class MainForm extends Form {
                 .setVisible(false)
                 .stripMarginAndPadding();
         add(draggablePanelScreenBlocker);
+
+        $(sheetInfoScreenBlocker)
+                .setUIID("Container")
+                .setVisible(false)
+                .stripMarginAndPadding();
+        add(sheetInfoScreenBlocker);
 
         add(draggablePanel);
         setScrollableY(false);

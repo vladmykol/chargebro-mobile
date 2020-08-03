@@ -62,6 +62,7 @@ public class DraggablePanel extends Container {
     private final Button screenBlocking;
     private final Button bottomScreenBlocking;
     private final Form attachedForm;
+    private final Button scanButton;
     private RentContent rentContent = new RentContent();
     private int firstX = -1, firstY = -1;
     private boolean isDraggingBottomPanel;
@@ -71,10 +72,12 @@ public class DraggablePanel extends Container {
 
     public DraggablePanel(Button screenBlocking,
                           Button bottomDraggablePanelScreenBlocker,
+                          Button scanButton,
                           Form currentForm) {
         super(new BorderLayout());
         this.screenBlocking = screenBlocking;
         this.bottomScreenBlocking = bottomDraggablePanelScreenBlocker;
+        this.scanButton = scanButton;
         this.attachedForm = currentForm;
 
         addSwipeListeners();
@@ -95,8 +98,7 @@ public class DraggablePanel extends Container {
 
         SpanLabel articleHeaderText = new SpanLabel(headerText, "PanelHeader");
         articleHeaderText.setEnabled(false);
-        TextArea articleText = new TextArea(text);
-        articleText.setUIID("PanelText");
+        SpanLabel articleText = new SpanLabel(text,"PanelText");
         articleText.setEnabled(false);
 
         defaultContent.addAll(articlePhoto, articleHeaderText, articleText);
@@ -108,10 +110,10 @@ public class DraggablePanel extends Container {
 
         addNewsToDefaultPanel("dont-spend-time.png", "Don't wait - Take&Charge",
                 "Running out of charge? No need to look for a socket or wait while your gadget is charging. " +
-                        "Just take our power bank and go. Free charging for 30 min with an annual subscription");
+                        "Just take our power bank and go. Free 60 min charging for new clients");
 
-        addNewsToDefaultPanel("like-idea.png", "Do like this idea? Than join us!",
-                "We are growing, open mind company and if you want to become part of a team or satisfy your clients with handy power banks, we can make it possible. " +
+        addNewsToDefaultPanel("like-idea.png", "Like the idea? Then join us?",
+                "We are a growing, open mind company and if you want to become part of a team or satisfy your clients with handy power banks, we can make it possible. " +
                         "Contact us now");
 
 
@@ -312,6 +314,7 @@ public class DraggablePanel extends Container {
             if (draggedCmp != null &&
                     (draggedCmp.isChildOf(this)
                             || draggedCmp == screenBlocking
+                            || draggedCmp == scanButton
                             || draggedCmp == bottomScreenBlocking)) {
                 if (firstX == -1) {
                     firstX = e.getX();

@@ -23,10 +23,12 @@ public class StationInfoSheet extends Sheet {
     private final SpanLabel errorLabel = new SpanLabel("something went wrong", "ErrorText");
     private final ScaleImageLabel placeLogoImageLabel;
     private final Container availableContainer;
+    private final Button screenBlocker;
     private String directionUrl;
 
-    StationInfoSheet() {
+    StationInfoSheet(Button screenBlocker) {
         super(null, "");
+        this.screenBlocker = screenBlocker;
         setPosition(BorderLayout.NORTH);
         Container cnt = getContentPane();
         errorLabel.setEnabled(false);
@@ -75,6 +77,10 @@ public class StationInfoSheet extends Sheet {
 //        scaleImageLabel.addPointerPressedListener(this::getDirectionButtonAction);
         getDirectionButton.addActionListener(this::getDirectionButtonAction);
 
+        addCloseListener(evt -> {
+            screenBlocker.setVisible(false);
+        });
+
     }
 
     private void getDirectionButtonAction(ActionEvent evt) {
@@ -82,7 +88,8 @@ public class StationInfoSheet extends Sheet {
     }
 
     public void show(StationInfo stationInfo) {
-        errorLabel.setVisible(false);
+        screenBlocker.setVisible(true);
+        errorLabel.setHidden(true);
         directionUrl = stationInfo.mapUrl.get();
         title.setText(stationInfo.placeName.get());
         addressLabel.setText(stationInfo.address.get());
@@ -99,8 +106,9 @@ public class StationInfoSheet extends Sheet {
                 }
                 availablePowerBanksNumber.setText("0");
                 cabBeReturnedPowerBanksNumber.setText("0");
-                errorLabel.setVisible(true);
-                errorLabel.getParent().animateLayoutFade(200, 0);
+                errorLabel.revalidateWithAnimationSafety();
+                errorLabel.setHidden(false);
+                errorLabel.animateLayoutFade(100, 0);
 //                });
             }
 

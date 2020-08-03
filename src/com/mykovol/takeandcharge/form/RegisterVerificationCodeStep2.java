@@ -181,6 +181,7 @@ public class RegisterVerificationCodeStep2 extends Form {
         fab.addActionListener(e -> {
             getNextButtonAction(resendContainer, fab);
         });
+        Validator.setValidateOnEveryKey(true);
     }
 
     public void getNextButtonAction(Container resendContainer, FloatingActionButton fab) {
@@ -188,7 +189,6 @@ public class RegisterVerificationCodeStep2 extends Form {
         errorText.setVisible(false);
 
         if (!new RegisterValidator().validate()) {
-            System.out.println("123");
             return;
         }
 
