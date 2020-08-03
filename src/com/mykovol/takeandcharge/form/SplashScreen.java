@@ -34,7 +34,7 @@ public class SplashScreen extends Form {
 //        getToolbar().setUIID("Container");
         setToolbar(new Toolbar(true));
         getToolbar().hideToolbar();
-        setTransitionOutAnimator(CommonTransitions.createFade(300));
+        setTransitionOutAnimator(CommonTransitions.createEmpty());
 
 //        MorphTransition morph = MorphTransition.create(400);
 //        setTransitionOutAnimator(morph);

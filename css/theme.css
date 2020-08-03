@@ -17,7 +17,6 @@
     dontSpendTimeImage: "dont-spend-time.png";
     powerBankPhotoImage: "power-bank-photo.png";
     mapPointImage: "map-point.png";
-    /*chargingStationImage: "charging-station.png";*/
     mobileNumberImage: "mobile-number.png";
     noLogoImage: "no-logo.png";
     likeIdeaImage: "like-idea.png";
@@ -426,7 +425,6 @@ LoadImage {
 StationsSheetTitle {
     font-family: "native:MainRegular";
     font-size: 4mm;
-    /*color: #8FC0C5;*/
     padding: 0mm;
     margin: 2mm 1mm 0mm 1mm;
     color: cadetblue;
@@ -472,8 +470,9 @@ StationsSheetNumberCanBeReturned {
 }
 
 GetDirectionButton{
-    color: #0479f5;
-    font-size: 4mm;
+    color: white;
+    background: #0479f5;
+    font-size: 4.5mm;
     padding: 3mm;
     margin: 0mm 2mm;
 }

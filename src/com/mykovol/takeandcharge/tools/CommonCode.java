@@ -327,7 +327,7 @@ public class CommonCode {
         });
     }
 
-    private static Command getCommand(String name, char materialIcon, final ActionListener evt) {
+    private static Command getCommand(String name, char materialIcon, final ActionListener<?> evt) {
         Command cmd = Command.create(name, null, evt);
         cmd.setIconGapMM(2);
         cmd.setMaterialIcon(materialIcon);

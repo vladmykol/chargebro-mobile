@@ -98,20 +98,15 @@ public class RegisterMobileNumberStep1 extends Form {
 
     private Command getCloseCommand() {
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
+        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         return Command.create("", mat, e -> {
-
-            setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-            Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
-            if (currEditing != null) {
-                currEditing.stopEditing(() -> MainForm.get().show());
-            } else {
-                MainForm.get().show();
-            }
+            MainForm.get().show();
         });
     }
 
     private ActionListener<?> createSubmitAction() {
         return e -> {
+            if (loginField.getTextField().getText().isEmpty()) return;
             if (FabProgress.isInProgress()) return;
             loginField.getTextField().stopEditing();
             Validator.setValidateOnEveryKey(true);

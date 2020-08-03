@@ -61,7 +61,7 @@ public class StationInfoSheet extends Sheet {
 
         FontImage.setMaterialIcon(getDirectionButton, FontImage.MATERIAL_DIRECTIONS);
         getDirectionButton.getAllStyles().setBorder(
-                RoundBorder.create().color(0xffffffff).shadowOpacity(60)
+                RoundBorder.create().color(0x0479f5).shadowOpacity(60)
         );
 
 //        title.setSafeArea(true);
