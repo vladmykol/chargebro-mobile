@@ -103,7 +103,7 @@ public class MainForm extends Form {
                 .setBackgroundType(BACKGROUND_IMAGE_SCALED)
                 .setBgImage(Resources.getGlobalResources().getImage("gradient-overlay.png"))
                 .stripMarginAndPadding()
-                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight + 7));
+                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight + 20));
         add(BorderLayout.south(draggablePanelScreenBottomBlocker));
 
         add(BorderLayout.north(FlowLayout.encloseRightBottom(showMyLocationButton)));
@@ -150,9 +150,9 @@ public class MainForm extends Form {
 
     @Override
     public void show() {
+        super.show();
         RentSocketService.get().reconnect();
         showMyLocationButton.refreshState();
-        super.show();
         refreshMarkersOnMap(ukraineCoord);
     }
 

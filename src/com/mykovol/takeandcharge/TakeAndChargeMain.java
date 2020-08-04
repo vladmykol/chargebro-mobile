@@ -98,9 +98,12 @@ public class TakeAndChargeMain {
     public void start() {
         if (current != null) {
             try {
-                current.show();
+                if (current instanceof SplashScreen) {
+                    MainForm.get().show();
+                } else {
+                    current.show();
+                }
             } catch (Exception e) {
-                Log.e(e);
                 MainForm.get().show();
             }
         } else {
@@ -115,9 +118,6 @@ public class TakeAndChargeMain {
         if (current instanceof Dialog) {
             ((Dialog) current).dispose();
             current = getCurrentForm();
-        }
-        if (current instanceof SplashScreen) {
-            current = MainForm.get();
         }
         MainForm.suspend();
     }

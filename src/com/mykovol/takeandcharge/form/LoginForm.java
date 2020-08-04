@@ -84,7 +84,7 @@ public class LoginForm extends Form {
         Button forgot = new Button("Forgot password", "ForgotPasRegisterLabel");
 //        Button newAccountButton = new Button("Create new account", "ForgotPasRegisterLabel");
         Container registerOrForgot = BoxLayout.encloseY(forgot);
-        registerOrForgot.getAllStyles().setMarginBottom(3);
+        forgot.getAllStyles().setMarginBottom(3);
 //        newAccountButton.getAllStyles().setMarginBottom(3);
 
 //        newAccountButton.addActionListener(evt -> {
@@ -169,13 +169,12 @@ public class LoginForm extends Form {
 
             FabProgress.bind(fab);
 
-            UserService.login(loginField.getPhoneNumber(), passwordField.getText(), new LoginCallback() {
+            UserService.login(loginField.getFullPhoneNumber(), passwordField.getText(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
 
                     MainForm.get().show();
-                    CommonCode.showWelcomeMessage();
                     FabProgress.stop();
                 }
 

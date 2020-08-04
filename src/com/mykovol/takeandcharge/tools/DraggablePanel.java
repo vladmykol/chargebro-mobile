@@ -314,7 +314,7 @@ public class DraggablePanel extends Container {
             if (draggedCmp != null &&
                     (draggedCmp.isChildOf(this)
                             || draggedCmp == screenBlocking
-                            || draggedCmp == scanButton
+//                            || draggedCmp == scanButton
                             || draggedCmp == bottomScreenBlocking)) {
                 if (firstX == -1) {
                     firstX = e.getX();

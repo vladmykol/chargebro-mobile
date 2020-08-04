@@ -24,6 +24,7 @@
 package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
+import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
 import com.codename1.messaging.Message;
 import com.codename1.ui.*;
@@ -332,9 +333,5 @@ public class CommonCode {
         cmd.setIconGapMM(2);
         cmd.setMaterialIcon(materialIcon);
         return cmd;
-    }
-
-    public static void showWelcomeMessage(){
-        Dialog.show("Welcome!", "Now you can scan QR code and take a powerbank","Ok", null);
     }
 }

@@ -28,6 +28,7 @@ import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
+import com.mykovol.takeandcharge.tools.CommonCode;
 
 import static com.codename1.ui.CN.getCurrentForm;
 
@@ -63,7 +64,6 @@ public class RegisterCreditCardStep3 extends Form {
         fab.addActionListener(evt -> {
 //            ToastBar.showMessage("Congrats! Now you can take a powerbank", FontImage.MATERIAL_INFO);
             MainForm.get().show();
-            Dialog.show("Congratulations!", "Now you can scan QR code and take a powerbank","Ok", null);
         });
 
         add(BorderLayout.CENTER, browser);
