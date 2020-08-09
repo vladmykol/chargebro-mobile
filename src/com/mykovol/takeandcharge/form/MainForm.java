@@ -41,18 +41,16 @@ import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.component.ShowMyLocationButton;
 import com.mykovol.takeandcharge.service.RentService;
-import com.mykovol.takeandcharge.service.RentSocketService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
-import com.mykovol.takeandcharge.tools.DraggablePanel;
+import com.mykovol.takeandcharge.form.component.DraggablePanel;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.codename1.ui.CN.callSerially;
-import static com.codename1.ui.CN.getDisplayWidth;
+import static com.codename1.ui.CN.*;
 import static com.codename1.ui.ComponentSelector.$;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED;
 
@@ -74,7 +72,7 @@ public class MainForm extends Form {
     private final Button draggablePanelScreenBottomBlocker = new Button();
     private final Button sideMenuScreenBlocker = new Button();
     private final DraggablePanel draggablePanel;
-    private final StationInfoSheet stationInfoSheet = new StationInfoSheet(sheetInfoScreenBlocker);
+    private final StationInfoSheet stationInfoSheet = new StationInfoSheet(sheetInfoScreenBlocker, this);
     private final Image stationPointImage = Resources.getGlobalResources().getImage("map-point.png");
     private final Map<String, MapContainer.MapObject> mapMarkers = new HashMap<>();
     private Coord previousCoord = new Coord(ukraineCoord.getLatitude(), ukraineCoord.getLongitude());
@@ -88,13 +86,28 @@ public class MainForm extends Form {
 
         draggablePanel = new DraggablePanel(draggablePanelScreenBlocker,
                 draggablePanelScreenBottomBlocker,
-                scanButton,
                 this);
         setName("MapForm");
         setScrollableY(false);
 
         mapContainer.setShowMyLocation(false);
         add(mapContainer);
+
+        addPointerDraggedListener(evt -> {
+            Component draggedCmp = getComponentAt(evt.getX(), evt.getY());
+            if (draggedCmp.isChildOf(mapContainer)) {
+                scanButton.setEnabled(false);
+                draggablePanel.disableDrag();
+            }
+        });
+
+        addPointerReleasedListener(evt -> {
+            Component draggedCmp = getComponentAt(evt.getX(), evt.getY());
+            if (draggedCmp.isChildOf(mapContainer)) {
+                scanButton.setEnabled(true);
+                draggablePanel.enableDrag();
+            }
+        });
 
         add(BorderLayout.south(scanButton));
 
@@ -103,7 +116,7 @@ public class MainForm extends Form {
                 .setBackgroundType(BACKGROUND_IMAGE_SCALED)
                 .setBgImage(Resources.getGlobalResources().getImage("gradient-overlay.png"))
                 .stripMarginAndPadding()
-                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight + 20));
+                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight));
         add(BorderLayout.south(draggablePanelScreenBottomBlocker));
 
         add(BorderLayout.north(FlowLayout.encloseRightBottom(showMyLocationButton)));
@@ -151,7 +164,7 @@ public class MainForm extends Form {
     @Override
     public void show() {
         super.show();
-        RentSocketService.get().reconnect();
+        draggablePanel.refreshRentContent();
         showMyLocationButton.refreshState();
         refreshMarkersOnMap(ukraineCoord);
     }
@@ -238,6 +251,7 @@ public class MainForm extends Form {
         public ScanButton(String uiid) {
             super("", uiid);
             setTactileTouch(true);
+            setGap(convertToPixels(1));
             refresh();
             addActionListener(this::scanButtonAction);
             getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
@@ -267,11 +281,12 @@ public class MainForm extends Form {
 
         public void refresh() {
             if (UserService.isLoggedIn()) {
-                setText(" Take&Charge");
+                setText("Take&Charge");
                 FontImage.setMaterialIcon(this, FontImage.MATERIAL_CROP_FREE);
             } else {
                 setText("Register");
                 FontImage.setMaterialIcon(this, FontImage.MATERIAL_PERSON_ADD);
+
             }
         }
     }

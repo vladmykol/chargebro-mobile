@@ -20,6 +20,7 @@
     mobileNumberImage: "mobile-number.png";
     noLogoImage: "no-logo.png";
     likeIdeaImage: "like-idea.png";
+    menuBgrImage: "menu-bgr.png";
     /*multi size images end*/
 }
 
@@ -321,9 +322,17 @@ ErrorText {
 
 AvatarBlock {
     color: white;
-    background-color: #8FC0C5;
+    background-color: #9DD3DB;
     text-align: left;
-    padding: 8mm 2mm 3mm;
+    padding: 3mm 1mm 0mm 1mm;
+    margin: 0mm;
+    font-size: 5mm;
+}
+
+AvatarBlockText{
+    color: white;
+    text-align: left;
+    padding: 0mm 2mm 2mm;
     margin: 0mm;
     font-size: 5mm;
 }
@@ -345,7 +354,7 @@ SideCommand.pressed {
 
 SideNavigationPanel {
     background-color: white;
-    padding: 0mm 0mm 1mm 0mm;
+    padding: 0mm 0mm 2mm 0mm;
     margin: 0mm;
     border-bottom: 0.1mm solid gray;
 }
@@ -422,12 +431,16 @@ LoadImage {
 }
 
 /*====================== Stations sheet ==========================*/
+Sheet{
+    background: ghostwhite;
+}
+
 StationsSheetTitle {
     font-family: "native:MainRegular";
     font-size: 4mm;
     padding: 0mm;
-    margin: 2mm 1mm 0mm 1mm;
-    color: cadetblue;
+    margin: 1mm 1mm 0mm 1mm;
+    color: #558e90;
     text-align: center;
 }
 
@@ -470,8 +483,8 @@ StationsSheetNumberCanBeReturned {
 }
 
 GetDirectionButton{
-    color: white;
-    background: #0479f5;
+    color: ghostwhite;
+    /*background: #4169e1;*/
     font-size: 4.5mm;
     padding: 3mm;
     margin: 0mm 2mm;

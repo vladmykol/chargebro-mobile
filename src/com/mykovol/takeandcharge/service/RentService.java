@@ -141,6 +141,7 @@ public class RentService {
             if (isUserAgreeToGiveCameraAccess) {
                 if (Display.getInstance().isSimulator()) {
                     sendRentRequest("STWA312001000005", callback);
+                    Preferences.set("isUserNotifiedAboutCameraUse", true);
                 } else {
                     // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option
 //                Dialog.show("QR code scanning", "Please point the camera at the QR code", "OK", null);

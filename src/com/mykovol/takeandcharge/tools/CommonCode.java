@@ -24,6 +24,8 @@
 package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
+import com.codename1.components.ScaleImageButton;
+import com.codename1.components.SpanButton;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
 import com.codename1.messaging.Message;
@@ -33,8 +35,10 @@ import com.codename1.ui.animations.Transition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
+import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
 import com.codename1.util.SuccessCallback;
 import com.mykovol.takeandcharge.form.*;
@@ -45,6 +49,7 @@ import java.io.IOException;
 
 import static com.codename1.ui.CN.convertToPixels;
 import static com.codename1.ui.CN.getCurrentForm;
+import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED_FILL;
 import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
 import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 
@@ -60,7 +65,7 @@ public class CommonCode {
     private final static Command addPaymentMethodCommand = getAddPaymentMethod();
     private final static Command supportCommand = getSupportCommand();
     private final static Command signOutCommandCommand = getSignOutCommand();
-    private final static Button profile = new Button("", "AvatarBlock");
+    private final static ScaleImageButton profile = new ScaleImageButton(Resources.getGlobalResources().getImage("menu-bgr.png"));
     private static Image avatar;
 
     public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
@@ -140,7 +145,10 @@ public class CommonCode {
     }
 
     public static void constructSideMenu(Toolbar tb, Button screenBlocking) {
-        tb.addComponentToSideMenu(profile);
+        profile.setUIID("AvatarBlock");
+        profile.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
+        Label avatarBlockText = new Label("Take&Charge", "AvatarBlockText");
+        tb.addComponentToSideMenu(LayeredLayout.encloseIn(profile, FlowLayout.encloseBottom(avatarBlockText)));
 
         refreshCommands(tb);
 
@@ -151,6 +159,7 @@ public class CommonCode {
         tb.setComponentToSideMenuSouth(legal);
 
         legalButton.addActionListener(evt -> {
+//            CommonCode.removeTransitionsTemporarily(this);
             new BrowserPopUp(getCurrentForm(),
                     "Terms&Conditions",
                     POLICY_URL)
@@ -196,11 +205,10 @@ public class CommonCode {
     }
 
     private static void refreshProfile() {
-        if (UserService.isLoggedIn()) {
-            profile.setText("Welcome back!");
-        } else {
-            profile.setText("Welcome!");
-        }
+//        if (UserService.isLoggedIn()) {
+//        } else {
+//            profile.setText("Welcome!");
+//        }
 
 //        userAndAvatar.setIcon(getAvatar(i -> userAndAvatar.setIcon(i)));
 //        userAndAvatar.setGap(convertToPixels(4));

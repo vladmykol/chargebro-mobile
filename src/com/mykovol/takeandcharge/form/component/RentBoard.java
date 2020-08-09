@@ -32,7 +32,6 @@ public class RentBoard extends Container {
     public void updateElapsedTime(long timeElapsed) {
         startTime = System.currentTimeMillis() - timeElapsed;
         updateTimer();
-        revalidateWithAnimationSafety();
     }
 
     @Override
@@ -66,7 +65,10 @@ public class RentBoard extends Container {
         }
 
         public void setMin(int min) {
-            setText(formatMin(min));
+            String formatMin = formatMin(min);
+            if (!formatMin.equals(getText())) {
+                setText(formatMin);
+            }
         }
 
         private String formatMin(int minutes) {

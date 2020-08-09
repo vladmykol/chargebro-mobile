@@ -56,7 +56,6 @@ public class LoginForm extends Form {
 //        CommonCode.removeTransitionsTemporarily(previous);
         setToolbar(new Toolbar(true));
         getToolbar().addCommandToRightBar(constructCloseCommand());
-
         Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
         Label logoImageHolder = new ScaleImageLabel(LogoImage);
         logoImageHolder.setUIID("TextAlignCenter");
@@ -154,7 +153,6 @@ public class LoginForm extends Form {
     private ActionListener<?> loginButtonAction(FloatingActionButton fab) {
         return evt -> {
             if (FabProgress.isInProgress()) return;
-            setEditOnShow(null);
             Validator.setValidateOnEveryKey(true);
 
             errorLabel.setVisible(false);

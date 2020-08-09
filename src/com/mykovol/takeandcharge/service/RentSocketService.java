@@ -60,10 +60,9 @@ public class RentSocketService extends WebSocket {
         return instance;
     }
 
-    @Override
-    public void reconnect() {
+    public void renewConnection() {
+        close();
         autoReconnect(10000);
-        super.close();
         super.reconnect();
     }
 
@@ -105,9 +104,6 @@ public class RentSocketService extends WebSocket {
 
     @Override
     protected void onClose(int statusCode, String reason) {
-        if (statusCode == 101) {
-            reconnect();
-        }
     }
 
     @Override

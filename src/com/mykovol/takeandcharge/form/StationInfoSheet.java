@@ -25,8 +25,9 @@ public class StationInfoSheet extends Sheet {
     private final Container availableContainer;
     private final Button screenBlocker;
     private String directionUrl;
+    private volatile boolean isShown = false;
 
-    StationInfoSheet(Button screenBlocker) {
+    StationInfoSheet(Button screenBlocker, Form attachedForm) {
         super(null, "");
         this.screenBlocker = screenBlocker;
         setPosition(BorderLayout.NORTH);
@@ -68,9 +69,10 @@ public class StationInfoSheet extends Sheet {
         title.setEnabled(false);
 
         cnt.addAll(BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
-                FlowLayout.encloseLeftMiddle(errorLabel),
+//                FlowLayout.encloseLeftMiddle(errorLabel),
                 FlowLayout.encloseRightBottom(getDirectionButton));
-        add(BorderLayout.NORTH, title);
+
+        add(BorderLayout.NORTH, BoxLayout.encloseY(errorLabel, title));
 
 //        cnt.addPointerPressedListener(this::getDirectionButtonAction);
 //        infoContainer.addPointerPressedListener(this::getDirectionButtonAction);
@@ -81,6 +83,14 @@ public class StationInfoSheet extends Sheet {
             screenBlocker.setVisible(false);
         });
 
+        attachedForm.addPointerDraggedListener(evt -> {
+            Component draggedCmp = attachedForm.getComponentAt(evt.getX(), evt.getY());
+            if (draggedCmp != null && draggedCmp.isChildOf(this) && isShown) {
+                isShown = false;
+                back();
+            }
+        });
+
     }
 
     private void getDirectionButtonAction(ActionEvent evt) {
@@ -88,6 +98,7 @@ public class StationInfoSheet extends Sheet {
     }
 
     public void show(StationInfo stationInfo) {
+        isShown = true;
         screenBlocker.setVisible(true);
         errorLabel.setHidden(true);
         directionUrl = stationInfo.mapUrl.get();
@@ -125,6 +136,7 @@ public class StationInfoSheet extends Sheet {
 //                    });
 
                 }
+                errorLabel.revalidateWithAnimationSafety();
             }
         });
     }

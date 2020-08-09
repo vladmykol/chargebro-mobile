@@ -119,7 +119,7 @@ public class UserService {
                 .fetchAsJsonMap(resp -> {
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
-                    RentSocketService.get().reconnect();
+                    RentSocketService.get().renewConnection();
                     MainForm.get().refreshScanButton();
                     CommonCode.refreshCommands();
 
@@ -146,7 +146,7 @@ public class UserService {
                 .fetchAsJsonMap(resp -> {
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
-                    RentSocketService.get().reconnect();
+                    RentSocketService.get().renewConnection();
                     MainForm.get().refreshScanButton();
                     CommonCode.refreshCommands();
                     callback.loginSuccessful();

@@ -49,32 +49,30 @@ public class RegisterMobileNumberStep1 extends Form {
 
     private final Image logoImage = Resources.getGlobalResources().getImage("mobile-number.png");
     private final SpanLabel errorText = new SpanLabel("", RegisterStyle.ERROR_LABEL);
-    private final LoginField loginField = new LoginField();
+    private final LoginField mobileNumber = new LoginField();
     private final Label errorTimeLabel = new Label("", RegisterStyle.ERROR_LABEL);
     private final Container errorContainer = BoxLayout.encloseX(errorText, errorTimeLabel);
     private final FloatingActionButton submitButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
-    private final SpanLabel mobileNumber = new SpanLabel("We need your mobile number to send SMS with PIN code", RegisterStyle.LABEL);
+    private final SpanLabel titleText = new SpanLabel("We need your mobile number to send SMS with PIN code", RegisterStyle.LABEL);
 //    private final Button alreadyHaveAccountButton = new Button("Already have an account", "AlreadyHaveAnAccountButton");
 
 
     public RegisterMobileNumberStep1() {
         super(BoxLayout.y());
-        setToolbar(new Toolbar(false));
-        getToolbar().setTitle("Step 1 from 3");
-        getToolbar().addCommandToRightBar(getCloseCommand());
+
 
         initComponents();
         attachComponentsToForm();
 
-        setEditOnShow(loginField.getTextField());
+        setEditOnShow(mobileNumber.getTextField());
         Validator.setValidateOnEveryKey(false);
     }
 
     private void attachComponentsToForm() {
         add(BoxLayout.encloseXCenter(new Label(logoImage)));
-        mobileNumber.setEnabled(false);
+        titleText.setEnabled(false);
+        add(titleText);
         add(mobileNumber);
-        add(loginField);
         add(errorContainer);
 //        add(BoxLayout.encloseXCenter(alreadyHaveAccountButton));
         submitButton.bindFabToContainer(this);
@@ -83,8 +81,23 @@ public class RegisterMobileNumberStep1 extends Form {
 
     private void initComponents() {
         ActionListener<?> submitAction = createSubmitAction();
+
+        setToolbar(new Toolbar(false));
+        getToolbar().setTitle("Step 1 from 3");
+        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
+        getToolbar().addCommandToRightBar("", mat, e -> {
+            mobileNumber.getTextField().removeActionListener(submitAction);
+            setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+            Component currEditing = this.findCurrentlyEditingComponent();
+            if (currEditing != null) {
+                currEditing.stopEditing(() -> MainForm.get().show());
+            } else {
+                MainForm.get().show();
+            }
+        });
+
         submitButton.addActionListener(submitAction);
-        loginField.getTextField().addActionListener(submitAction);
+        mobileNumber.getTextField().addActionListener(submitAction);
 
         errorTimeLabel.setVisible(false);
         errorText.setVisible(false);
@@ -96,35 +109,27 @@ public class RegisterMobileNumberStep1 extends Form {
 //        });
     }
 
-    private Command getCloseCommand() {
-        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-        return Command.create("", mat, e -> {
-            MainForm.get().show();
-        });
-    }
-
     private ActionListener<?> createSubmitAction() {
         return e -> {
-            if (loginField.getTextField().getText().isEmpty()) return;
+            if (mobileNumber.getTextField().getText().isEmpty()) return;
             if (FabProgress.isInProgress()) return;
-            loginField.getTextField().stopEditing();
+            mobileNumber.getTextField().stopEditing();
             Validator.setValidateOnEveryKey(true);
 
             errorText.setVisible(false);
-            if (!loginField.isValid()) {
-                showError(loginField.getErrorMessage());
+            if (!mobileNumber.isValid()) {
+                showError(mobileNumber.getErrorMessage());
                 return;
             }
             FabProgress.bind(submitButton);
-            String formattedPhoneNumber = loginField.getFullPhoneNumber();
+            String formattedPhoneNumber = mobileNumber.getFullPhoneNumber();
 
-            UserService.validateUserPhone(loginField.getFullPhoneNumber(), new Callback<RegisterInitResponse>() {
+            UserService.validateUserPhone(mobileNumber.getFullPhoneNumber(), new Callback<RegisterInitResponse>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     if (errorCode == 409) {
                         LoginForm loginForm = new LoginForm();
-                        loginForm.setPredefinedInfo(loginField.getPhoneNumber(), "This number is already registered. Please enter your password");
+                        loginForm.setPredefinedInfo(mobileNumber.getPhoneNumber(), "This number is already registered. Please enter your password");
                         loginForm.show();
                     } else {
                         showError(errorMessage);

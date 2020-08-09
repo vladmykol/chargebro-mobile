@@ -86,7 +86,6 @@ public class RegisterVerificationCodeStep2 extends Form {
         } else {
             errorText.setVisible(false);
         }
-        setEditOnShow(passwordField);
         passwordField.setNextFocusDown(smsCode);
 
         setToolbar(new Toolbar(false));
@@ -96,7 +95,6 @@ public class RegisterVerificationCodeStep2 extends Form {
         Container box = new Container(BoxLayout.y());
         box.setScrollableY(true);
         setScrollableY(true);
-
 
 //        box.add(FlowLayout.encloseCenter(phoneNumberText));
 
@@ -146,7 +144,7 @@ public class RegisterVerificationCodeStep2 extends Form {
 
 
         termsLink.addActionListener(evt -> {
-            setTransitionOutAnimator(CommonTransitions.createEmpty());
+            CommonCode.removeTransitionsTemporarily(this);
             new BrowserPopUp(getCurrentForm(),
                     "Terms&Conditions",
                     POLICY_URL)
@@ -208,13 +206,6 @@ public class RegisterVerificationCodeStep2 extends Form {
 
             @Override
             public void onSucess(String response) {
-
-//                String token = resp.getResponseData().get("token").toString();
-//                setToken(token);
-//                RentSocketService.get().reconnect();
-//                MainForm.get().refreshScanButton();
-//                CommonCode.refreshCommands();
-
                 RentService.prepareCheckout(new Callback<String>() {
                     @Override
                     public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
