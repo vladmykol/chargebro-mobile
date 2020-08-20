@@ -147,10 +147,9 @@ public class CommonCode {
         profile.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
         Label avatarBlockText = new Label("Take&Charge", "AvatarBlockText");
 
-        tb.setDraggable(false);
-        tb.setScrollableY(false);
-
-        tb.addComponentToSideMenu(LayeredLayout.encloseIn(profile, FlowLayout.encloseBottom(avatarBlockText)));
+        Container profileHolder = LayeredLayout.encloseIn(profile, FlowLayout.encloseBottom(avatarBlockText));
+        tb.addComponentToSideMenu(profileHolder);
+        profileHolder.getParent().setScrollableY(false);
 
         refreshCommands(tb);
 

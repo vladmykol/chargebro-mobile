@@ -249,6 +249,7 @@ public class MainForm extends Form {
 
 
     public class ScanButton extends Button {
+        private Font fnt = Font.createTrueTypeFont("icomoon", "icomoon.ttf");
 
         public ScanButton(String uiid) {
             super("", uiid);
@@ -284,7 +285,7 @@ public class MainForm extends Form {
         public void refresh() {
             if (UserService.isLoggedIn()) {
                 setText("Take&Charge");
-                FontImage.setMaterialIcon(this, FontImage.MATERIAL_CROP_FREE);
+                setFontIcon(fnt, '\ue900', -1);
             } else {
                 setText("Register");
                 FontImage.setMaterialIcon(this, FontImage.MATERIAL_PERSON_ADD);
