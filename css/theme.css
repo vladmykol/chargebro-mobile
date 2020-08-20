@@ -4,8 +4,9 @@
     /*menuPrefSizeBool: true;*/
     menuImageSize: 6;
     sideSwipeSensitiveInt: 100;
-    sideSwipeActivationInt:100;
-    buttonRippleBool:false;
+    sideSwipeActivationInt: 100;
+    buttonRippleBool: false;
+    sideMenuFoldedSwipeBool: false;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part-1.png";
     splashLogo2Image: "splash-logo-part-2.png";
@@ -165,7 +166,7 @@ TakePowerBankButton {
     color: white;
     background: cadetblue;
     /*background: linear-gradient(0deg, cadetblue, #5873B8);*/
-    padding: 3mm 8mm 4mm 7mm;
+    padding: 3mm 2mm 4mm 1mm;
     margin: 0mm 7mm;
     border-radius: 5mm;
     box-shadow: 0.5mm 0.5mm 4mm 0.1mm #8FC0C5;
@@ -264,7 +265,7 @@ PanelImage {
     text-align: center;
 }
 
-PanelDelimiter{
+PanelDelimiter {
     border-bottom: 0.2mm solid rgba(128, 128, 128, 0.5);
     margin: 3mm;
 }
@@ -329,10 +330,10 @@ AvatarBlock {
     font-size: 5mm;
 }
 
-AvatarBlockText{
+AvatarBlockText {
     color: white;
     text-align: left;
-    padding: 0mm 2mm 2mm;
+    padding: 0mm 1mm 2mm 2mm;
     margin: 0mm;
     font-size: 5mm;
 }
@@ -431,65 +432,70 @@ LoadImage {
 }
 
 /*====================== Stations sheet ==========================*/
-Sheet{
+Sheet {
     background: ghostwhite;
 }
 
 StationsSheetTitle {
-    font-family: "native:MainRegular";
+    font-family: "native:MainLight";
     font-size: 4mm;
     padding: 0mm;
-    margin: 1mm 1mm 0mm 1mm;
-    color: #558e90;
+    margin: 2mm;
+    color: black;
     text-align: center;
 }
 
 StationsSheetImage {
-    margin: 0mm 2mm 1mm 1mm;
-}
-
-StationsSheetAddress {
-    font-family: "native:MainLight";
-    font-size: 2.5mm;
-    text-align: left;
-    margin: 1mm;
-    padding: 0mm;
-    color: black;
-}
-
-StationsSheetAddress.pressed {
-    font-weight: bold;
+    margin: 0mm 2mm 1mm;
 }
 
 StationsSheetText {
     font-family: "native:MainLight";
-    color: grey;
+    color: #808080;
     font-size: 2.5mm;
     margin: 0mm 0mm 0mm 1mm;
     padding: 0.3mm;
 }
 
-StationsSheetNumberAvailable {
+StationsSheetTextIcon {
     cn1-derive: StationsSheetText;
+    padding: 0mm 0mm 0mm 1.3mm;
+}
+
+StationsSheetAvailableText {
+    cn1-derive: StationsSheetText;
+    margin: 0.5mm 0mm 0mm 3mm;
+    color: #000000;
+}
+
+StationsSheetNumberAvailable {
+    cn1-derive: StationsSheetAvailableText;
     color: green;
     padding: 0mm 1mm;
+    margin: 0.4mm 0mm 0mm 3mm;
     font-size: 3mm;
     font-weight: bold;
 }
 
 StationsSheetNumberCanBeReturned {
     cn1-derive: StationsSheetNumberAvailable;
-    color: indianred;
+    color: yellowgreen;
 }
 
-GetDirectionButton{
+GetDirectionButton {
     color: ghostwhite;
     /*background: #4169e1;*/
     font-size: 4.5mm;
-    padding: 3mm;
-    margin: 0mm 2mm;
+    padding: 4mm;
+    margin: 0mm 2mm 4mm;
 }
 
 GetDirectionButton.pressed {
     color: grey;
+}
+
+SheetErrorText {
+    cn1-derive: ErrorText;
+    margin: 2mm 0mm 0mm 0mm;
+    background: lightgray;
 }

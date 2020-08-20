@@ -58,9 +58,10 @@ public class SplashScreen extends Form {
             callSerially(() -> {
                 animateTitle();
                 MainForm.get();
-                RentSocketService.get();
+
                 callSerially(() -> {
                     animateSubTitle();
+                    RentSocketService.get();
 //                mainContainer.add(BoxLayout.encloseXCenter(new InfiniteProgress()));
 
                     callSerially(() -> {

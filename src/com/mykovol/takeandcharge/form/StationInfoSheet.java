@@ -1,12 +1,12 @@
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.util.Effects;
 import com.codename1.ui.util.Resources;
@@ -14,14 +14,16 @@ import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.service.RentService;
 
+import static com.codename1.ui.CN.convertToPixels;
+
 public class StationInfoSheet extends Sheet {
 
     private final Label availablePowerBanksNumber = new Label("0", "StationsSheetNumberAvailable");
     private final Label cabBeReturnedPowerBanksNumber = new Label("0", "StationsSheetNumberCanBeReturned");
-    private final SpanLabel addressLabel = new SpanLabel("", "StationsSheetAddress");
+    private final SpanLabel addressLabel = new SpanLabel("", "StationsSheetText");
     private final SpanLabel title = new SpanLabel("", "StationsSheetTitle");
-    private final SpanLabel errorLabel = new SpanLabel("something went wrong", "ErrorText");
-    private final ScaleImageLabel placeLogoImageLabel;
+    private final SpanLabel errorLabel = new SpanLabel("something went wrong", "SheetErrorText");
+    private final Label placeLogoImageLabel;
     private final Container availableContainer;
     private final Button screenBlocker;
     private String directionUrl;
@@ -30,32 +32,39 @@ public class StationInfoSheet extends Sheet {
     StationInfoSheet(Button screenBlocker, Form attachedForm) {
         super(null, "");
         this.screenBlocker = screenBlocker;
-        setPosition(BorderLayout.NORTH);
+//        setPosition(BorderLayout.SOUTH);
         Container cnt = getContentPane();
+        cnt.setLayout(BoxLayout.y());
         errorLabel.setEnabled(false);
+        errorLabel.setHidden(true);
 //        errorLabel.stripMarginAndPadding();
 //        setLeadComponent(cnt);
 //        cnt.setLayout(BoxLayout.y());
-        cnt.setScrollableY(false);
 
 
         int size = Display.getInstance().convertToPixels(1f);
         Image placeImage = Effects.dropshadow(Resources.getGlobalResources().getImage("no-logo.png"), 10, 120, size, size);
-        placeLogoImageLabel = new ScaleImageLabel(placeImage);
+        placeLogoImageLabel = new Label(placeImage);
         placeLogoImageLabel.setUIID("StationsSheetImage");
 
         addressLabel.setEnabled(false);
+        addressLabel.setIconUIID("StationsSheetTextIcon");
         FontImage.setMaterialIcon(addressLabel, FontImage.MATERIAL_PLACE);
+//        addressLabel.getIcon().s(convertToPixels(2));
+//        addressLabel.getAllStyles().setFgColor(0xFF000000);
 
-        Label availablePowerBanks = new Label("Available:", "StationsSheetText");
-        Container availableHolder = FlowLayout.encloseIn(availablePowerBanks, availablePowerBanksNumber);
+        Label accessTimeLabel = new Label("8:30 - 21:00", "StationsSheetText");
+        accessTimeLabel.setGap(convertToPixels(1.3f));
+        FontImage.setMaterialIcon(accessTimeLabel, FontImage.MATERIAL_ACCESS_TIME);
 
+        Label availablePowerBanks = new Label("Available:", "StationsSheetAvailableText");
+        Label cabBeReturnedPowerBanks = new Label("Can be returned:", "StationsSheetAvailableText");
+        Container availableText = BoxLayout.encloseY(availablePowerBanks, cabBeReturnedPowerBanks);
+        Container availableNumbers = BoxLayout.encloseY(availablePowerBanksNumber, cabBeReturnedPowerBanksNumber);
+        availableContainer = BoxLayout.encloseX(availableText, availableNumbers);
+        availableContainer.getAllStyles().setMarginTop(convertToPixels(1));
 
-        Label cabBeReturnedPowerBanks = new Label("Can be returned:", "StationsSheetText");
-        Container canBeReturnedHolder = FlowLayout.encloseIn(cabBeReturnedPowerBanks, cabBeReturnedPowerBanksNumber);
-
-        availableContainer = BoxLayout.encloseY(availableHolder, canBeReturnedHolder);
-        Container infoContainer = BoxLayout.encloseY(addressLabel, availableContainer);
+        Container infoContainer = BoxLayout.encloseY(addressLabel, accessTimeLabel);
 
         Button getDirectionButton = new Button("");
         getDirectionButton.setUIID("GetDirectionButton");
@@ -68,12 +77,21 @@ public class StationInfoSheet extends Sheet {
 //        title.setSafeArea(true);
         title.setEnabled(false);
 
-        cnt.addAll(BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
+//        cnt.addAll(
+//                BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
 //                FlowLayout.encloseLeftMiddle(errorLabel),
-                FlowLayout.encloseRightBottom(getDirectionButton));
+//                FlowLayout.encloseRightBottom(getDirectionButton)
+//        );
+
 
         add(BorderLayout.NORTH, BoxLayout.encloseY(errorLabel, title));
-
+        add(BorderLayout.CENTER, BoxLayout.encloseY(
+                BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
+//                FlowLayout.encloseLeftMiddle(errorLabel),
+                LayeredLayout.encloseIn(availableContainer, FlowLayout.encloseRight(getDirectionButton))
+                )
+        );
+//        add(BorderLayout.NORTH, title);
 //        cnt.addPointerPressedListener(this::getDirectionButtonAction);
 //        infoContainer.addPointerPressedListener(this::getDirectionButtonAction);
 //        scaleImageLabel.addPointerPressedListener(this::getDirectionButtonAction);
@@ -83,7 +101,7 @@ public class StationInfoSheet extends Sheet {
             screenBlocker.setVisible(false);
         });
 
-        attachedForm.addPointerDraggedListener(evt -> {
+        attachedForm.addPointerReleasedListener(evt -> {
             Component draggedCmp = attachedForm.getComponentAt(evt.getX(), evt.getY());
             if (draggedCmp != null && draggedCmp.isChildOf(this) && isShown) {
                 isShown = false;
@@ -99,12 +117,11 @@ public class StationInfoSheet extends Sheet {
 
     public void show(StationInfo stationInfo) {
         isShown = true;
-        screenBlocker.setVisible(true);
-        errorLabel.setHidden(true);
         directionUrl = stationInfo.mapUrl.get();
         title.setText(stationInfo.placeName.get());
         addressLabel.setText(stationInfo.address.get());
-        getContentPane().revalidate();
+        errorLabel.setHidden(true);
+        revalidate();
         super.show();
         RentService.getRemainingPowerBanks(stationInfo.id.get(), new Callback<Integer>() {
             @Override
@@ -117,9 +134,7 @@ public class StationInfoSheet extends Sheet {
                 }
                 availablePowerBanksNumber.setText("0");
                 cabBeReturnedPowerBanksNumber.setText("0");
-                errorLabel.revalidateWithAnimationSafety();
                 errorLabel.setHidden(false);
-                errorLabel.animateLayoutFade(100, 0);
 //                });
             }
 
@@ -136,7 +151,6 @@ public class StationInfoSheet extends Sheet {
 //                    });
 
                 }
-                errorLabel.revalidateWithAnimationSafety();
             }
         });
     }

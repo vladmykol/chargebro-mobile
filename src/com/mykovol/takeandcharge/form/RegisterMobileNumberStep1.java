@@ -86,7 +86,6 @@ public class RegisterMobileNumberStep1 extends Form {
         getToolbar().setTitle("Step 1 from 3");
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
         getToolbar().addCommandToRightBar("", mat, e -> {
-            mobileNumber.getTextField().removeActionListener(submitAction);
             setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
             Component currEditing = this.findCurrentlyEditingComponent();
             if (currEditing != null) {
@@ -97,7 +96,6 @@ public class RegisterMobileNumberStep1 extends Form {
         });
 
         submitButton.addActionListener(submitAction);
-        mobileNumber.getTextField().addActionListener(submitAction);
 
         errorTimeLabel.setVisible(false);
         errorText.setVisible(false);

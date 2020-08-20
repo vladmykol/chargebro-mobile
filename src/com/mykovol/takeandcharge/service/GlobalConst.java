@@ -51,5 +51,5 @@ public final class GlobalConst {
     }
 
     public static final String POLICY_URL = "https://your-domain.example.com/policy";
-    public static final String PRICE_URL = "https://your-domain.example.com/#pricing";
+    public static final String PRICE_URL = "https://your-domain.example.com/pricing";
 }

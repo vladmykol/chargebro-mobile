@@ -30,16 +30,19 @@ import com.codename1.ui.layouts.BorderLayout;
 public class BrowserPopUp extends Form {
     public BrowserPopUp(Form previousForm, String title, String url) {
         super(new BorderLayout());
-        setToolbar(new Toolbar(false));
+        if (title != null) {
+            setToolbar(new Toolbar(false));
+            FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
+            getToolbar().addCommandToRightBar("", mat, e -> previousForm.show());
+            getToolbar().setTitle(title);
+        }
 
         setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
 //        MorphTransition morph = MorphTransition.create(400).
 //                morph("LogoImageName");
 //        setTransitionInAnimator(morph);
         setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
-        getToolbar().addCommandToRightBar("", mat, e -> previousForm.show());
-        getToolbar().setTitle(title);
+
 
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_DONE);
         fab.bindFabToContainer(this);
@@ -54,7 +57,7 @@ public class BrowserPopUp extends Form {
         browser.setURL(url);
         browser.addBrowserNavigationCallback(url1 -> {
             if (!url1.equals(url)) {
-                MainForm.get().show();
+                previousForm.show();
                 return false;
             } else
                 return true;

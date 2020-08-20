@@ -25,8 +25,6 @@ package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
 import com.codename1.components.ScaleImageButton;
-import com.codename1.components.SpanButton;
-import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
 import com.codename1.messaging.Message;
 import com.codename1.ui.*;
@@ -144,10 +142,14 @@ public class CommonCode {
         return sep;
     }
 
-    public static void constructSideMenu(Toolbar tb, Button screenBlocking) {
+    public static void constructSideMenu(Toolbar tb, Form parentForm, Button screenBlocking) {
         profile.setUIID("AvatarBlock");
         profile.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
         Label avatarBlockText = new Label("Take&Charge", "AvatarBlockText");
+
+        tb.setDraggable(false);
+        tb.setScrollableY(false);
+
         tb.addComponentToSideMenu(LayeredLayout.encloseIn(profile, FlowLayout.encloseBottom(avatarBlockText)));
 
         refreshCommands(tb);
@@ -165,21 +167,33 @@ public class CommonCode {
                     POLICY_URL)
                     .show();
         });
-////
+
+        parentForm.addPointerPressedListener(evt -> {
+            closeSideMenu(tb, parentForm, screenBlocking);
+        });
+
 //        tb.getLeftSideMenuButton().addActionListener(evt -> {
-//            Log.p(("screen blocking");
 //            screenBlocking.setVisible(true);
 //        });
-//
-//
-//
-//        screenBlocking.addActionListener(evt -> {
-//            if (!tb.getMenuBar().isMenuShowing()) {
-//                screenBlocking.setVisible(false);
-//                Log.p(("screen blocking false");
-//            }
+
+//        screenBlocking.addPointerPressedListener(evt -> {
+//            closeSideMenu(tb, parentForm, screenBlocking);
 //        });
+
+//        screenBlocking.addActionListener(evt -> {
+//            screenBlocking.setVisible(false);
+//        });
+
     }
+
+    public static void closeSideMenu(Toolbar tb, Form parentForm, Button screenBlocking) {
+        Boolean menuIsShowed = (Boolean) parentForm.getClientProperty("cn1$sidemenuCharged");
+        if (menuIsShowed) {
+            parentForm.putClientProperty("cn1$sidemenuCharged", Boolean.FALSE);
+            tb.closeSideMenu();
+        }
+    }
+
 
     private static void refreshCommands(Toolbar tb) {
         refreshProfile();
@@ -189,7 +203,7 @@ public class CommonCode {
         tb.removeCommand(priceCommand);
         tb.removeCommand(supportCommand);
         tb.removeCommand(signOutCommandCommand);
-
+        tb.getMenuBar().revalidateWithAnimationSafety();
 
         if (UserService.isLoggedIn()) {
             tb.addCommandToLeftSideMenu(addPaymentMethodCommand);

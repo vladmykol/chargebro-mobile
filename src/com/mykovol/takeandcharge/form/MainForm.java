@@ -144,7 +144,7 @@ public class MainForm extends Form {
                 .stripMarginAndPadding();
         add(sideMenuScreenBlocker);
 
-        CommonCode.constructSideMenu(getToolbar(), sideMenuScreenBlocker);
+        CommonCode.constructSideMenu(getToolbar(), this, sideMenuScreenBlocker);
         initMap();
     }
 
@@ -232,6 +232,8 @@ public class MainForm extends Form {
                                             new Coord(station.locationX.get(), station.locationY.get()), "some text here",
                                             "and some long text here",
                                             evt -> {
+//                                                new Sheet(null, station.placeName.get()).show();
+
                                                 stationInfoSheet.show(station);
                                             }));
                         });
