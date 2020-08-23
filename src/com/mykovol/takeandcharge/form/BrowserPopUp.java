@@ -29,6 +29,10 @@ import com.codename1.ui.layouts.BorderLayout;
 
 public class BrowserPopUp extends Form {
     public BrowserPopUp(Form previousForm, String title, String url) {
+        new BrowserPopUp(previousForm, title, url, true);
+    }
+
+    public BrowserPopUp(Form previousForm, String title, String url, boolean isInAnimation) {
         super(new BorderLayout());
         if (title != null) {
             setToolbar(new Toolbar(false));
@@ -37,10 +41,9 @@ public class BrowserPopUp extends Form {
             getToolbar().setTitle(title);
         }
 
-        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-//        MorphTransition morph = MorphTransition.create(400).
-//                morph("LogoImageName");
-//        setTransitionInAnimator(morph);
+        if (isInAnimation) {
+            setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+        }
         setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
 
 

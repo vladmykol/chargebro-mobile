@@ -22,6 +22,12 @@
     noLogoImage: "no-logo.png";
     likeIdeaImage: "like-idea.png";
     menuBgrImage: "menu-bgr.png";
+    circleImage: "circle.png";
+    unselectedWalkthruImage: "unselected-walkthru.png";
+    selectedWalkthruImage: "selected-walkthru.png";
+    walkthru1Image: "walkthru1.png";
+    walkthru2Image: "walkthru2.png";
+    walkthru3Image: "walkthru3.png";
     /*multi size images end*/
 }
 
@@ -30,14 +36,14 @@
 Form {
     background: white;
     color: #8fc0c5;
+    margin: 0mm;
+    padding: 0mm;
 }
 
-/*Label {*/
-/*    color: black;*/
-/*    background-color: white;*/
-/*    font-family: "native:MainLight";*/
-/*    font-size: 3.2mm*/
-/*}*/
+Container {
+    margin: 0mm;
+    padding: 0mm;
+}
 
 TextHint {
     font-family: "native:MainLight";
@@ -321,6 +327,16 @@ ErrorText {
 /*====================== Side Menu ==========================*/
 
 
+InputAvatar {
+    margin: 5mm 2mm 0mm 4mm;
+}
+
+InputAvatarImage {
+    color: white;
+    background: lightgray;
+}
+
+
 AvatarBlock {
     color: white;
     background-color: #9DD3DB;
@@ -453,7 +469,7 @@ StationsSheetText {
     font-family: "native:MainLight";
     color: #808080;
     font-size: 2.5mm;
-    margin: 0mm 0mm 0mm 1mm;
+    margin: 0.5mm 1mm 0mm 1mm;
     padding: 0.3mm;
 }
 
@@ -472,8 +488,8 @@ StationsSheetNumberAvailable {
     cn1-derive: StationsSheetAvailableText;
     color: green;
     padding: 0mm 1mm;
-    margin: 0.4mm 0mm 0mm 3mm;
-    font-size: 3mm;
+    margin: 0.1mm 0mm 0mm 3mm;
+    font-size: 3.3mm;
     font-weight: bold;
 }
 
@@ -498,4 +514,46 @@ SheetErrorText {
     cn1-derive: ErrorText;
     margin: 2mm 0mm 0mm 0mm;
     background: lightgray;
+}
+
+/*====================== Stations sheet ==========================*/
+
+WalkthruPic {
+    text-align: center;
+}
+
+WalkthruWhiteText {
+    font-family: "native:MainLight";
+    color: white;
+    text-align: center;
+    font-size: 4mm;
+    margin: 1mm 2mm;
+}
+
+WalkthruSubText {
+    cn1-derive: WalkthruWhiteText;
+    font-size: 2mm;
+    margin: 0.3mm 2mm;
+}
+
+WalkthruTab1 {
+    background: #7ed2d4;
+}
+
+WalkthruTab2 {
+    background: #a8cda8;
+}
+
+WalkthruTab3 {
+    background: #97b0f5;
+}
+
+
+WalkthrSkipButton {
+    font-family: "native:MainLight";
+    font-size: 3mm;
+    color: #505c6a;
+    margin: 4mm 2mm 5mm 2mm;
+    padding: 1mm;
+    font-style: italic;
 }

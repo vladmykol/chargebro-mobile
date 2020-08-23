@@ -24,7 +24,7 @@
 package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.MultiButton;
-import com.codename1.components.ScaleImageButton;
+import com.codename1.components.ScaleImageLabel;
 import com.codename1.io.Log;
 import com.codename1.messaging.Message;
 import com.codename1.ui.*;
@@ -33,6 +33,7 @@ import com.codename1.ui.animations.Transition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
@@ -48,8 +49,7 @@ import java.io.IOException;
 import static com.codename1.ui.CN.convertToPixels;
 import static com.codename1.ui.CN.getCurrentForm;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED_FILL;
-import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
-import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.*;
 
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
@@ -63,7 +63,7 @@ public class CommonCode {
     private final static Command addPaymentMethodCommand = getAddPaymentMethod();
     private final static Command supportCommand = getSupportCommand();
     private final static Command signOutCommandCommand = getSignOutCommand();
-    private final static ScaleImageButton profile = new ScaleImageButton(Resources.getGlobalResources().getImage("menu-bgr.png"));
+    private final static ScaleImageLabel profile = new ScaleImageLabel(Resources.getGlobalResources().getImage("menu-bgr.png"));
     private static Image avatar;
 
     public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
@@ -143,18 +143,62 @@ public class CommonCode {
     }
 
     public static void constructSideMenu(Toolbar tb, Form parentForm, Button screenBlocking) {
+        Button avatar = new Button("");
+        avatar.setUIID("InputAvatar");
+//        Image defaultAvatar = FontImage.createMaterial(FontImage.MATERIAL_CAMERA, "InputAvatarImage", 8);
+        Image defaultAvatar = Resources.getGlobalResources().getImage("main-logo.png");
+
+        Image circleMaskImage = Resources.getGlobalResources().getImage("circle.png");
+        defaultAvatar = defaultAvatar.scaled(circleMaskImage.getWidth(), circleMaskImage.getHeight());
+//        defaultAvatar = ((FontImage) defaultAvatar).toEncodedImage();
+        Object circleMask = circleMaskImage.createMask();
+        defaultAvatar = defaultAvatar.applyMask(circleMask);
+        avatar.setIcon(defaultAvatar);
+
+        avatar.addActionListener(e -> {
+//            if(Dialog.show("Camera or Gallery", "Would you like to use the camera or the gallery for the picture?", "Camera", "Gallery")) {
+//                String pic = Capture.capturePhoto();
+//                if(pic != null) {
+//                    try {
+//                        Image img = Image.createImage(pic).fill(circleMaskImage.getWidth(), circleMaskImage.getHeight());
+//                        avatar.setIcon(img.applyMask(circleMask));
+//                    } catch(IOException err) {
+//                        ToastBar.showErrorMessage("An error occured while loading the image: " + err);
+//                        Log.e(err);
+//                    }
+//                }
+//            } else {
+//                openGallery(ee -> {
+//                    if(ee.getSource() != null) {
+//                        try {
+//                            Image img = Image.createImage((String)ee.getSource()).fill(circleMaskImage.getWidth(), circleMaskImage.getHeight());
+//                            avatar.setIcon(img.applyMask(circleMask));
+//                        } catch(IOException err) {
+//                            ToastBar.showErrorMessage("An error occured while loading the image: " + err);
+//                            Log.e(err);
+//                        }
+//                    }
+//                }, GALLERY_IMAGE);
+//            }
+        });
+
+
         profile.setUIID("AvatarBlock");
         profile.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
         Label avatarBlockText = new Label("Take&Charge", "AvatarBlockText");
 
-        Container profileHolder = LayeredLayout.encloseIn(profile, FlowLayout.encloseBottom(avatarBlockText));
+        Container profileHolder = LayeredLayout.encloseIn(profile, BoxLayout.encloseY(avatar, avatarBlockText));
         tb.addComponentToSideMenu(profileHolder);
         profileHolder.getParent().setScrollableY(false);
 
         refreshCommands(tb);
 
         Button legalButton = new Button("Legal", "Legal");
-        Container legal = BorderLayout.centerCenterEastWest(null, new Label("v0.0.1", "Legal"), legalButton);
+        Label debugLabel = new Label("", "Legal");
+        if (LOCAL) {
+            debugLabel.setText("debug");
+        }
+        Container legal = BorderLayout.centerCenterEastWest(null, debugLabel, legalButton);
         legal.setLeadComponent(legalButton);
         legal.setUIID("SideNavigationPanel");
         tb.setComponentToSideMenuSouth(legal);
@@ -232,7 +276,8 @@ public class CommonCode {
         return getCommand("Price", FontImage.MATERIAL_MONEY, evt -> {
             new BrowserPopUp(getCurrentForm(),
                     "Price",
-                    PRICE_URL)
+                    PRICE_URL,
+                    false)
                     .show();
         });
     }
@@ -330,7 +375,7 @@ public class CommonCode {
 
     private static Command getSupportCommand() {
         return getCommand("Support", FontImage.MATERIAL_CONTACT_SUPPORT, evt -> {
-            String email = "support@your-domain.example.com";
+            String email = "info@your-domain.example.com";
             Message message = new Message("");
             Display.getInstance().sendMessage(new String[]{email}, "Take&Charge", message);
         });

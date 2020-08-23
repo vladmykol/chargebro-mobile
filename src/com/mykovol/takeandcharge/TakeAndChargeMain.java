@@ -11,6 +11,7 @@ import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
+import com.mykovol.takeandcharge.form.WalkthruForm;
 import com.mykovol.takeandcharge.tools.FabProgress;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 import org.littlemonkey.connectivity.Connectivity;
@@ -107,9 +108,9 @@ public class TakeAndChargeMain {
                 MainForm.get().show();
             }
         } else {
-//            new SplashScreen().show();
-            MainForm.get().show();
-//            new RegisterMobileNumberStep1().show();
+            new SplashScreen().show();
+//            MainForm.get().show();
+//            new WalkthruForm().show();
         }
     }
 

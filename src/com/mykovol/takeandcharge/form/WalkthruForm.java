@@ -1,6 +1,7 @@
-
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.components.ScaleImageLabel;
+import com.codename1.components.SpanButton;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -10,6 +11,8 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.util.Resources;
 
+import java.util.ArrayList;
+
 /**
  * A swipe tutorial for the application
  *
@@ -18,91 +21,138 @@ import com.codename1.ui.util.Resources;
 public class WalkthruForm extends Form {
     public WalkthruForm() {
         super(new LayeredLayout());
+        setToolbar(new Toolbar(true));
+        setScrollableY(false);
 
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, true, 400));
-        
+        setTransitionOutAnimator(CommonTransitions.createFade(400));
+
+        ArrayList<TabPage> pages = new ArrayList<>();
+        pages.add(getFirstTab());
+        pages.add(getSecondTab());
+        pages.add(getThirdTab());
+
+
         Tabs walkthruTabs = new Tabs();
         walkthruTabs.setUIID("Container");
         walkthruTabs.getContentPane().setUIID("Container");
         walkthruTabs.getTabsContainer().setUIID("Container");
         walkthruTabs.hideTabs();
-        
-        Image notes = Resources.getGlobalResources().getImage("notes.png");
-        Image duke = Resources.getGlobalResources().getImage("duke.png");
-        
-        Label notesPlaceholder = new Label("","ProfilePic");
-        Label notesLabel = new Label(notes, "ProfilePic");
-        Component.setSameHeight(notesLabel, notesPlaceholder);
-        Component.setSameWidth(notesLabel, notesPlaceholder);
-        Label bottomSpace = new Label();
-        
-        Container tab1 = BorderLayout.centerAbsolute(BoxLayout.encloseY(
-                notesPlaceholder,
-                new Label("Keep track of your tasks", "WalkthruWhite"),
-                new SpanLabel("Never miss an appointment, never forget about your " +
-                                            "daily team meeting and remember when your favorite " +
-                                            "team is playing.",  "WalkthruBody"),
-                bottomSpace
-        ));
-        tab1.setUIID("WalkthruTab1");
-        
-        walkthruTabs.addTab("", tab1);
-        
-        Label bottomSpaceTab2 = new Label();
-        
-        Container tab2 = BorderLayout.centerAbsolute(BoxLayout.encloseY(
-                new Label(duke, "ProfilePic"),
-                new Label("Codename One", "WalkthruWhite"),
-                new SpanLabel("Write once run anywhere native mobile development " +
-                                            "Get Java working on all devices as it was always meant " +
-                                            "to be!",  "WalkthruBody"),
-                bottomSpaceTab2
-        ));
-        
-        tab2.setUIID("WalkthruTab2");
 
-        walkthruTabs.addTab("", tab2);
-        
-        add(walkthruTabs);
-        
         ButtonGroup bg = new ButtonGroup();
         Image unselectedWalkthru = Resources.getGlobalResources().getImage("unselected-walkthru.png");
         Image selectedWalkthru = Resources.getGlobalResources().getImage("selected-walkthru.png");
-        RadioButton[] rbs = new RadioButton[walkthruTabs.getTabCount()];
         FlowLayout flow = new FlowLayout(CENTER);
         flow.setValign(CENTER);
         Container radioContainer = new Container(flow);
-        for(int iter = 0 ; iter < rbs.length ; iter++) {
-            rbs[iter] = RadioButton.createToggle(unselectedWalkthru, bg);
-            rbs[iter].setPressedIcon(selectedWalkthru);
-            rbs[iter].setUIID("Label");
-            radioContainer.add(rbs[iter]);
+
+        for (TabPage page : pages) {
+            RadioButton toggle = RadioButton.createToggle(unselectedWalkthru, bg);
+            toggle.setPressedIcon(selectedWalkthru);
+            toggle.setEnabled(false);
+            toggle.setUIID("Label");
+            page.setRadioButton(toggle);
+
+            radioContainer.add(toggle);
+            walkthruTabs.addTab("", page.getTabContainer());
         }
-                
-        rbs[0].setSelected(true);
+
+        pages.get(0).getRadioButton().setSelected(true);
         walkthruTabs.addSelectionListener((i, ii) -> {
-            if(!rbs[ii].isSelected()) {
-                rbs[ii].setSelected(true);
+            if (!pages.get(ii).getRadioButton().isSelected()) {
+                pages.get(ii).getRadioButton().setSelected(true);
             }
         });
-        
-        Button skip = new Button("SKIP TUTORIAL");
-        skip.setUIID("SkipButton");
+
+        Button skipButton = new Button("Skip tutorial ", "WalkthrSkipButton");
+        Button skipButtonIcon = new Button("", "WalkthrSkipButton");
+        skipButtonIcon.setMaterialIcon(FontImage.MATERIAL_ARROW_FORWARD);
+        skipButtonIcon.getAllStyles().setMarginLeft(0);
+        skipButtonIcon.getAllStyles().setPaddingLeft(0);
+        skipButton.getAllStyles().setMarginRight(0);
+
+        skipButton.addActionListener(evt -> {
+            MainForm.get().show();
+        });
+        skipButtonIcon.addActionListener(evt -> {
+            MainForm.get().show();
+        });
 
         Container southLayout = BoxLayout.encloseY(
-                        radioContainer,
-                        skip
-                );
-        add(BorderLayout.south(
-                southLayout
+                radioContainer,
+                FlowLayout.encloseRight(skipButton, skipButtonIcon)
+        );
+
+        add(walkthruTabs);
+        add(BorderLayout.south(southLayout));
+
+        for (TabPage page : pages) {
+            Component.setSameWidth(page.getSpaceLabel(), southLayout);
+        }
+
+    }
+
+
+    public TabPage getFirstTab() {
+        return buildTab("walkthru1.png",
+                "Locate charging station",
+                "Find stations around you, see available powerbanks " +
+                        "and get directions in Google Maps.",
+                "WalkthruTab1");
+    }
+
+    public TabPage getSecondTab() {
+        return buildTab("walkthru2.png",
+                "Pick up a powerbank",
+                "Use app to scan QR code and get your powerbank. Track you rent progress and balance.",
+                "WalkthruTab2");
+    }
+
+    public TabPage getThirdTab() {
+        return buildTab("walkthru3.png",
+                "Let others to power up",
+                "Charge you gadget as long as you want and return back in any charging station.",
+                "WalkthruTab3");
+    }
+
+    public TabPage buildTab(String imageName, String text, String subText, String tabId) {
+        Label spaceLabel = new Label();
+        ScaleImageLabel scaleImageLabel = new ScaleImageLabel(Resources.getGlobalResources().getImage(imageName));
+        scaleImageLabel.setUIID("WalkthruPic");
+        Container container = BorderLayout.centerAbsolute(BoxLayout.encloseY(
+                scaleImageLabel,
+                new Label(text, "WalkthruWhiteText"),
+                new SpanLabel(subText, "WalkthruSubText"),
+                spaceLabel
         ));
-        
-        Component.setSameWidth(bottomSpace, bottomSpaceTab2, southLayout);
-        Component.setSameHeight(bottomSpace, bottomSpaceTab2, southLayout);
-        
-        // visual effects in the first show
-        addShowListener(e -> {
-            notesPlaceholder.getParent().replace(notesPlaceholder, notesLabel, CommonTransitions.createFade(1500));
-        });
-    }    
+        container.setUIID(tabId);
+
+        return new TabPage(container, spaceLabel);
+    }
+
+    private static class TabPage {
+        private final Container tabContainer;
+        private final Label spaceLabel;
+        private RadioButton radioButton;
+
+        public TabPage(Container tabContainer, Label spaceLabel) {
+            this.tabContainer = tabContainer;
+            this.spaceLabel = spaceLabel;
+        }
+
+        public Container getTabContainer() {
+            return tabContainer;
+        }
+
+        public Label getSpaceLabel() {
+            return spaceLabel;
+        }
+
+        public RadioButton getRadioButton() {
+            return radioButton;
+        }
+
+        public void setRadioButton(RadioButton radioButton) {
+            this.radioButton = radioButton;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.ScaleImageLabel;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
@@ -57,15 +58,21 @@ public class SplashScreen extends Form {
 
             callSerially(() -> {
                 animateTitle();
-                MainForm.get();
 
                 callSerially(() -> {
-                    animateSubTitle();
+//                    animateSubTitle();
+                    MainForm.get();
                     RentSocketService.get();
 //                mainContainer.add(BoxLayout.encloseXCenter(new InfiniteProgress()));
 
+                    boolean isWalkthruShowed = Preferences.get("isWalkthruShowed", false);
                     callSerially(() -> {
-                        MainForm.get().show();
+                        if (isWalkthruShowed) {
+                            Preferences.set("isWalkthruShowed", true);
+                            new WalkthruForm().show();
+                        } else {
+                            MainForm.get().show();
+                        }
                     });
 
 //                    AnimationManager a = getAnimationManager();
