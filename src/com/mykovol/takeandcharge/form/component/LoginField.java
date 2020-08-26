@@ -15,6 +15,13 @@ public class LoginField extends Container {
     private final Button countryCodeButton = new Button("+380", RegisterStyle.TEXT_FIELD);
     private final Validator validator = new Validator();
 
+    @Override
+    public void setHidden(boolean isHidden) {
+        super.setHidden(isHidden);
+        textField.setHidden(isHidden);
+        countryCodeButton.setHidden(isHidden);
+    }
+
     public LoginField() {
         super(new BorderLayout());
         Label loginIcon = new Label("", RegisterStyle.TEXT_FIELD);

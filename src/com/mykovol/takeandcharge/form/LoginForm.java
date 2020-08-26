@@ -33,8 +33,8 @@ import com.codename1.ui.util.Resources;
 import com.codename1.ui.validation.LengthConstraint;
 import com.codename1.ui.validation.Validator;
 import com.mykovol.takeandcharge.form.component.LoginField;
+import com.mykovol.takeandcharge.service.RegisterStyle;
 import com.mykovol.takeandcharge.service.UserService;
-import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FabProgress;
 
 
@@ -49,6 +49,10 @@ public class LoginForm extends Form {
     private final LoginField loginField = new LoginField();
     private final TextField passwordField = new TextField("", "Password", 20, TextField.PASSWORD);
     private final SpanLabel errorLabel = new SpanLabel("Password error", "ErrorLabel");
+    private final Label welcomeLabel = new Label("Welcome to", "WelcomeText");
+    private final Label welcomeLabel2 = new Label(" Take&Charge", "WelcomeText2");
+    private final SpanLabel loginInfoText = new SpanLabel("",  RegisterStyle.LABEL);
+    private final Label phoneNumberHolder = new Label("", RegisterStyle.MOBILE_NUMBER);
 
 
     public LoginForm() {
@@ -61,10 +65,12 @@ public class LoginForm extends Form {
         logoImageHolder.setUIID("TextAlignCenter");
         logoImageHolder.getAllStyles().setMarginTop(10);
         logoImageHolder.setName("LogoImageName");
-
+        loginInfoText.setEnabled(false);
+        loginInfoText.setHidden(true);
+        phoneNumberHolder.setHidden(true);
         Container welcomeText = FlowLayout.encloseCenter(
-                new Label("Welcome to", "WelcomeText"),
-                new Label(" Take&Charge", "WelcomeText2")
+                welcomeLabel,
+                welcomeLabel2
         );
 
         passwordField.setUIID("CredentialsField");
@@ -112,7 +118,8 @@ public class LoginForm extends Form {
         Container mainContainer = BoxLayout.encloseY(
                 logoImageHolder,
                 welcomeText,
-                spaceLabel,
+                loginInfoText,
+                phoneNumberHolder,
                 loginField,
                 BorderLayout.center(passwordField).
                         add(BorderLayout.WEST, passwordIcon),
@@ -122,18 +129,27 @@ public class LoginForm extends Form {
         add(BorderLayout.SOUTH, registerOrForgot);
 //        mainContainer.setScrollableY(true);
 //        mainContainer.setScrollVisible(false);
-        setScrollableY(true);
+//        setScrollableY(true);
 
         setEditOnShow(loginField.getTextField());
         loginField.getTextField().setNextFocusDown(passwordField);
 
     }
 
-    public void setPredefinedInfo(String phoneNumber, String message) {
-        loginField.getTextField().setText(phoneNumber);
-        loginField.getTextField().setEditable(false);
+    public void setPredefinedInfo(String number, String fullNumber, String message) {
+        welcomeLabel.setHidden(true);
+        welcomeLabel2.setHidden(true);
+
+        loginInfoText.setText(message);
+        loginInfoText.setHidden(false);
+
+        loginField.getTextField().setText(number);
+        loginField.setHidden(true);
+
+        phoneNumberHolder.setText(RegisterVerificationCodeStep2.formatPhoneNumber(fullNumber));
+        phoneNumberHolder.setHidden(false);
+
         setEditOnShow(passwordField);
-        showError(message);
     }
 
     private Command constructCloseCommand() {

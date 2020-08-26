@@ -67,7 +67,7 @@ public class SplashScreen extends Form {
 
                     boolean isWalkthruShowed = Preferences.get("isWalkthruShowed", false);
                     callSerially(() -> {
-                        if (isWalkthruShowed) {
+                        if (!isWalkthruShowed) {
                             Preferences.set("isWalkthruShowed", true);
                             new WalkthruForm().show();
                         } else {

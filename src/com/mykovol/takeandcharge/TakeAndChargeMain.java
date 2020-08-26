@@ -9,6 +9,7 @@ import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
+import com.mykovol.takeandcharge.form.ImageForm;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
 import com.mykovol.takeandcharge.form.WalkthruForm;
@@ -108,6 +109,7 @@ public class TakeAndChargeMain {
                 MainForm.get().show();
             }
         } else {
+//            new ImageForm().show();
             new SplashScreen().show();
 //            MainForm.get().show();
 //            new WalkthruForm().show();

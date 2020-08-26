@@ -26,6 +26,7 @@ package com.mykovol.takeandcharge.tools;
 import com.codename1.components.MultiButton;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.io.Log;
+import com.codename1.io.Preferences;
 import com.codename1.messaging.Message;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -34,7 +35,6 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
@@ -48,6 +48,7 @@ import java.io.IOException;
 
 import static com.codename1.ui.CN.convertToPixels;
 import static com.codename1.ui.CN.getCurrentForm;
+import static com.codename1.ui.layouts.BoxLayout.encloseX;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED_FILL;
 import static com.mykovol.takeandcharge.service.GlobalConst.*;
 
@@ -60,11 +61,15 @@ public class CommonCode {
     private final static Command loginCommand = getLoginCommand();
     private final static Command priceCommand = getPriceCommand();
     private final static Command registerCommand = getRegisterCommand();
-    private final static Command addPaymentMethodCommand = getAddPaymentMethod();
+    private final static Command topAppCommand = getTopAppCommand();
     private final static Command supportCommand = getSupportCommand();
     private final static Command signOutCommandCommand = getSignOutCommand();
-    private final static ScaleImageLabel profile = new ScaleImageLabel(Resources.getGlobalResources().getImage("menu-bgr.png"));
+    private final static ScaleImageLabel profileBackground = new ScaleImageLabel(Resources.getGlobalResources().getImage("menu-bgr.png"));
+    private static final String SIDE_MENU_SWIPE_START_X = "sideMenuSwipeStartX";
+    private final static Label avatarBlockText = new Label("", "AvatarBlockText");
+    private final static Button avatarButton = new Button("");
     private static Image avatar;
+    private static Container avatarBlockBalance;
 
     public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
         if (avatar == null) {
@@ -142,26 +147,18 @@ public class CommonCode {
         return sep;
     }
 
+
     public static void constructSideMenu(Toolbar tb, Form parentForm, Button screenBlocking) {
-        Button avatar = new Button("");
-        avatar.setUIID("InputAvatar");
+        avatarButton.setUIID("InputAvatar");
 //        Image defaultAvatar = FontImage.createMaterial(FontImage.MATERIAL_CAMERA, "InputAvatarImage", 8);
-        Image defaultAvatar = Resources.getGlobalResources().getImage("main-logo.png");
 
-        Image circleMaskImage = Resources.getGlobalResources().getImage("circle.png");
-        defaultAvatar = defaultAvatar.scaled(circleMaskImage.getWidth(), circleMaskImage.getHeight());
-//        defaultAvatar = ((FontImage) defaultAvatar).toEncodedImage();
-        Object circleMask = circleMaskImage.createMask();
-        defaultAvatar = defaultAvatar.applyMask(circleMask);
-        avatar.setIcon(defaultAvatar);
-
-        avatar.addActionListener(e -> {
+        avatarButton.addActionListener(e -> {
 //            if(Dialog.show("Camera or Gallery", "Would you like to use the camera or the gallery for the picture?", "Camera", "Gallery")) {
 //                String pic = Capture.capturePhoto();
 //                if(pic != null) {
 //                    try {
 //                        Image img = Image.createImage(pic).fill(circleMaskImage.getWidth(), circleMaskImage.getHeight());
-//                        avatar.setIcon(img.applyMask(circleMask));
+//                        avatarButton.setIcon(img.applyMask(circleMask));
 //                    } catch(IOException err) {
 //                        ToastBar.showErrorMessage("An error occured while loading the image: " + err);
 //                        Log.e(err);
@@ -172,7 +169,7 @@ public class CommonCode {
 //                    if(ee.getSource() != null) {
 //                        try {
 //                            Image img = Image.createImage((String)ee.getSource()).fill(circleMaskImage.getWidth(), circleMaskImage.getHeight());
-//                            avatar.setIcon(img.applyMask(circleMask));
+//                            avatarButton.setIcon(img.applyMask(circleMask));
 //                        } catch(IOException err) {
 //                            ToastBar.showErrorMessage("An error occured while loading the image: " + err);
 //                            Log.e(err);
@@ -183,11 +180,15 @@ public class CommonCode {
         });
 
 
-        profile.setUIID("AvatarBlock");
-        profile.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
-        Label avatarBlockText = new Label("Take&Charge", "AvatarBlockText");
+        profileBackground.setUIID("AvatarBlock");
+        profileBackground.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
 
-        Container profileHolder = LayeredLayout.encloseIn(profile, BoxLayout.encloseY(avatar, avatarBlockText));
+        Label avatarBlockBalanceText = new Label("Balance:", "AvatarBlockBalance");
+        Label avatarBlockBalanceAmount = new Label("10", "AvatarBlockBalanceAmount");
+        Label avatarBlockBalanceAmountCurrency = new Label("₴", "AvatarBlockBalanceAmount");
+        avatarBlockBalance = encloseX(avatarBlockBalanceText, avatarBlockBalanceAmountCurrency, avatarBlockBalanceAmount);
+
+        Container profileHolder = LayeredLayout.encloseIn(profileBackground, BoxLayout.encloseY(avatarButton, avatarBlockText, avatarBlockBalance));
         tb.addComponentToSideMenu(profileHolder);
         profileHolder.getParent().setScrollableY(false);
 
@@ -212,7 +213,23 @@ public class CommonCode {
         });
 
         parentForm.addPointerPressedListener(evt -> {
-            closeSideMenu(tb, parentForm, screenBlocking);
+            Boolean menuIsShowed = (Boolean) parentForm.getClientProperty("cn1$sidemenuCharged");
+            if (menuIsShowed) {
+                Preferences.set(SIDE_MENU_SWIPE_START_X, evt.getX());
+            }
+        });
+
+        parentForm.addPointerReleasedListener(evt -> {
+            int startX = Preferences.get(SIDE_MENU_SWIPE_START_X, evt.getX());
+            if (startX > 0) {
+                int draggedLength = startX - evt.getX();
+                Preferences.set(SIDE_MENU_SWIPE_START_X, 0);
+                System.out.println(draggedLength);
+                if (draggedLength > 100) {
+                    tb.closeSideMenu();
+//                closeSideMenu(tb, parentForm);
+                }
+            }
         });
 
 //        tb.getLeftSideMenuButton().addActionListener(evt -> {
@@ -229,12 +246,21 @@ public class CommonCode {
 
     }
 
-    public static void closeSideMenu(Toolbar tb, Form parentForm, Button screenBlocking) {
-        Boolean menuIsShowed = (Boolean) parentForm.getClientProperty("cn1$sidemenuCharged");
-        if (menuIsShowed) {
-            parentForm.putClientProperty("cn1$sidemenuCharged", Boolean.FALSE);
-            tb.closeSideMenu();
-        }
+    public static void setAvatar(Image defaultAvatar) {
+        Image circleMaskImage = Resources.getGlobalResources().getImage("circle.png");
+        defaultAvatar = defaultAvatar.scaled(circleMaskImage.getWidth(), circleMaskImage.getHeight());
+//        defaultAvatar = ((FontImage) defaultAvatar).toEncodedImage();
+        Object circleMask = circleMaskImage.createMask();
+        defaultAvatar = defaultAvatar.applyMask(circleMask);
+        avatarButton.setIcon(defaultAvatar);
+    }
+
+    public static void closeSideMenu(Toolbar tb, Form parentForm) {
+//        Boolean menuIsShowed = (Boolean) parentForm.getClientProperty("cn1$sidemenuCharged");
+//        if (menuIsShowed) {
+//            parentForm.putClientProperty("cn1$sidemenuCharged", Boolean.FALSE);
+        tb.closeSideMenu();
+//        }
     }
 
 
@@ -242,14 +268,14 @@ public class CommonCode {
         refreshProfile();
         tb.removeCommand(loginCommand);
         tb.removeCommand(registerCommand);
-        tb.removeCommand(addPaymentMethodCommand);
+        tb.removeCommand(topAppCommand);
         tb.removeCommand(priceCommand);
         tb.removeCommand(supportCommand);
         tb.removeCommand(signOutCommandCommand);
         tb.getMenuBar().revalidateWithAnimationSafety();
 
         if (UserService.isLoggedIn()) {
-            tb.addCommandToLeftSideMenu(addPaymentMethodCommand);
+            tb.addCommandToLeftSideMenu(topAppCommand);
             tb.addCommandToLeftSideMenu(supportCommand);
             tb.addCommandToLeftSideMenu(priceCommand);
             tb.addCommandToLeftSideMenu(signOutCommandCommand);
@@ -262,10 +288,16 @@ public class CommonCode {
     }
 
     private static void refreshProfile() {
-//        if (UserService.isLoggedIn()) {
-//        } else {
-//            profile.setText("Welcome!");
-//        }
+        if (UserService.isLoggedIn()) {
+            setAvatar(FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN, "InputAvatarImage", 8).toEncodedImage());
+            avatarBlockText.setHidden(true);
+            avatarBlockBalance.setHidden(false);
+        } else {
+            setAvatar(Resources.getGlobalResources().getImage("main-logo.png"));
+            avatarBlockText.setHidden(false);
+            avatarBlockText.setText("Take&Charge");
+            avatarBlockBalance.setHidden(true);
+        }
 
 //        userAndAvatar.setIcon(getAvatar(i -> userAndAvatar.setIcon(i)));
 //        userAndAvatar.setGap(convertToPixels(4));
@@ -273,7 +305,7 @@ public class CommonCode {
     }
 
     private static Command getPriceCommand() {
-        return getCommand("Price", FontImage.MATERIAL_MONEY, evt -> {
+        return getCommand("Price", FontImage.MATERIAL_BAR_CHART, evt -> {
             new BrowserPopUp(getCurrentForm(),
                     "Price",
                     PRICE_URL,
@@ -356,8 +388,8 @@ public class CommonCode {
         });
     }
 
-    private static Command getAddPaymentMethod() {
-        return getCommand("Add Payment method", FontImage.MATERIAL_PERSON_ADD, e -> {
+    private static Command getTopAppCommand() {
+        return getCommand("Top up", FontImage.MATERIAL_ADD_TO_HOME_SCREEN, e -> {
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -366,7 +398,10 @@ public class CommonCode {
 
                 @Override
                 public void onSucess(String checkoutUrl) {
-                    new RegisterCreditCardStep3(checkoutUrl).show();
+
+                    RegisterCreditCardStep3 addMoney = new RegisterCreditCardStep3(checkoutUrl);
+                    addMoney.setTransitionInAnimator(CommonTransitions.createSlide(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
+                    addMoney.show();
                 }
             });
         });

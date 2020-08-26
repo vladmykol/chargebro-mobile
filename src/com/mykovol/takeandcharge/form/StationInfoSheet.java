@@ -1,6 +1,7 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
@@ -26,6 +27,7 @@ public class StationInfoSheet extends Sheet {
     private final Label placeLogoImageLabel;
     private final Container availableContainer;
     private final Button screenBlocker;
+    private static final String BOTTOM_PANEL_START_Y = "bottomPanelStartY";
     private String directionUrl;
     private volatile boolean isShown = false;
 
@@ -62,7 +64,6 @@ public class StationInfoSheet extends Sheet {
         Container availableText = BoxLayout.encloseY(availablePowerBanks, cabBeReturnedPowerBanks);
         Container availableNumbers = BoxLayout.encloseY(availablePowerBanksNumber, cabBeReturnedPowerBanksNumber);
         availableContainer = BoxLayout.encloseX(availableText, availableNumbers);
-        availableContainer.getAllStyles().setMarginTop(convertToPixels(1));
 
         Container infoContainer = BoxLayout.encloseY(addressLabel, accessTimeLabel);
 
@@ -101,11 +102,21 @@ public class StationInfoSheet extends Sheet {
             screenBlocker.setVisible(false);
         });
 
+        int startX;
+        int startY;
+        attachedForm.addPointerPressedListener(evt -> {
+            Preferences.set(BOTTOM_PANEL_START_Y, evt.getY());
+        });
+
         attachedForm.addPointerReleasedListener(evt -> {
-            Component draggedCmp = attachedForm.getComponentAt(evt.getX(), evt.getY());
-            if (draggedCmp != null && draggedCmp.isChildOf(this) && isShown) {
-                isShown = false;
-                back();
+            int draggedLength = evt.getY() - Preferences.get(BOTTOM_PANEL_START_Y, evt.getY());
+            Preferences.set(BOTTOM_PANEL_START_Y, 0);
+            if (draggedLength > 100) {
+                Component draggedCmp = attachedForm.getComponentAt(evt.getX(), evt.getY());
+                if (draggedCmp != null && draggedCmp.isChildOf(this) && isShown) {
+                    isShown = false;
+                    back();
+                }
             }
         });
 

@@ -265,7 +265,7 @@ public class RegisterVerificationCodeStep2 extends Form {
         return "" + t;
     }
 
-    public String formatPhoneNumber(String number) {
+    public static String formatPhoneNumber(String number) {
         StringBuilder stringBuffer = new StringBuilder(number);
         stringBuffer.insert(0, "+");
         stringBuffer.insert(4, " (");

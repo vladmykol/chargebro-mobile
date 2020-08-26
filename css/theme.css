@@ -55,7 +55,7 @@ TextHint {
 TitleCommand {
     padding: 1mm;
     margin: 0mm;;
-    color: #535861;
+    color: #3f6b6c;
     font-family: "native:MainLight";
     font-size: 4mm;
 }
@@ -106,6 +106,12 @@ WelcomeText2 {
     padding: 2mm 1mm 0mm 0mm;
     font-weight: bold;
     color: cadetblue;
+}
+
+LoginInfoText {
+    cn1-derive: WelcomeText;
+    font-size: 2mm;
+    text-align: center;
 }
 
 
@@ -328,12 +334,12 @@ ErrorText {
 
 
 InputAvatar {
-    margin: 5mm 2mm 0mm 4mm;
+    margin: 5mm 2mm 0mm 5mm;
 }
 
 InputAvatarImage {
-    color: white;
-    background: lightgray;
+    color: #9DD3DB;
+    background: white;
 }
 
 
@@ -347,11 +353,25 @@ AvatarBlock {
 }
 
 AvatarBlockText {
+    font-family: "native:MainRegular";
     color: white;
     text-align: left;
-    padding: 0mm 1mm 2mm 2mm;
+    padding: 1.5mm 2mm;
     margin: 0mm;
-    font-size: 5mm;
+    font-size: 4mm;
+}
+
+AvatarBlockBalance {
+    cn1-derive: AvatarBlockText;
+    font-size: 3.5mm;
+    color: whitesmoke;
+}
+
+AvatarBlockBalanceAmount {
+    cn1-derive: AvatarBlockBalance;
+    padding: 1.5mm 0.3mm;
+    font-size: 4mm;
+    color: white;
 }
 
 SideCommand {
@@ -404,6 +424,11 @@ RegisterTextField {
     font-size: 3.5mm;
     /*color: black;*/
 }
+
+RegisterTextField.disabled  {
+    color: dimgrey;
+}
+
 
 MobileNumber {
     cn1-derive: RegisterLabel;
@@ -469,7 +494,7 @@ StationsSheetText {
     font-family: "native:MainLight";
     color: #808080;
     font-size: 2.5mm;
-    margin: 0.5mm 1mm 0mm 1mm;
+    margin: 0mm 1mm 1mm 1mm;
     padding: 0.3mm;
 }
 

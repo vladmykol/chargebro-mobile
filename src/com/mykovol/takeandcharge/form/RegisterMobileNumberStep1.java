@@ -127,7 +127,8 @@ public class RegisterMobileNumberStep1 extends Form {
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     if (errorCode == 409) {
                         LoginForm loginForm = new LoginForm();
-                        loginForm.setPredefinedInfo(mobileNumber.getPhoneNumber(), "This number is already registered. Please enter your password");
+                        loginForm.setPredefinedInfo(mobileNumber.getPhoneNumber(),mobileNumber.getFullPhoneNumber(),
+                                "This number is already registered. Please enter your password");
                         loginForm.show();
                     } else {
                         showError(errorMessage);
