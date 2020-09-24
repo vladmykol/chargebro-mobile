@@ -91,8 +91,8 @@ public class TakeAndChargeMain {
     }
 
     private void loadLocalization() {
-//        String local = L10NManager.getInstance().getLanguage();
-        String local = "uk";
+        String local = L10NManager.getInstance().getLanguage();
+//        String local = "ru";
         Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local.toLowerCase());
         UIManager.getInstance().setBundle(localizationBundle);
     }

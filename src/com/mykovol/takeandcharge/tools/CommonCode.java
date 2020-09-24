@@ -52,6 +52,7 @@ import com.mykovol.takeandcharge.service.UserService;
 import java.io.IOException;
 
 import static com.codename1.ui.CN.convertToPixels;
+import static com.codename1.ui.CN.getCurrentForm;
 import static com.codename1.ui.CN1Constants.GALLERY_IMAGE;
 import static com.codename1.ui.ComponentSelector.$;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED;
@@ -172,7 +173,7 @@ public class CommonCode {
                 BorderLayout.south(waveMask));
         tb.addComponentToSideMenu(menuTopPartHolder);
 
-        if (Display.getInstance().getDeviceDensity() > Display.DENSITY_HD) {
+        if (Display.getInstance().getDeviceDensity() >= Display.DENSITY_HD) {
             menuTopPartHolder.getParent().setScrollableY(false);
         }
 
@@ -430,17 +431,17 @@ public class CommonCode {
         Display.getInstance().sendMessage(new String[]{email}, "Support request", message);
     }
 
-    public static Command getCloseToPrevFormCommand(Form prevForm) {
-        final float menuImageSize = Float.parseFloat(prevForm.getUIManager().getThemeConstant("menuImageSize", "4.5"));
+    public static Command getCloseCommand(Form destForm) {
+        final float menuImageSize = Float.parseFloat(destForm.getUIManager().getThemeConstant("menuImageSize", "4.5"));
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", menuImageSize);
         return Command.create("", mat, e -> {
 
-            prevForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-            Component currEditing = prevForm.findCurrentlyEditingComponent();
+            destForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+            Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
             if (currEditing != null) {
-                currEditing.stopEditing(() -> prevForm.show());
+                currEditing.stopEditing(() -> destForm.show());
             } else {
-                MainForm.get().show();
+                destForm.show();
             }
         });
     }

@@ -64,7 +64,7 @@ public class SingUpForm extends Form {
             spaceLabel.setHidden(true);
         }
 
-        getToolbar().addCommandToRightBar(CommonCode.getCloseToPrevFormCommand(this));
+        getToolbar().addCommandToRightBar(CommonCode.getCloseCommand(MainForm.get()));
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
 //        Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
@@ -154,14 +154,14 @@ public class SingUpForm extends Form {
             CommonCode.removeTransitionsTemporarily(this);
             termsForm.show();
         });
-        final Label termsLinkButtonSpace = new Label(" ", "LoginTermsText");
-        final Label andLabel = new Label("and", "LoginTermsText");
-        final Label andLabelSpace = new Label(" ", "LoginTermsText");
-        final Button privacyLinkButton = new Button("Privacy Policy", "LoginTermsLink");
-        privacyLinkButton.addActionListener(evt -> {
-            CommonCode.removeTransitionsTemporarily(this);
-            termsForm.show();
-        });
+//        final Label termsLinkButtonSpace = new Label(" ", "LoginTermsText");
+//        final Label andLabel = new Label("and", "LoginTermsText");
+//        final Label andLabelSpace = new Label(" ", "LoginTermsText");
+//        final Button privacyLinkButton = new Button("Privacy Policy", "LoginTermsLink");
+//        privacyLinkButton.addActionListener(evt -> {
+//            CommonCode.removeTransitionsTemporarily(this);
+//            termsForm.show();
+//        });
 
         final Container termsContainer = FlowLayout.encloseCenter(
                 termsLabel,
@@ -170,11 +170,12 @@ public class SingUpForm extends Form {
                 termsLabel2Space,
                 termsLabel3,
                 termsLabel3Space,
-                termsLinkButton,
-                termsLinkButtonSpace,
-                andLabel,
-                andLabelSpace,
-                privacyLinkButton);
+                termsLinkButton
+//                termsLinkButtonSpace,
+//                andLabel,
+//                andLabelSpace,
+//                privacyLinkButton
+        );
         add(SOUTH, termsContainer);
         termsContainer.setScrollableY(false);
 

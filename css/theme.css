@@ -33,32 +33,32 @@
     /*multi size images end*/
     --main-bg-color: #249DA7;
     --grafit-color: #4B545A;
-    --font-brown-bold: "Brown-Bold";
-    --font-brown-regular: "Brown-Regular";
-    --font-graphik-medium: "Graphik-Medium";
-    --font-graphik-regular: "Graphik-Regular";
+    --fond-ProximaNova-Bold: "ProximaNova-Bold";
+    --font-ProximaNova-Regular: "ProximaNova-Regular";
+    --font-ProximaNova-Semibold: "ProximaNova-Semibold";
+    --font-ProximaNova-Light: "ProximaNova-Light";
 }
 
 /*====================== Fonts ==========================*/
 
 @font-face {
-    font-family: "Brown-Bold";
-    src: url(res/Brown-Bold.ttf);
+    font-family: "ProximaNova-Bold";
+    src: url(res/ProximaNova-Bold.ttf);
 }
 
 @font-face {
-    font-family: "Brown-Regular";
-    src: url(res/Brown-Regular.ttf);
+    font-family: "ProximaNova-Regular";
+    src: url(res/ProximaNova-Regular.ttf);
 }
 
 @font-face {
-    font-family: "Graphik-Medium";
-    src: url(res/Graphik-Medium.ttf);
+    font-family: "ProximaNova-Semibold";
+    src: url(res/ProximaNova-Semibold.ttf);
 }
 
 @font-face {
-    font-family: "Graphik-Regular";
-    src: url(res/Graphik-Regular.ttf);
+    font-family: "ProximaNova-Light";
+    src: url(res/ProximaNova-Light.ttf);
 }
 
 /*====================== Common ==========================*/
@@ -129,14 +129,14 @@ ToastBarMessage {
 LoginHeader {
     margin: 0mm;
     padding: 0mm;
-    font-family: var(--font-graphik-medium);
+    font-family: var(--font-ProximaNova-Semibold);
     font-size: 4mm;
 }
 
 LoginSubHeader {
     cn1-derive:LoginHeader;
     padding: 2mm 0mm 0mm 0mm;
-    font-family: var(--font-brown-regular);
+    font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm;
 }
 
@@ -144,7 +144,7 @@ LoginLabel {
     color: grey;
     margin: 2mm 0.5mm 0.5mm 0mm;
     padding: 0mm;
-    font-family: var(--font-graphik-regular);
+    font-family: var(--font-ProximaNova-Light);
     font-size: 2.3mm;
 }
 
@@ -160,7 +160,7 @@ LoginText {
     color: rgba(16, 16, 16, 0.82);
     padding: 1mm;
     margin: 1mm 0mm;
-    font-family: var(--font-brown-regular);
+    font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm
 }
 
@@ -194,7 +194,6 @@ LoginTermsText {
 LoginTermsLink {
     cn1-derive: LoginTermsText;
     color: #0095A0;
-    text-decoration: underline;
 }
 
 LoginError {
@@ -208,7 +207,7 @@ LoginButton {
     background: var(--main-bg-color);
     padding: 2mm;
     margin: 5mm 0mm 2mm 0mm;
-    font-family: var(--font-brown-bold);
+    font-family: var(--fond-ProximaNova-Bold);
     font-size: 3.2mm;
     text-align: center;
     border-radius: 1.5mm;
@@ -231,7 +230,7 @@ SplashTitle {
     margin: 5mm 1mm 1mm 1mm;
     color: #80acb1;
     text-align: center;
-    font-family: var(--font-graphik-regular);
+    font-family: var(--font-ProximaNova-Light);
     font-weight: bold;
     font-size: 5mm;
 }
@@ -258,7 +257,7 @@ TakePowerBankButton {
     /*box-shadow: 0px 14px 14px 12px #8FC0C5;*/
     /*cn1-box-shadow-spread: 4mm;*/
     /*cn1-box-shadow-blur: 4mm;*/
-    font-family: var(--font-brown-bold);
+    font-family: var(--fond-ProximaNova-Bold);
     font-size: 3.5mm;
     text-align: center;
 }
@@ -368,7 +367,7 @@ RentBorder {
 }
 
 RentBorderHeader {
-    font-family: var(--font-graphik-medium);
+    font-family: var(--font-ProximaNova-Semibold);
     color: #8FC0C5;
     font-size: 3.3mm;
     padding: 0mm 2mm;
@@ -377,7 +376,7 @@ RentBorderHeader {
 
 RentBorderSubHeader {
     cn1-derive: RentBorderHeader;
-    font-family: var(--font-graphik-regular);
+    font-family: var(--font-ProximaNova-Light);
     color: lightgrey;
     font-size: 2mm;
     padding: 0.7mm 2mm 0mm 2mm;
@@ -385,7 +384,7 @@ RentBorderSubHeader {
 
 RentBorderText {
     cn1-derive: RentBorderSubHeader;
-    font-family: var(--font-graphik-regular);
+    font-family: var(--font-ProximaNova-Light);
     color: #4B545A;
     font-size: 2.5mm;
     padding: 0.7mm 2mm 0mm 2mm;
@@ -430,7 +429,7 @@ AvatarPen {
 }
 
 AvatarText {
-    font-family: var(--font-brown-bold);
+    font-family: var(--fond-ProximaNova-Bold);
     color: white;
     padding: 1.5mm 1mm 0mm 7mm;
     text-align: left;
@@ -439,7 +438,7 @@ AvatarText {
 
 AvatarSubText {
     cn1-derive: AvatarText;
-    font-family: var(--font-brown-regular);
+    font-family: var(--font-ProximaNova-Regular);
     font-size: 2.5mm;
     margin: 0mm;
     color: ghostwhite;
@@ -452,7 +451,7 @@ SideMenuButton {
     margin: 0mm;
     border: none;
     /*text-shadow: none;*/
-    font-family: var(--font-graphik-medium);
+    font-family: var(--font-ProximaNova-Semibold);
     /*font-family: "native:MainLight";*/
     border-radius: 2mm;
     font-size: 2.5mm;
@@ -469,7 +468,7 @@ SideMenuButtonIcon {
 
 SideMenuButtonSignOut {
     cn1-derive: SideMenuButton;
-    font-family: var(--font-graphik-regular);
+    font-family: var(--font-ProximaNova-Light);
     text-decoration: underline;
     font-size: 2.6mm;
     margin: 0mm;
@@ -569,7 +568,7 @@ WalkthruPic {
 }
 
 WalkthruWhiteText {
-    font-family: var(--font-brown-bold);
+    font-family: var(--fond-ProximaNova-Bold);
     color: #3E4958;
     text-align: center;
     font-size: 3.5mm;
@@ -578,7 +577,7 @@ WalkthruWhiteText {
 
 WalkthruSubText {
     cn1-derive: WalkthruWhiteText;
-    font-family: var(--font-graphik-regular);
+    font-family: var(--font-ProximaNova-Light);
     font-size: 2.5mm;
     margin: 0.3mm 2mm 10mm 2mm;
 }
@@ -597,7 +596,7 @@ WalkthruTab3 {
 
 
 WalkthrSkipButton {
-    font-style: var(--font-brown-bold);
+    font-style: var(--fond-ProximaNova-Bold);
     font-size: 3mm;
     color: #249DA7;
     margin: 0mm 3mm 7mm 3mm;
@@ -625,7 +624,7 @@ ErrorMessageIcon {
 ErrorMessageText {
     color: var(--grafit-color);
     font-size: 2.5mm;
-    font-family: var(--font-graphik-regular);
+    font-family: var(--font-ProximaNova-Light);
     margin: 1mm 2mm 1mm 0.5mm;
     padding: 0mm;
 }

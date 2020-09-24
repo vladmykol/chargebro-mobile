@@ -65,7 +65,7 @@ public class LoginForm extends Form {
         }
 
 
-        getToolbar().addCommandToRightBar(CommonCode.getCloseToPrevFormCommand(this));
+        getToolbar().addCommandToRightBar(CommonCode.getCloseCommand(MainForm.get()));
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);

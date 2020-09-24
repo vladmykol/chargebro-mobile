@@ -23,7 +23,6 @@
 
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.capture.Capture;
 import com.codename1.properties.PropertyBase;
 import com.codename1.properties.UiBinding;
 import com.codename1.ui.*;
@@ -49,7 +48,7 @@ public class EditAccountForm extends Form {
     public EditAccountForm() {
         super(BoxLayout.y());
         setToolbar(new Toolbar(true));
-        final Command closeToPrevFormCommand = CommonCode.getCloseToPrevFormCommand(MainForm.get());
+        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(MainForm.get());
         getToolbar().addCommandToRightBar(closeToPrevFormCommand);
 
         Button avatar = new Button("", "Label");

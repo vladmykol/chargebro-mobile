@@ -232,7 +232,9 @@ public class MainForm extends Form {
         RentService.getStationsNearBy(position, new Callback<List<StationInfo>>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                Log.p("cannot get station location update - " + errorCode + errorMessage);
+                if (errorCode != 404) {
+                    Log.p("cannot get station location update - " + errorCode + errorMessage);
+                }
             }
 
             @Override

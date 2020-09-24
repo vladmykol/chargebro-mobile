@@ -4,6 +4,7 @@ package com.mykovol.takeandcharge.form.component;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.UITimer;
 
 import static com.codename1.ui.CN.callSerially;
@@ -20,7 +21,8 @@ public class MessagePopUp extends Container {
         Container topPlaceHolder = new Container();
         topPlaceHolder.stripMarginAndPadding();
         topPlaceHolder.setSafeArea(true);
-        topPlaceHolder.getAllStyles().setMarginTop(16);
+        topPlaceHolder.getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
+        topPlaceHolder.getAllStyles().setMarginTop(5);
         add(topPlaceHolder);
     }
 
