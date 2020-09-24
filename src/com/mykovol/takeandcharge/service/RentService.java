@@ -77,7 +77,7 @@ public class RentService {
     public static void getRentHistory(boolean onlyCurrentlyInRent, final Callback<List<RentHistory>> callback) {
         Rest.get(GlobalConst.getServerUrl() + RENT_HISTORY_URL)
                 .bearer(UserService.getToken())
-                .queryParam("filter", onlyCurrentlyInRent ? "current" : "all")
+                .queryParam("onlyActive", String.valueOf(onlyCurrentlyInRent))
                 .acceptJson()
                 .onErrorCode(errorData -> {
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
@@ -93,6 +93,7 @@ public class RentService {
     public static void getStationsNearBy(Coord coord, final Callback<List<StationInfo>> callback) {
         Rest.get(GlobalConst.getServerUrl() + STATIONS_NEARBY_URL)
 //                .bearer(UserService.getToken())
+                .timeout(5000)
                 .queryParam("x", String.valueOf(coord.getLatitude()))
                 .queryParam("y", String.valueOf(coord.getLongitude()))
                 .acceptJson()
@@ -104,7 +105,6 @@ public class RentService {
                     List<StationInfo> responseData = (List<StationInfo>) (List<?>) stationList.getResponseData();
                     callback.onSucess(responseData);
                 }, StationInfo.class);
-
     }
 
     public static void getRemainingPowerBanks(String stationId, final Callback<Integer> callback) {
@@ -122,7 +122,7 @@ public class RentService {
                 });
     }
 
-    public static void rent(final Callback<String> callback) {
+    public static void prepareForRent(final Callback<String> callback) {
         if (!UserService.isLoggedIn()) {
             new LoginForm().show();
             return;

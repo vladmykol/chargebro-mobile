@@ -9,16 +9,16 @@ import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
-import com.mykovol.takeandcharge.form.ImageForm;
+import com.codename1.util.StringUtil;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
-import com.mykovol.takeandcharge.form.WalkthruForm;
-import com.mykovol.takeandcharge.tools.FabProgress;
+import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 import org.littlemonkey.connectivity.Connectivity;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.List;
 
 import static com.codename1.ui.CN.*;
 
@@ -45,11 +45,11 @@ public class TakeAndChargeMain {
 
         Toolbar.setGlobalToolbar(false);
 //        Toolbar.setOnTopSideMenu(false);
-        if (!isTablet()) {
-            Toolbar.setOnTopSideMenu(true);
-        }
+        Toolbar.setOnTopSideMenu(true);
+
         Dialog.setDefaultBlurBackgroundRadius(10);
         Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
+        Display.getInstance().setProperty("syncNativeCookies", "true");
 
 //        Label.setDefaultGap(convertToPixels(2));
         // only portrait mode
@@ -57,7 +57,7 @@ public class TakeAndChargeMain {
         Display.getInstance().setEnableAsyncStackTraces(true);
 
         // Pro only feature
-        Log.bindCrashProtection(true);
+        Log.bindCrashProtection(false);
         loadLocalization();
 
         addNetworkErrorListener(err -> {
@@ -66,38 +66,50 @@ public class TakeAndChargeMain {
             if (err.getError() != null) {
                 Log.e(err.getError());
             }
-            Log.sendLogAsync();
+//            Log.sendLogAsync();
             String errorMsg = "unknown error";
             if (!Connectivity.isConnected()) {
                 errorMsg = "No Internet connection";
             } else {
                 if (err.getResponseCode() == 0) {
-                    errorMsg = "No connection with server. Please try latter";
+                    errorMsg = "No connection with server. Please try again latter";
                 } else
                     errorMsg = err.getResponseCode() + err.getError().toString() + " while connecting to " + err.getConnectionRequest().getUrl();
 //                    Dialog.show("Connection Error " + err.getResponseCode(),
 //                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
 //                            "OK", null);
             }
+            Log.p("Network error:" + errorMsg);
+            InfinityProgressBlocking.stop();
+            MainGifLoader.get().stop();
             if (Display.getInstance().getCurrent().equals(MainForm.get())) {
-                MainForm.get().showErrorDraggablePanel(errorMsg);
+                MainForm.get().showError(errorMsg, 500);
             } else {
                 ToastBar.showErrorMessage(errorMsg);
             }
-//            MainForm.get().showErrorDraggablePanel(errorMsg);
-            FabProgress.stop();
-            MainGifLoader.get().stop();
         });
     }
 
     private void loadLocalization() {
-        String local = L10NManager.getInstance().getLanguage();
-//        String local = "uk";
+//        String local = L10NManager.getInstance().getLanguage();
+        String local = "uk";
         Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local.toLowerCase());
         UIManager.getInstance().setBundle(localizationBundle);
     }
 
     public void start() {
+        String arg = getProperty("AppArg", null);
+        if (arg != null) {
+            if (arg.contains("//")) {
+                List<String> strs = StringUtil.tokenize(arg, "/");
+                arg = strs.get(strs.size() - 1);
+                while (arg.startsWith("/")) {
+                    arg = arg.substring(1);
+                }
+            }
+            Log.p("App arg - " + arg);
+        }
+
         if (current != null) {
             try {
                 if (current instanceof SplashScreen) {

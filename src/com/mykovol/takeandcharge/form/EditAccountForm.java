@@ -48,9 +48,11 @@ import static com.codename1.ui.CN.getCurrentForm;
 public class EditAccountForm extends Form {
     public EditAccountForm() {
         super(BoxLayout.y());
-        CommonCode.initBlackTitleForm(this, "Edit Account", null);
+        setToolbar(new Toolbar(true));
+        final Command closeToPrevFormCommand = CommonCode.getCloseToPrevFormCommand(MainForm.get());
+        getToolbar().addCommandToRightBar(closeToPrevFormCommand);
 
-        Button avatar = createAvatarButton();
+        Button avatar = new Button("", "Label");
         Label edit = createEditLabel();
 
         Container avatarContainer = LayeredLayout.encloseIn(avatar,
@@ -61,19 +63,13 @@ public class EditAccountForm extends Form {
 
         String userString = user.getPropertyIndex().toString();
 
-//        TextField firstName = createTextField(uib, user.givenName, TextField.ANY);
-//        TextField surname = createTextField(uib, user.surname, TextField.ANY);
-//        TextField email = createTextField(uib, user.email, TextField.EMAILADDR);
+        TextField firstName = createTextField(uib, user.name, TextField.ANY);
 
-//        addAll(avatarContainer,
-//                CommonCode.createSeparator(),
-//                new Label("First Name", "GrayLabel"),
-//                firstName,
-//                new Label("Last Name", "GrayLabel"),
-//                surname,
-//                new Label("E-Mail", "GrayLabel"),
-//                email
-//        );
+        addAll(avatarContainer,
+                CommonCode.createSeparator(),
+                new Label("Name", "GrayLabel"),
+                firstName
+        );
 
         final Form previous = getCurrentForm();
         previous.addShowListener(new ActionListener() {
@@ -96,25 +92,6 @@ public class EditAccountForm extends Form {
         return t;
     }
 
-    private Button createAvatarButton() {
-        Button avatar = new Button("", "Label");
-        avatar.setIcon(CommonCode.getAvatar(i -> avatar.setIcon(i)));
-        avatar.addActionListener(e -> {
-            String file = Capture.capturePhoto(512, -1);
-            if (file != null) {
-                avatar.setIcon(CommonCode.setAvatar(file));
-                UserService.setAvatar(file);
-            }
-        });
-        return avatar;
-    }
-
-    @Override
-    protected void initGlobalToolbar() {
-        super.initGlobalToolbar();
-        getToolbar().setUIID("BlackToolbar");
-    }
-
     private Label createEditLabel() {
         Label edit = new Label("", "Container");
         Style s = edit.getUnselectedStyle();
@@ -124,7 +101,7 @@ public class EditAccountForm extends Form {
         s.setPadding(1, 1, 1, 1);
         s.setFgColor(0xffffff);
         s.setBgTransparency(0);
-        FontImage.setMaterialIcon(edit, FontImage.MATERIAL_EDIT, 2f);
+        FontImage.setMaterialIcon(edit, FontImage.MATERIAL_EDIT, 3f);
         s.setBorder(RoundBorder.create().
                 color(0).
                 opacity(255).

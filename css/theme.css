@@ -1,34 +1,64 @@
 #Constants {
     includeNativeBool: true;
     /*sideMenuImage: "menu.png";*/
-    /*menuPrefSizeBool: true;*/
-    menuImageSize: 6;
+    sideMenuTensileDragBool: false;
+    sideMenuTensileDragBool: false;
+    sideMenuSizePortraitInt: 30;
+    sideMenuShadowBool: true;
+    menuImageSize: 4.5;
     sideSwipeSensitiveInt: 100;
     sideSwipeActivationInt: 100;
     buttonRippleBool: false;
-    sideMenuFoldedSwipeBool: false;
     /*multi size images. Name should end with Image to map as image resource*/
     splashLogo1Image: "splash-logo-part-1.png";
     splashLogo2Image: "splash-logo-part-2.png";
-    mailLogoImage: "main-logo.png";
     googleImage: "google.png";
     facebookImage: "facebook.png";
     gradientImage: "gradient-overlay.png";
     verticalDraggableImage: "vertical-draggable.png";
-    dontSpendTimeImage: "dont-spend-time.png";
     powerBankPhotoImage: "power-bank-photo.png";
     mapPointImage: "map-point.png";
     mobileNumberImage: "mobile-number.png";
     noLogoImage: "no-logo.png";
     likeIdeaImage: "like-idea.png";
-    menuBgrImage: "menu-bgr.png";
-    circleImage: "circle.png";
+    waveImage: "wave.png";
     unselectedWalkthruImage: "unselected-walkthru.png";
     selectedWalkthruImage: "selected-walkthru.png";
     walkthru1Image: "walkthru1.png";
     walkthru2Image: "walkthru2.png";
     walkthru3Image: "walkthru3.png";
+    defaultAvatarImage: "defaultAvatar.png";
+    avatarPenImage: "avatarPen.png";
+    menuBgrImage: "menuBgr.png";
     /*multi size images end*/
+    --main-bg-color: #249DA7;
+    --grafit-color: #4B545A;
+    --font-brown-bold: "Brown-Bold";
+    --font-brown-regular: "Brown-Regular";
+    --font-graphik-medium: "Graphik-Medium";
+    --font-graphik-regular: "Graphik-Regular";
+}
+
+/*====================== Fonts ==========================*/
+
+@font-face {
+    font-family: "Brown-Bold";
+    src: url(res/Brown-Bold.ttf);
+}
+
+@font-face {
+    font-family: "Brown-Regular";
+    src: url(res/Brown-Regular.ttf);
+}
+
+@font-face {
+    font-family: "Graphik-Medium";
+    src: url(res/Graphik-Medium.ttf);
+}
+
+@font-face {
+    font-family: "Graphik-Regular";
+    src: url(res/Graphik-Regular.ttf);
 }
 
 /*====================== Common ==========================*/
@@ -46,22 +76,25 @@ Container {
 }
 
 TextHint {
-    font-family: "native:MainLight";
-    padding: 2mm;
-    font-size: 3mm
+    cn1-derive: LoginText;
+    color: #b3b3b3;
 }
 
+Title {
+    cn1-derive: LoginHeader;
+}
 
 TitleCommand {
-    padding: 1mm;
-    margin: 0mm;;
-    color: #3f6b6c;
-    font-family: "native:MainLight";
-    font-size: 4mm;
+    padding: 1.1mm;
+    margin: 2mm 0mm 0mm 0mm;
+    color: #555454;
+    background: white;
+    border-radius: 3.4mm;
+    border: lightgrey solid 0.05mm;
 }
 
 TitleCommand.pressed {
-    color: black
+    color: black;
 }
 
 Toolbar {
@@ -77,84 +110,128 @@ TextAlignCenter {
 }
 
 FloatingActionButton {
-    background-color: #8FC0C5;
+    background-color: var(--main-bg-color);
+    margin: 0mm 2mm 4mm 0mm;
 }
 
 FloatingActionButton.pressed {
-    background-color: #5fa0a5;
+    background-color: #186a71;
 }
 
 ToastBarMessage {
-    font-family: "native:MainLight";
-    padding: 2mm;
-    font-size: 3.2mm
+    cn1-derive: ErrorMessageText;
+    color: white;
 }
 
 
 /*====================== Login Form ==========================*/
 
-WelcomeText {
-    padding: 2mm 0mm 0mm 1mm;
+LoginHeader {
     margin: 0mm;
-    font-family: "native:MainLight";
+    padding: 0mm;
+    font-family: var(--font-graphik-medium);
     font-size: 4mm;
-    text-align: left;
 }
 
-WelcomeText2 {
-    cn1-derive: WelcomeText;
-    padding: 2mm 1mm 0mm 0mm;
-    font-weight: bold;
-    color: cadetblue;
+LoginSubHeader {
+    cn1-derive:LoginHeader;
+    padding: 2mm 0mm 0mm 0mm;
+    font-family: var(--font-brown-regular);
+    font-size: 3mm;
 }
 
-LoginInfoText {
-    cn1-derive: WelcomeText;
-    font-size: 2mm;
-    text-align: center;
+LoginLabel {
+    color: grey;
+    margin: 2mm 0.5mm 0.5mm 0mm;
+    padding: 0mm;
+    font-family: var(--font-graphik-regular);
+    font-size: 2.3mm;
 }
 
+LoginInfo {
+    cn1-derive: LoginLabel;
+    color: rgba(16, 16, 16, 0.82);
+    font-size: 2.6mm;
+}
 
-CredentialsField {
+LoginText {
     background-color: white;
-    border-bottom: 0.2mm solid black;
-    padding: 1mm 1mm 1mm;
-    margin: 1mm 2mm 0mm;
-    font-family: "native:MainLight";
+    border-bottom: 0.2mm solid lightgrey;
+    color: rgba(16, 16, 16, 0.82);
+    padding: 1mm;
+    margin: 1mm 0mm;
+    font-family: var(--font-brown-regular);
     font-size: 3mm
 }
 
-ForgotPasRegisterLabel {
-    color: #2775a4;
-    text-align: left;
-    padding: 0mm 4mm 2.5mm;
-    margin: 0mm;
-    font-family: "native:MainLight";
-    font-size: 2.5mm
+/*LoginText.selected {*/
+/*    border-bottom: 0.2mm solid black;*/
+/*}*/
+
+LoginTextIcon {
+    cn1-derive: LoginText;
+    color: grey;
+    padding: 0mm;
+    font-size: 4mm
 }
 
-ForgotPasRegisterLabel.pressed {
+LoginForgotLabel {
+    cn1-derive: LoginLabel;
+    color: #2775a4;
+}
+
+LoginForgotLabel.pressed {
     font-weight: bold;
 }
 
-
-ErrorLabel {
-    color: #cc0000;
-    background-color: white;
-    padding: 2mm;
-    margin: 0mm;
-    font-family: "native:MainLight";
-    font-size: 2.8mm
+LoginTermsText {
+    cn1-derive: LoginForgotLabel;
+    color: rgba(16, 16, 16, 0.82);
+    margin: 0.5mm 0mm;
+    padding: 0mm;
 }
+
+LoginTermsLink {
+    cn1-derive: LoginTermsText;
+    color: #0095A0;
+    text-decoration: underline;
+}
+
+LoginError {
+    cn1-derive: LoginLabel;
+    color: #cc0000;
+    font-size: 2.5mm
+}
+
+LoginButton {
+    color: white;
+    background: var(--main-bg-color);
+    padding: 2mm;
+    margin: 5mm 0mm 2mm 0mm;
+    font-family: var(--font-brown-bold);
+    font-size: 3.2mm;
+    text-align: center;
+    border-radius: 1.5mm;
+}
+
+LoginButton.pressed {
+    background: #1d868e;
+}
+
+LoginButton.disabled  {
+    background: grey;
+    color: lightgrey;
+}
+
 
 /*====================== Splash Screen ==========================*/
 
 SplashTitle {
     padding: 0mm;
-    margin: 3mm 1mm 1mm 1mm;
+    margin: 5mm 1mm 1mm 1mm;
     color: #80acb1;
     text-align: center;
-    font-family: "native:MainLight";
+    font-family: var(--font-graphik-regular);
     font-weight: bold;
     font-size: 5mm;
 }
@@ -169,47 +246,51 @@ SplashSubTitle {
 
 /*====================== Map Form ==========================*/
 
-StationPlaceOnMap {
-    color: #8FC0C5;
-}
-
 TakePowerBankButton {
     cn1-derive: Button;
     color: white;
-    background: cadetblue;
+    background: var(--main-bg-color);
     /*background: linear-gradient(0deg, cadetblue, #5873B8);*/
-    padding: 3mm 2mm 4mm 1mm;
-    margin: 0mm 7mm;
-    border-radius: 5mm;
-    box-shadow: 0.5mm 0.5mm 4mm 0.1mm #8FC0C5;
+    padding: 3.3mm 7mm;
+    /*margin: 2mm 10mm;*/
+    /*border-radius: 10mm;*/
+    /*box-shadow: 0.5mm 0.5mm 3.8mm 5mm #91999a;*/
+    /*box-shadow: 0px 14px 14px 12px #8FC0C5;*/
     /*cn1-box-shadow-spread: 4mm;*/
     /*cn1-box-shadow-blur: 4mm;*/
-    font-family: "native:MainBold";
+    font-family: var(--font-brown-bold);
     font-size: 3.5mm;
     text-align: center;
 }
 
 TakePowerBankButton.pressed {
-    box-shadow: 0.5mm 0.5mm 4.3mm 0.1mm;
+    color: ghostwhite;
+    font-size: 3.4mm;
 }
 
-ShowMeButton {
-    /*cn1-derive: Button;*/
-    padding: 2mm;
+MainFormTopMassage {
+    margin: 15mm 0mm 0mm 0mm;
+}
+
+ToolBox {
     background: white;
-    margin: 13mm 2mm;
-    font-size: 3.2mm;
-    border: 0px solid #000000;
-    border-radius: 2.2mm;
-    color: cadetblue;
-    box-shadow: 0mm 0mm 1.5mm 0mm #8FC0C5;
-    /*box-shadow: 1mm 1mm 5mm 0.1mm;*/
+    margin: 0mm 2.1mm;
+    border-radius: 3.5mm;
+    border: lightgrey solid 0.1mm;
+}
+
+ToolBoxButton {
+    padding: 1.2mm 0.2mm 1.2mm 0.3mm;
+    font-size: 3.5mm;
+    color: #616161;
     text-align: center;
 }
 
-ShowMeButton.pressed {
-    box-shadow: 0mm 0mm 1.9mm 0mm #8FC0C5;
+ToolBoxButton.pressed {
+    color: black;
+    /*background: lightgray;*/
 }
+
 
 /*====================== Bottom panel ==========================*/
 
@@ -227,10 +308,6 @@ BottomPanelFoldedTopText {
     margin: 0mm;
 }
 
-Title {
-    cn1-derive: BottomPanelFoldedTopText;
-    text-align: center;
-}
 
 BottomPanelUnfolded {
     background: white;
@@ -286,12 +363,12 @@ RentBorder {
     border-radius: 2mm;
     box-shadow: 0mm 0.2mm 1mm 0mm #8FC0C5;
     background: white;
-    margin: 0.3mm 1mm;
-    padding: 1mm 1mm;
+    margin: 1mm 1mm 0.5mm 1mm;
+    padding: 1.5mm 1mm;
 }
 
 RentBorderHeader {
-    font-family: "native:MainRegular";
+    font-family: var(--font-graphik-medium);
     color: #8FC0C5;
     font-size: 3.3mm;
     padding: 0mm 2mm;
@@ -299,20 +376,21 @@ RentBorderHeader {
 }
 
 RentBorderSubHeader {
-    font-family: "native:MainRegular";
+    cn1-derive: RentBorderHeader;
+    font-family: var(--font-graphik-regular);
     color: lightgrey;
     font-size: 2mm;
-    padding: 0mm;
-    margin: 0mm 2mm;
+    padding: 0.7mm 2mm 0mm 2mm;
 }
 
 RentBorderText {
-    font-family: "native:MainRegular";
-    color: gray;
+    cn1-derive: RentBorderSubHeader;
+    font-family: var(--font-graphik-regular);
+    color: #4B545A;
     font-size: 2.5mm;
-    padding: 0mm;
-    margin: 0mm 2mm;
+    padding: 0.7mm 2mm 0mm 2mm;
 }
+
 
 DraggableIcon {
     padding: 1mm 0mm 0.5mm 0mm;
@@ -320,145 +398,88 @@ DraggableIcon {
     text-align: center;
 }
 
-ErrorText {
-    background: #f34c4c;
+/*====================== Side Menu ==========================*/
+
+AvatarBackground {
+    cn1-derive: Container;
+    background: linear-gradient(to right, #249DA7, rgba(36, 157, 167, 0.6));
+    margin: 0mm 0mm 0.15mm 0mm;
+}
+
+AvatarWave {
+    /*cn1-derive: Container;*/
     color: white;
-    padding: 0.2mm 1mm;
+    background: white;
+    border: none;
     margin: 0mm;
-    text-align: center;
-    font-family: "native:MainRegular";
+    padding: 1mm 0mm;
+}
+
+AvatarImage {
+    cn1-derive: Container;
+
+}
+
+AvatarButton {
+    margin: 3mm 2mm 0mm 7mm;
+}
+
+AvatarPen {
+    margin: 3.5mm 2mm 0mm 17.5mm;
+    padding: 0mm;
+}
+
+AvatarText {
+    font-family: var(--font-brown-bold);
+    color: white;
+    padding: 1.5mm 1mm 0mm 7mm;
+    text-align: left;
+    font-size: 3.5mm;
+}
+
+AvatarSubText {
+    cn1-derive: AvatarText;
+    font-family: var(--font-brown-regular);
+    font-size: 2.5mm;
+    margin: 0mm;
+    color: ghostwhite;
+}
+
+SideMenuButton {
+    color: var(--grafit-color);
+    background: white;
+    padding: 5mm 3mm 0mm 3mm;
+    margin: 0mm;
+    border: none;
+    /*text-shadow: none;*/
+    font-family: var(--font-graphik-medium);
+    /*font-family: "native:MainLight";*/
+    border-radius: 2mm;
     font-size: 2.5mm;
 }
 
-/*====================== Side Menu ==========================*/
+/*SideMenuButton.pressed {*/
+/*    background: lightgrey;*/
+/*}*/
 
-
-InputAvatar {
-    margin: 5mm 2mm 0mm 5mm;
+SideMenuButtonIcon {
+    color: var(--main-bg-color);
+    font-size: 3mm;
 }
 
-InputAvatarImage {
-    color: #9DD3DB;
-    background: white;
-}
-
-
-AvatarBlock {
-    color: white;
-    background-color: #9DD3DB;
-    text-align: left;
-    padding: 3mm 1mm 0mm 1mm;
+SideMenuButtonSignOut {
+    cn1-derive: SideMenuButton;
+    font-family: var(--font-graphik-regular);
+    text-decoration: underline;
+    font-size: 2.6mm;
     margin: 0mm;
-    font-size: 5mm;
 }
-
-AvatarBlockText {
-    font-family: "native:MainRegular";
-    color: white;
-    text-align: left;
-    padding: 1.5mm 2mm;
-    margin: 0mm;
-    font-size: 4mm;
-}
-
-AvatarBlockBalance {
-    cn1-derive: AvatarBlockText;
-    font-size: 3.5mm;
-    color: whitesmoke;
-}
-
-AvatarBlockBalanceAmount {
-    cn1-derive: AvatarBlockBalance;
-    padding: 1.5mm 0.3mm;
-    font-size: 4mm;
-    color: white;
-}
-
-SideCommand {
-    color: #449ea5;
-    background: white;
-    padding: 2mm 2mm;
-    margin: 0mm;
-    border: none;
-    font-family: "native:MainLight";
-    font-size: 3.5mm;
-}
-
-SideCommand.pressed {
-    background: lightgrey;
-}
-
 
 SideNavigationPanel {
     background-color: white;
-    padding: 0mm 0mm 2mm 0mm;
-    margin: 0mm;
-    border-bottom: 0.1mm solid gray;
-}
-
-Legal {
-    cn1-derive: Label;
-    color: gray;
-    padding: 2mm;
-    margin: 0mm;
-    font-family: "native:MainLight";
-    font-size: 2.7mm;
-}
-
-/*====================== Register Form ==========================*/
-
-
-RegisterLabel {
-    cn1-derive: Label;
-    padding: 1.3mm 2mm;
-    margin: 0mm;
-    font-family: "native:MainLight";
-    font-size: 3.2mm;
-    color: black;
-    text-align: center;
-}
-
-RegisterTextField {
-    cn1-derive: CredentialsField;
-    font-family: "native:MainLight";
-    font-size: 3.5mm;
-    /*color: black;*/
-}
-
-RegisterTextField.disabled  {
-    color: dimgrey;
-}
-
-
-MobileNumber {
-    cn1-derive: RegisterLabel;
-    /*margin: 2mm 1mm;*/
-    font-size: 4mm;
-}
-
-AlreadyHaveAnAccountButton {
-    cn1-derive: RegisterLabel;
-    color: cadetblue;
-    /*border: 0.2mm solid cadetblue;*/
-    /*border-radius: 3mm;*/
-    text-align: center;
-    font-size: 2.5mm
-}
-
-AlreadyHaveAnAccountButton.pressed {
-    font-weight: bold;
-}
-
-
-ResendCodeLabel {
-    cn1-derive: RegisterLabel;
-    text-align: left;
-    font-size: 2.4mm;
-}
-
-ResendCodeButton {
-    cn1-derive: ResendCodeLabel;
-    color: #2775a4;
+    padding: 0mm 0mm 8mm 0mm;
+    /*margin: 0mm;*/
+    /*border-bottom: 0.1mm solid gray;*/
 }
 
 /*====================== Gif Loader ==========================*/
@@ -548,37 +569,70 @@ WalkthruPic {
 }
 
 WalkthruWhiteText {
-    font-family: "native:MainLight";
-    color: white;
+    font-family: var(--font-brown-bold);
+    color: #3E4958;
     text-align: center;
-    font-size: 4mm;
+    font-size: 3.5mm;
     margin: 1mm 2mm;
 }
 
 WalkthruSubText {
     cn1-derive: WalkthruWhiteText;
-    font-size: 2mm;
-    margin: 0.3mm 2mm;
+    font-family: var(--font-graphik-regular);
+    font-size: 2.5mm;
+    margin: 0.3mm 2mm 10mm 2mm;
 }
 
 WalkthruTab1 {
-    background: #7ed2d4;
+    background: #F4F0DC;
 }
 
 WalkthruTab2 {
-    background: #a8cda8;
+    background: #CCF4FF;
 }
 
 WalkthruTab3 {
-    background: #97b0f5;
+    background: #D7E0FF;
 }
 
 
 WalkthrSkipButton {
-    font-family: "native:MainLight";
+    font-style: var(--font-brown-bold);
     font-size: 3mm;
-    color: #505c6a;
-    margin: 4mm 2mm 5mm 2mm;
-    padding: 1mm;
-    font-style: italic;
+    color: #249DA7;
+    margin: 0mm 3mm 7mm 3mm;
+    padding: 1.5mm;
+    border-radius: 1mm;
+    border: #249DA7 solid 0.2mm;
+    text-align: center;
+}
+
+/*====================== Error Message ==========================*/
+
+ErrorMessageHolder {
+    background: white;
+    border-radius: 4.5mm 0mm 5mm 4.5mm;
+    border: lightgrey solid 0.1mm;
+    margin: 0.5mm 2mm 0mm 2mm;
+}
+
+ErrorMessageIcon {
+    color: #FD1111;
+    padding: 0mm;
+    margin: 0.5mm 1mm 1mm 1.3mm;
+}
+
+ErrorMessageText {
+    color: var(--grafit-color);
+    font-size: 2.5mm;
+    font-family: var(--font-graphik-regular);
+    margin: 1mm 2mm 1mm 0.5mm;
+    padding: 0mm;
+}
+
+ErrorMessageHeader {
+    cn1-derive:ErrorMessageText;
+    font-size: 2mm;
+    margin: 1mm 2mm 0.5mm 0.7mm;
+    color: #bab8b8;
 }

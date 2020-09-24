@@ -40,7 +40,9 @@ import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
 import com.mykovol.takeandcharge.dataobj.User;
 import com.mykovol.takeandcharge.dataobj.UserLogin;
 import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
 import java.io.IOException;
 
@@ -54,9 +56,10 @@ import static com.mykovol.takeandcharge.service.GlobalConst.*;
  * @author Shai Almog
  */
 public class UserService {
-    private static User me;
+    private static User me = new User();
 
     public static User getUser() {
+        PreferencesObject.create(me).bind();
         return me;
     }
 
@@ -70,7 +73,6 @@ public class UserService {
 
     public static void loadUser() {
         me = new User();
-        PreferencesObject.create(me).bind();
         if (Display.getInstance().isSimulator()) {
             Log.p("User details: " + me.getPropertyIndex().toString());
         }
@@ -78,9 +80,9 @@ public class UserService {
 
     public static void logout() {
         Preferences.set("token", null);
-        RentSocketService.get().disconnect();
+        WebSocketClient.get().disconnect();
         callSerially(() -> {
-            CommonCode.refreshCommands();
+            CommonCode.refreshMenuItems();
             MainForm.get().removeAllRentRows();
             MainForm.get().refreshScanButton();
         });
@@ -117,11 +119,12 @@ public class UserService {
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsJsonMap(resp -> {
+                    Preferences.set("phoneNumber", PhoneFieldContainer.formattedPhoneNumber(request.name.get()));
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
-                    RentSocketService.get().renewConnection();
+                    WebSocketClient.get().renewConnection();
                     MainForm.get().refreshScanButton();
-                    CommonCode.refreshCommands();
+                    CommonCode.refreshMenuItems();
 
                     callback.onSucess(null);
                 });
@@ -133,31 +136,34 @@ public class UserService {
     }
 
 
-    public static void login(String username, String password, final LoginCallback callback) {
+    public static void login(PhoneFieldContainer phoneFieldContainer, String password, final LoginCallback callback) {
         Rest.post(GlobalConst.getServerUrl() + API_LOGIN)
                 .jsonContent()
                 .acceptJson()
-                .timeout(10000)
-                .body(new UserLogin().username.set(username).password.set(password))
+                .timeout(5000)
+                .body(new UserLogin().username.set(phoneFieldContainer.getFullPhoneNumber()).password.set(password))
                 .onErrorCode(errorData -> {
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
                     callback.loginFailed(responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsJsonMap(resp -> {
+                    Preferences.set("phoneNumber", phoneFieldContainer.getFormattedPhoneNumber());
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
-                    RentSocketService.get().renewConnection();
+                    WebSocketClient.get().renewConnection();
                     MainForm.get().refreshScanButton();
-                    CommonCode.refreshCommands();
+                    CommonCode.refreshMenuItems();
                     callback.loginSuccessful();
-                });
+                })
+                .setDisposeOnCompletion(InfinityProgressBlocking.get());
     }
 
     public static void fetchAvatar(long id, SuccessCallback<Image> callback) {
-        ConnectionRequest cr = new ConnectionRequest(GlobalConst.getServerUrl() + "user/avatar/" + id, false);
+        ConnectionRequest cr = new ConnectionRequest(GlobalConst.getServerUrl() + "/user/avatar/" + id, false);
         cr.setFailSilently(true);
         cr.downloadImageToStorage("avatarImage-" + id, callback);
     }
+
 
     public static void setAvatar(String imageFile) {
         try {

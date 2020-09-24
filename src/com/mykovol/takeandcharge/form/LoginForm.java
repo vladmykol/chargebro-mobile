@@ -19,23 +19,19 @@
 
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.components.FloatingActionButton;
-import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.events.ActionListener;
-import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
-import com.codename1.ui.util.Resources;
-import com.codename1.ui.validation.LengthConstraint;
+import com.codename1.ui.plaf.Style;
 import com.codename1.ui.validation.Validator;
-import com.mykovol.takeandcharge.form.component.LoginField;
-import com.mykovol.takeandcharge.service.RegisterStyle;
+import com.mykovol.takeandcharge.form.component.PasswordFieldContainer;
+import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.service.UserService;
-import com.mykovol.takeandcharge.tools.FabProgress;
+import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
 
 /**
@@ -45,167 +41,132 @@ import com.mykovol.takeandcharge.tools.FabProgress;
  */
 public class LoginForm extends Form {
 
-    private final Validator validator = new Validator();
-    private final LoginField loginField = new LoginField();
-    private final TextField passwordField = new TextField("", "Password", 20, TextField.PASSWORD);
-    private final SpanLabel errorLabel = new SpanLabel("Password error", "ErrorLabel");
-    private final Label welcomeLabel = new Label("Welcome to", "WelcomeText");
-    private final Label welcomeLabel2 = new Label(" Take&Charge", "WelcomeText2");
-    private final SpanLabel loginInfoText = new SpanLabel("",  RegisterStyle.LABEL);
-    private final Label phoneNumberHolder = new Label("", RegisterStyle.MOBILE_NUMBER);
+    private final Validator phoneValidator = new Validator();
+    private final Validator passwordValidator = new Validator();
+    private final PasswordFieldContainer passwordFieldContainer = new PasswordFieldContainer();
+    private final SpanLabel errorLabel = new SpanLabel("Password error", "LoginError");
+    private final Button loginButton = new Button("Log in", "LoginButton");
+    private final PhoneFieldContainer phoneFieldContainer = new PhoneFieldContainer();
+    private final Label headerText = new Label("Log in", "LoginHeader");
 
 
     public LoginForm() {
-        super(new BorderLayout());
+        super(BoxLayout.y());
+        setToolbar(new Toolbar(false));
+        setFormBottomPaddingEditingMode(true);
 //        CommonCode.removeTransitionsTemporarily(previous);
-        setToolbar(new Toolbar(true));
-        getToolbar().addCommandToRightBar(constructCloseCommand());
-        Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
-        Label logoImageHolder = new ScaleImageLabel(LogoImage);
-        logoImageHolder.setUIID("TextAlignCenter");
-        logoImageHolder.getAllStyles().setMarginTop(10);
-        logoImageHolder.setName("LogoImageName");
-        loginInfoText.setEnabled(false);
-        loginInfoText.setHidden(true);
-        phoneNumberHolder.setHidden(true);
-        Container welcomeText = FlowLayout.encloseCenter(
-                welcomeLabel,
-                welcomeLabel2
-        );
-
-        passwordField.setUIID("CredentialsField");
-
-        passwordField.getAllStyles().setMargin(LEFT, 0);
-        Label passwordIcon = new Label("", "CredentialsField");
-        passwordIcon.setShowEvenIfBlank(true);
-        passwordIcon.getAllStyles().setMargin(RIGHT, 0);
-        FontImage.setMaterialIcon(passwordIcon, FontImage.MATERIAL_LOCK_OUTLINE, 3);
-
-        errorLabel.setVisible(false);
-
-        validator.addConstraint(passwordField, new LengthConstraint(4, "Password should contain at least 4 symbols"));
-        Validator.setValidateOnEveryKey(true);
-
-        Button forgot = new Button("Forgot password", "ForgotPasRegisterLabel");
-//        Button newAccountButton = new Button("Create new account", "ForgotPasRegisterLabel");
-        Container registerOrForgot = BoxLayout.encloseY(forgot);
-        forgot.getAllStyles().setMarginBottom(3);
-//        newAccountButton.getAllStyles().setMarginBottom(3);
-
-//        newAccountButton.addActionListener(evt -> {
-//            new RegisterMobileNumberStep1().show();
-//        });
-
-        forgot.addActionListener(evt -> {
-
-        });
-
         // We remove the extra space for low resolution devices so things fit better
-        Label spaceLabel;
-        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_VERY_HIGH) {
+        Label spaceLabel = new Label(" ");
+        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
             spaceLabel = new Label();
-        } else {
-            spaceLabel = new Label(" ");
+            setTitle(headerText.getText());
+            headerText.setHidden(true);
+            spaceLabel.setHidden(true);
         }
 
-        FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ARROW_FORWARD);
-//        validator.addSubmitButtons(fab);
-        fab.bindFabToContainer(this);
-        ActionListener<?> loginButtonAction = loginButtonAction(fab);
-        fab.addActionListener(loginButtonAction);
-        passwordField.addActionListener(loginButtonAction);
 
-        Container mainContainer = BoxLayout.encloseY(
-                logoImageHolder,
-                welcomeText,
-                loginInfoText,
-                phoneNumberHolder,
-                loginField,
-                BorderLayout.center(passwordField).
-                        add(BorderLayout.WEST, passwordIcon),
-                errorLabel
-        );
-        add(BorderLayout.CENTER, mainContainer);
-        add(BorderLayout.SOUTH, registerOrForgot);
-//        mainContainer.setScrollableY(true);
-//        mainContainer.setScrollVisible(false);
-//        setScrollableY(true);
+        getToolbar().addCommandToRightBar(CommonCode.getCloseToPrevFormCommand(this));
 
-        setEditOnShow(loginField.getTextField());
-        loginField.getTextField().setNextFocusDown(passwordField);
+        getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
+        getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
+//        Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
+//        Label logoImageHolder = new ScaleImageLabel(LogoImage);
+//        logoImageHolder.setUIID("TextAlignCenter");
+//        logoImageHolder.getAllStyles().setMarginTop(10);
+//        logoImageHolder.setName("LogoImageName");
+//        Container welcomeText = FlowLayout.encloseCenter(
+//                loginHeader,
+//                welcomeLabel2
+//        );
 
-    }
+        Validator.setValidateOnEveryKey(true);
+        phoneValidator.addSubmitButtons(loginButton);
+        phoneValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
+        phoneFieldContainer.setValidator(phoneValidator);
 
-    public void setPredefinedInfo(String number, String fullNumber, String message) {
-        welcomeLabel.setHidden(true);
-        welcomeLabel2.setHidden(true);
+        passwordValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
+        passwordFieldContainer.setValidator(passwordValidator);
 
-        loginInfoText.setText(message);
-        loginInfoText.setHidden(false);
+        errorLabel.setHidden(true);
+        loginButton.addActionListener(evt -> {
 
-        loginField.getTextField().setText(number);
-        loginField.setHidden(true);
-
-        phoneNumberHolder.setText(RegisterVerificationCodeStep2.formatPhoneNumber(fullNumber));
-        phoneNumberHolder.setHidden(false);
-
-        setEditOnShow(passwordField);
-    }
-
-    private Command constructCloseCommand() {
-        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", 4.5f);
-        return Command.create("", mat, e -> {
-
-            setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-            Component currEditing = this.findCurrentlyEditingComponent();
-            if (currEditing != null) {
-                currEditing.stopEditing(() -> MainForm.get().show());
-            } else {
-                MainForm.get().show();
-            }
-        });
-    }
-
-    private ActionListener<?> loginButtonAction(FloatingActionButton fab) {
-        return evt -> {
-            if (FabProgress.isInProgress()) return;
-            Validator.setValidateOnEveryKey(true);
-
-            errorLabel.setVisible(false);
-            if (!loginField.isValid()) {
-                showError(loginField.getErrorMessage());
-                return;
-            }
-            if (!validator.isValid()) {
-                showError(validator.getErrorMessage(passwordField));
+            errorLabel.setHidden(true);
+            if (!isValid()) {
                 return;
             }
 
-            FabProgress.bind(fab);
-
-            UserService.login(loginField.getFullPhoneNumber(), passwordField.getText(), new LoginCallback() {
+            setEditOnShow(null);
+            InfinityProgressBlocking.start();
+            UserService.login(phoneFieldContainer, passwordFieldContainer.getValue(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-
+                    InfinityProgressBlocking.stop();
                     MainForm.get().show();
-                    FabProgress.stop();
                 }
 
                 @Override
                 public void loginFailed(String errorMessage) {
-                    FabProgress.stop();
+                    InfinityProgressBlocking.stop();
                     showError(errorMessage);
                 }
             });
-        };
+        });
+
+        Button forgotPassButton = new Button("Forgot password?", "LoginForgotLabel");
+        forgotPassButton.addActionListener(evt -> {
+            final SingUpForm resetPasswordForm = new SingUpForm();
+            resetPasswordForm.setHeader("Reset password");
+            resetPasswordForm.show();
+        });
+        Button singUp = new Button("Sing Up", "LoginForgotLabel");
+        singUp.addActionListener(evt -> {
+            new SingUpForm().show();
+        });
+        Label dotLabel = new Label("", "LoginForgotLabel");
+        dotLabel.setMaterialIcon(FontImage.MATERIAL_FIBER_MANUAL_RECORD, 1.5f);
+        dotLabel.getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
+        dotLabel.getAllStyles().setMarginLeft(2);
+        dotLabel.getAllStyles().setMarginRight(2);
+
+
+        addAll(
+                headerText,
+                spaceLabel,
+                phoneFieldContainer,
+                passwordFieldContainer,
+                errorLabel,
+                loginButton,
+                FlowLayout.encloseCenter(singUp, dotLabel, forgotPassButton)
+        );
+        setScrollableY(true);
+        setScrollVisible(false);
+        setTensileDragEnabled(false);
+
+        setEditOnShow(phoneFieldContainer.getField());
+        phoneFieldContainer.getField().setNextFocusDown(passwordFieldContainer.getField());
+        passwordFieldContainer.getField().setNextFocusDown(loginButton);
+    }
+
+    public void predefinePhone(String phone){
+        phoneFieldContainer.getField().setText(phone);
+        setEditOnShow(passwordFieldContainer.getField());
     }
 
     private void showError(String errorMessage) {
         errorLabel.setText(errorMessage);
-        errorLabel.revalidateWithAnimationSafety();
-        errorLabel.setVisible(true);
-        errorLabel.animateLayoutFade(300, 0);
+        errorLabel.setHidden(false);
+        errorLabel.getParent().animateLayoutFade(300, 0);
+    }
+
+    private boolean isValid() {
+        if (!phoneValidator.isValid()) {
+            showError(phoneFieldContainer.getErrorMessage());
+        } else if (!passwordValidator.isValid()) {
+            showError(passwordFieldContainer.getErrorMessage());
+        }
+
+        return phoneValidator.isValid() && passwordValidator.isValid();
     }
 
 }

@@ -43,5 +43,4 @@ public class RentHistory implements PropertyBusinessObject {
     public PropertyIndex getPropertyIndex() {
         return idx;
     }
-
 }

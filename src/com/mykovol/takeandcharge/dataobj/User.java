@@ -27,11 +27,6 @@ import com.codename1.properties.Property;
 import com.codename1.properties.PropertyBusinessObject;
 import com.codename1.properties.PropertyIndex;
 
-/**
- * Property object representing a user
- *
- * @author Shai Almog
- */
 public class User implements PropertyBusinessObject {
     public final Property<String, User> token = new Property<>("token");
     public final Property<String, User> smsCode = new Property<>("smsCode");

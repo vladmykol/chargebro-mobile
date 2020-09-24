@@ -32,6 +32,8 @@ import com.codename1.ui.util.Resources;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.codename1.ui.CN.callSerially;
+
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
  *
@@ -39,6 +41,7 @@ import java.io.InputStream;
  */
 public class MainGifLoader extends ScaleImageLabel {
     private static MainGifLoader instance;
+
     private MainGifLoader(Image i) {
         super(i);
     }
@@ -59,11 +62,15 @@ public class MainGifLoader extends ScaleImageLabel {
     }
 
     public void start() {
-        setVisible(true);
+        callSerially(() -> {
+            setVisible(true);
+        });
     }
 
     public void stop() {
-        setVisible(false);
+        callSerially(() -> {
+            setVisible(false);
+        });
     }
 
 }

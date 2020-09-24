@@ -23,10 +23,13 @@
 
 package com.mykovol.takeandcharge.tools;
 
-import com.codename1.components.MultiButton;
+import com.codename1.capture.Capture;
+import com.codename1.components.InteractionDialog;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.io.Log;
 import com.codename1.io.Preferences;
+import com.codename1.io.Storage;
+import com.codename1.io.Util;
 import com.codename1.messaging.Message;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -35,22 +38,25 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
-import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
-import com.codename1.util.SuccessCallback;
-import com.mykovol.takeandcharge.form.*;
+import com.mykovol.takeandcharge.form.BrowserPopUp;
+import com.mykovol.takeandcharge.form.LoginForm;
+import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.form.SingUpForm;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
 import java.io.IOException;
 
 import static com.codename1.ui.CN.convertToPixels;
-import static com.codename1.ui.CN.getCurrentForm;
-import static com.codename1.ui.layouts.BoxLayout.encloseX;
+import static com.codename1.ui.CN1Constants.GALLERY_IMAGE;
+import static com.codename1.ui.ComponentSelector.$;
+import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED_FILL;
-import static com.mykovol.takeandcharge.service.GlobalConst.*;
+import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
@@ -58,51 +64,57 @@ import static com.mykovol.takeandcharge.service.GlobalConst.*;
  * @author Shai Almog
  */
 public class CommonCode {
-    private final static Command loginCommand = getLoginCommand();
-    private final static Command priceCommand = getPriceCommand();
-    private final static Command registerCommand = getRegisterCommand();
-    private final static Command topAppCommand = getTopAppCommand();
-    private final static Command supportCommand = getSupportCommand();
-    private final static Command signOutCommandCommand = getSignOutCommand();
-    private final static ScaleImageLabel profileBackground = new ScaleImageLabel(Resources.getGlobalResources().getImage("menu-bgr.png"));
+    private final static ScaleImageLabel waveMask = new ScaleImageLabel(Resources.getGlobalResources().getImage("wave.png"));
+    private final static Image defaultAvatarImage = Resources.getGlobalResources().getImage("defaultAvatar.png");
+    private final static Container avatarBackground = new Container();
     private static final String SIDE_MENU_SWIPE_START_X = "sideMenuSwipeStartX";
-    private final static Label avatarBlockText = new Label("", "AvatarBlockText");
+    private final static Label avatarText = new Label("", "AvatarText");
     private final static Button avatarButton = new Button("");
-    private static Image avatar;
-    private static Container avatarBlockBalance;
+    private final static Label avatarSubText = new Label("", "AvatarSubText");
+    private final static Button signOutButton = getSignOutButton();
+    private static InteractionDialog sideMenu;
+    private final static Button loginButton = getLoginButton();
+    private final static Button registerButton = getRegisterButton();
+    private final static Button creditCardButton = getCreditCards();
+    private final static Button creditCardButton2 = getCreditCards2();
+    private final static Button priceButton = getPriceButton();
+    private final static Button supportButton = getSupportButton();
 
-    public static Image getAvatar(SuccessCallback<Image> avatarChanged) {
-        if (avatar == null) {
-            int size = convertToPixels(10);
-            Image temp = Image.createImage(size, size, 0xff000000);
-            Graphics g = temp.getGraphics();
-            g.setAntiAliased(true);
-            g.setColor(0xffffff);
-            g.fillArc(0, 0, size, size, 0, 360);
-            Object mask = temp.createMask();
-//            UserService.fetchAvatar(i -> {
-//                avatar = i.fill(size, size).applyMask(mask);
-//                avatarChanged.onSucess(avatar);
-//            });
-            if (avatar != null) {
-                return avatar;
-            }
-            Style s = new Style();
-            s.setFgColor(0xc2c2c2);
-            s.setBgTransparency(255);
-            s.setBgColor(0xe9e9e9);
-            FontImage x = FontImage.createMaterial(FontImage.MATERIAL_PERSON, s, size);
-            avatar = x.fill(size, size);
-            if (avatar instanceof FontImage) {
-                avatar = ((FontImage) avatar).toImage();
-            }
-            avatar = avatar.applyMask(mask);
+    public static void refreshUserInfo() {
+        if (UserService.isLoggedIn()) {
+            avatarText.setText("Stranger");
+            avatarSubText.setHidden(false);
+        } else {
+            avatarText.setText("Take&Charge");
+            avatarSubText.setHidden(true);
         }
-        return avatar;
+        avatarSubText.setText(Preferences.get("phoneNumber", "* * * *"));
+        avatarText.getParent().revalidateWithAnimationSafety();
+        UserService.fetchAvatar(1, image -> {
+            if (image != null && image.getHeight() > 0) {
+                setAvatar(image);
+            }
+        });
     }
 
-    public static Image setAvatar(String imageFile) {
-        int size = convertToPixels(10);
+    public static void setAvatar(Image image) {
+        Image maskedImage = applyMaskToAvatar(image);
+        avatarButton.setIcon(maskedImage);
+    }
+
+    public static void setAvatar(String imageFile) {
+        Image img;
+        try {
+            img = Image.createImage(imageFile);
+        } catch (IOException e) {
+            Log.e(e);
+            return;
+        }
+        setAvatar(img);
+    }
+
+    public static Image applyMaskToAvatar(Image image) {
+        int size = convertToPixels(12);
         Image temp = Image.createImage(size, size, 0xff000000);
         Graphics g = temp.getGraphics();
         g.setAntiAliased(true);
@@ -110,36 +122,8 @@ public class CommonCode {
         g.fillArc(0, 0, size, size, 0, 360);
         Object mask = temp.createMask();
 
-        try {
-            Image img = Image.createImage(imageFile);
-            avatar = img.fill(size, size).applyMask(mask);
-        } catch (IOException err) {
-            // this is unlikely as we just grabbed the image...
-            Log.e(err);
-        }
-        return avatar;
+        return image.fill(size, size).applyMask(mask);
     }
-
-    public static MultiButton createEntry(char icon, String title) {
-        MultiButton b = new MultiButton(title);
-        b.setUIID("Container");
-        b.setUIIDLine1("WhereToButtonLine1");
-        b.setIconUIID("WhereToButtonIcon");
-        FontImage.setMaterialIcon(b, icon);
-        return b;
-    }
-
-    public static MultiButton createEntry(char icon, String title, String subtitle) {
-        MultiButton b = new MultiButton(title);
-        b.setTextLine2(subtitle);
-        b.setUIID("Container");
-        b.setUIIDLine1("WhereToButtonLineNoBorder");
-        b.setUIIDLine2("WhereToButtonLine2");
-        b.setIconUIID("WhereToButtonIcon");
-        FontImage.setMaterialIcon(b, icon);
-        return b;
-    }
-
 
     public static Label createSeparator() {
         Label sep = new Label("", "WhereSeparator");
@@ -148,223 +132,165 @@ public class CommonCode {
     }
 
 
-    public static void constructSideMenu(Toolbar tb, Form parentForm, Button screenBlocking) {
-        avatarButton.setUIID("InputAvatar");
-//        Image defaultAvatar = FontImage.createMaterial(FontImage.MATERIAL_CAMERA, "InputAvatarImage", 8);
+    public static void constructSideMenu(Toolbar tb, Form parentForm) {
+        avatarButton.setUIID("AvatarButton");
+        setAvatar(defaultAvatarImage);
+
 
         avatarButton.addActionListener(e -> {
-//            if(Dialog.show("Camera or Gallery", "Would you like to use the camera or the gallery for the picture?", "Camera", "Gallery")) {
-//                String pic = Capture.capturePhoto();
-//                if(pic != null) {
-//                    try {
-//                        Image img = Image.createImage(pic).fill(circleMaskImage.getWidth(), circleMaskImage.getHeight());
-//                        avatarButton.setIcon(img.applyMask(circleMask));
-//                    } catch(IOException err) {
-//                        ToastBar.showErrorMessage("An error occured while loading the image: " + err);
-//                        Log.e(err);
-//                    }
-//                }
-//            } else {
-//                openGallery(ee -> {
-//                    if(ee.getSource() != null) {
-//                        try {
-//                            Image img = Image.createImage((String)ee.getSource()).fill(circleMaskImage.getWidth(), circleMaskImage.getHeight());
-//                            avatarButton.setIcon(img.applyMask(circleMask));
-//                        } catch(IOException err) {
-//                            ToastBar.showErrorMessage("An error occured while loading the image: " + err);
-//                            Log.e(err);
-//                        }
-//                    }
-//                }, GALLERY_IMAGE);
-//            }
-        });
-
-
-        profileBackground.setUIID("AvatarBlock");
-        profileBackground.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
-
-        Label avatarBlockBalanceText = new Label("Balance:", "AvatarBlockBalance");
-        Label avatarBlockBalanceAmount = new Label("10", "AvatarBlockBalanceAmount");
-        Label avatarBlockBalanceAmountCurrency = new Label("₴", "AvatarBlockBalanceAmount");
-        avatarBlockBalance = encloseX(avatarBlockBalanceText, avatarBlockBalanceAmountCurrency, avatarBlockBalanceAmount);
-
-        Container profileHolder = LayeredLayout.encloseIn(profileBackground, BoxLayout.encloseY(avatarButton, avatarBlockText, avatarBlockBalance));
-        tb.addComponentToSideMenu(profileHolder);
-        profileHolder.getParent().setScrollableY(false);
-
-        refreshCommands(tb);
-
-        Button legalButton = new Button("Legal", "Legal");
-        Label debugLabel = new Label("", "Legal");
-        if (LOCAL) {
-            debugLabel.setText("debug");
-        }
-        Container legal = BorderLayout.centerCenterEastWest(null, debugLabel, legalButton);
-        legal.setLeadComponent(legalButton);
-        legal.setUIID("SideNavigationPanel");
-        tb.setComponentToSideMenuSouth(legal);
-
-        legalButton.addActionListener(evt -> {
-//            CommonCode.removeTransitionsTemporarily(this);
-            new BrowserPopUp(getCurrentForm(),
-                    "Terms&Conditions",
-                    POLICY_URL)
-                    .show();
-        });
-
-        parentForm.addPointerPressedListener(evt -> {
-            Boolean menuIsShowed = (Boolean) parentForm.getClientProperty("cn1$sidemenuCharged");
-            if (menuIsShowed) {
-                Preferences.set(SIDE_MENU_SWIPE_START_X, evt.getX());
+//            new EditAccountForm().show();
+            if (UserService.isLoggedIn()) {
+                chooseNewAvatar();
+            } else {
+                new LoginForm().show();
             }
         });
 
-        parentForm.addPointerReleasedListener(evt -> {
-            int startX = Preferences.get(SIDE_MENU_SWIPE_START_X, evt.getX());
-            if (startX > 0) {
-                int draggedLength = startX - evt.getX();
-                Preferences.set(SIDE_MENU_SWIPE_START_X, 0);
-                System.out.println(draggedLength);
-                if (draggedLength > 100) {
-                    tb.closeSideMenu();
-//                closeSideMenu(tb, parentForm);
+        avatarBackground.setUIID("AvatarBackground");
+        waveMask.setUIID("AvatarWave");
+        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
+            waveMask.setBackgroundType(BACKGROUND_IMAGE_SCALED_FILL);
+        } else {
+            waveMask.setBackgroundType(BACKGROUND_IMAGE_SCALED);
+        }
+
+
+        int size = convertToPixels(4);
+        Image penImage = Resources.getGlobalResources().getImage("avatarPen.png").fill(size, size);
+        Label avatarPenImage = new Label(penImage, "AvatarPen");
+
+        Label spaceHolder = new Label();
+        spaceHolder.setShowEvenIfBlank(true);
+        spaceHolder.getAllStyles().setMarginBottom(100);
+        Container avatarContainer = BoxLayout.encloseY(LayeredLayout.encloseIn(avatarButton, FlowLayout.encloseIn(avatarPenImage)),
+                avatarText, avatarSubText, spaceHolder);
+        avatarContainer.setSafeArea(true);
+
+
+        Container menuTopPartHolder = LayeredLayout.encloseIn(avatarBackground,
+                avatarContainer,
+                BorderLayout.south(waveMask));
+        tb.addComponentToSideMenu(menuTopPartHolder);
+
+        if (Display.getInstance().getDeviceDensity() > Display.DENSITY_HD) {
+            menuTopPartHolder.getParent().setScrollableY(false);
+        }
+
+        Container menuItemsContainer = BorderLayout.west(BoxLayout.encloseY(
+                loginButton,
+                registerButton,
+                creditCardButton,
+                creditCardButton2,
+                priceButton,
+                supportButton
+        ));
+        tb.addComponentToSideMenu(menuItemsContainer);
+        menuItemsContainer.setScrollableY(true);
+        menuItemsContainer.setScrollVisible(false);
+
+
+        Container bottomContainer = BorderLayout.centerAbsolute(signOutButton);
+        bottomContainer.setUIID("SideNavigationPanel");
+        tb.setComponentToSideMenuSouth(bottomContainer);
+
+        sideMenu = (InteractionDialog) bottomContainer.getParent().getParent();
+
+        refreshMenuItems();
+
+        final Container layeredPane = parentForm.getLayeredPane(parentForm.getClass(), true);
+        final Button blockingButton = new Button();
+
+        $(blockingButton)
+                .setUIID("Container")
+                .setVisible(false)
+                .stripMarginAndPadding();
+
+        layeredPane.setLayout(new BorderLayout());
+        layeredPane.add(BorderLayout.CENTER, blockingButton);
+
+        blockingButton.addPointerDraggedListener(evt -> {
+            Integer startX = (Integer) parentForm.getClientProperty(SIDE_MENU_SWIPE_START_X);
+            if (startX == null) {
+                parentForm.putClientProperty(SIDE_MENU_SWIPE_START_X, evt.getX());
+            }
+        });
+
+        parentForm.addPointerPressedListener(evt -> {
+            if (blockingButton.isVisible()) {
+                Boolean menuIsShowed = (Boolean) parentForm.getClientProperty("cn1$sidemenuCharged");
+                if (menuIsShowed != null && menuIsShowed) {
+                    parentForm.putClientProperty(SIDE_MENU_SWIPE_START_X, evt.getX());
+                    parentForm.putClientProperty("cn1$sidemenuCharged", Boolean.FALSE);
+                } else {
+                    blockingButton.setVisible(false);
                 }
             }
         });
 
-//        tb.getLeftSideMenuButton().addActionListener(evt -> {
-//            screenBlocking.setVisible(true);
-//        });
-
-//        screenBlocking.addPointerPressedListener(evt -> {
-//            closeSideMenu(tb, parentForm, screenBlocking);
-//        });
-
-//        screenBlocking.addActionListener(evt -> {
-//            screenBlocking.setVisible(false);
-//        });
-
-    }
-
-    public static void setAvatar(Image defaultAvatar) {
-        Image circleMaskImage = Resources.getGlobalResources().getImage("circle.png");
-        defaultAvatar = defaultAvatar.scaled(circleMaskImage.getWidth(), circleMaskImage.getHeight());
-//        defaultAvatar = ((FontImage) defaultAvatar).toEncodedImage();
-        Object circleMask = circleMaskImage.createMask();
-        defaultAvatar = defaultAvatar.applyMask(circleMask);
-        avatarButton.setIcon(defaultAvatar);
-    }
-
-    public static void closeSideMenu(Toolbar tb, Form parentForm) {
-//        Boolean menuIsShowed = (Boolean) parentForm.getClientProperty("cn1$sidemenuCharged");
-//        if (menuIsShowed) {
-//            parentForm.putClientProperty("cn1$sidemenuCharged", Boolean.FALSE);
-        tb.closeSideMenu();
-//        }
-    }
-
-
-    private static void refreshCommands(Toolbar tb) {
-        refreshProfile();
-        tb.removeCommand(loginCommand);
-        tb.removeCommand(registerCommand);
-        tb.removeCommand(topAppCommand);
-        tb.removeCommand(priceCommand);
-        tb.removeCommand(supportCommand);
-        tb.removeCommand(signOutCommandCommand);
-        tb.getMenuBar().revalidateWithAnimationSafety();
-
-        if (UserService.isLoggedIn()) {
-            tb.addCommandToLeftSideMenu(topAppCommand);
-            tb.addCommandToLeftSideMenu(supportCommand);
-            tb.addCommandToLeftSideMenu(priceCommand);
-            tb.addCommandToLeftSideMenu(signOutCommandCommand);
-        } else {
-            tb.addCommandToLeftSideMenu(loginCommand);
-            tb.addCommandToLeftSideMenu(registerCommand);
-            tb.addCommandToLeftSideMenu(priceCommand);
-            tb.addCommandToLeftSideMenu(supportCommand);
-        }
-    }
-
-    private static void refreshProfile() {
-        if (UserService.isLoggedIn()) {
-            setAvatar(FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN, "InputAvatarImage", 8).toEncodedImage());
-            avatarBlockText.setHidden(true);
-            avatarBlockBalance.setHidden(false);
-        } else {
-            setAvatar(Resources.getGlobalResources().getImage("main-logo.png"));
-            avatarBlockText.setHidden(false);
-            avatarBlockText.setText("Take&Charge");
-            avatarBlockBalance.setHidden(true);
-        }
-
-//        userAndAvatar.setIcon(getAvatar(i -> userAndAvatar.setIcon(i)));
-//        userAndAvatar.setGap(convertToPixels(4));
-//        userAndAvatar.addActionListener(e -> new EditAccountForm().show());
-    }
-
-    private static Command getPriceCommand() {
-        return getCommand("Price", FontImage.MATERIAL_BAR_CHART, evt -> {
-            new BrowserPopUp(getCurrentForm(),
-                    "Price",
-                    PRICE_URL,
-                    false)
-                    .show();
-        });
-    }
-
-    public static void refreshCommands() {
-        refreshCommands(MainForm.get().getToolbar());
-    }
-
-    /**
-     * Initializes a form with a black background title animation style
-     *
-     * @param f the form
-     */
-    public static void initBlackTitleForm(Form f, String title, SuccessCallback<String> searchResults) {
-        Form backTo = getCurrentForm();
-        f.getContentPane().setScrollVisible(false);
-        Button back = new Button("", "TitleCommand");
-        removeTransitionsTemporarily(backTo);
-        back.addActionListener(e -> backTo.showBack());
-        back.getAllStyles().setFgColor(0xffffff);
-        FontImage.setMaterialIcon(back, FontImage.MATERIAL_ARROW_BACK);
-
-        f.setBackCommand(new Command("") {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                backTo.showBack();
+        sideMenu.addStateChangeListener(evt -> {
+            if (sideMenu.isShowing()) {
+                parentForm.putClientProperty(SIDE_MENU_SWIPE_START_X, null);
+                blockingButton.setVisible(false);
             }
         });
 
-        Container searchBack = null;
-        if (searchResults != null) {
-            Button search = new Button("", "TitleCommand");
-            search.getAllStyles().setFgColor(0xffffff);
-            FontImage.setMaterialIcon(search, FontImage.MATERIAL_SEARCH);
-            search.addActionListener(e -> {
+        parentForm.addPointerReleasedListener(evt -> {
+            if (sideMenu.isShowing()) {
+                Integer startX = (Integer) parentForm.getClientProperty(SIDE_MENU_SWIPE_START_X);
+                if (startX != null) {
+                    int draggedLength = startX - evt.getX();
+                    parentForm.putClientProperty(SIDE_MENU_SWIPE_START_X, null);
+                    if (draggedLength > 100) {
+                        tb.closeLeftSideMenu();
+                        blockingButton.setVisible(false);
+                    }
+                }
+            }
+        });
 
-            });
-            searchBack = BorderLayout.north(
-                    BorderLayout.centerEastWest(null, search, back));
+        tb.getLeftSideMenuButton().addActionListener(evt -> {
+            parentForm.putClientProperty("cn1$sidemenuCharged", Boolean.FALSE);
+            blockingButton.setVisible(true);
+        });
+
+
+    }
+
+    public static void chooseNewAvatar() {
+        if (Dialog.show("Camera or Gallery", "Would you like to use the camera or the gallery for the picture?", "Camera", "Gallery")) {
+            String pic = Capture.capturePhoto();
+            if (pic != null) {
+                setAvatar(pic);
+            }
         } else {
-            searchBack = BorderLayout.north(
-                    BorderLayout.centerEastWest(null, null, back));
+            CN.openGallery(ee -> {
+                if (ee.getSource() != null) {
+                    setAvatar((String) ee.getSource());
+                }
+            }, GALLERY_IMAGE);
         }
+    }
 
-        Label titleLabel = new Label(title, "WhiteOnBlackTitle");
+    public static void refreshMenuItems() {
+        refreshUserInfo();
 
-        titleLabel.getAllStyles().setMarginTop(back.getPreferredH());
-        titleLabel.getAllStyles().setMarginUnit(Style.UNIT_TYPE_PIXELS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS);
+        if (UserService.isLoggedIn()) {
+            loginButton.setHidden(true);
+            registerButton.setHidden(true);
 
-        f.getToolbar().setTitleComponent(LayeredLayout.encloseIn(searchBack, titleLabel));
+            creditCardButton.setHidden(false);
+            creditCardButton2.setHidden(false);
+            supportButton.setHidden(false);
+            signOutButton.setHidden(false);
+        } else {
+            loginButton.setHidden(false);
+            registerButton.setHidden(false);
 
-        f.getAnimationManager().onTitleScrollAnimation(titleLabel.createStyleAnimation("WhiteOnBlackTitleLeftMargin", 200));
-
-        f.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-        f.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
+            creditCardButton.setHidden(true);
+            creditCardButton2.setHidden(true);
+            supportButton.setHidden(true);
+            signOutButton.setHidden(true);
+        }
     }
 
     public static void removeTransitionsTemporarily(final Form f) {
@@ -382,25 +308,63 @@ public class CommonCode {
         });
     }
 
-    private static Command getLoginCommand() {
-        return getCommand("Login", FontImage.MATERIAL_PERSON, evt -> {
-            new LoginForm().show();
+    private static Button getLoginButton() {
+        return constructSideMenuButton("LOGIN", FontImage.MATERIAL_PERSON, evt -> {
+            final LoginForm loginForm = new LoginForm();
+            loginForm.setTransitionInAnimator(CommonTransitions.createFade(200));
+            loginForm.show();
         });
     }
 
-    private static Command getTopAppCommand() {
-        return getCommand("Top up", FontImage.MATERIAL_ADD_TO_HOME_SCREEN, e -> {
+    private static Button getPriceButton() {
+        return constructSideMenuButton("PRICE", FontImage.MATERIAL_BAR_CHART, evt -> {
+            final BrowserPopUp price = new BrowserPopUp(PRICE_URL, null, "Price", MainForm.get());
+            price.setTransitionInAnimator(CommonTransitions.createFade(300));
+            price.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+            price.show();
+        });
+    }
+
+
+    private static Button getCreditCards() {
+        return constructSideMenuButton("ADD CARD WEB", FontImage.MATERIAL_CREDIT_CARD, e -> {
+            MainGifLoader.get().start();
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().showErrorDraggablePanel(errorCode + " " + errorMessage);
+                    MainGifLoader.get().stop();
+                    MainForm.get().showError(errorMessage, errorCode);
                 }
 
                 @Override
                 public void onSucess(String checkoutUrl) {
+                    MainGifLoader.get().stop();
+                    Display.getInstance().execute(checkoutUrl);
+//                    BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "Add credit card", MainForm.get());
+//                    addMoney.setTransitionInAnimator(CommonTransitions.createFade(300));
+//                    addMoney.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+//                    addMoney.show();
+                }
+            });
+        });
+    }
 
-                    RegisterCreditCardStep3 addMoney = new RegisterCreditCardStep3(checkoutUrl);
-                    addMoney.setTransitionInAnimator(CommonTransitions.createSlide(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
+    private static Button getCreditCards2() {
+        return constructSideMenuButton("ADD CARD", FontImage.MATERIAL_CREDIT_CARD, e -> {
+            MainGifLoader.get().start();
+            RentService.prepareCheckout(new Callback<String>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    MainGifLoader.get().stop();
+                    MainForm.get().showError(errorMessage, errorCode);
+                }
+
+                @Override
+                public void onSucess(String checkoutUrl) {
+                    MainGifLoader.get().stop();
+                    BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "take-and-charge", "Add credit card", MainForm.get());
+                    addMoney.setTransitionInAnimator(CommonTransitions.createFade(300));
+                    addMoney.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
                     addMoney.show();
                 }
             });
@@ -408,31 +372,78 @@ public class CommonCode {
     }
 
 
-    private static Command getSupportCommand() {
-        return getCommand("Support", FontImage.MATERIAL_CONTACT_SUPPORT, evt -> {
-            String email = "info@your-domain.example.com";
-            Message message = new Message("");
-            Display.getInstance().sendMessage(new String[]{email}, "Take&Charge", message);
+    private static Button getSupportButton() {
+        return constructSideMenuButton("CONTACT US", FontImage.MATERIAL_EMAIL, evt -> {
+            sendSupportEmail();
         });
     }
 
 
-    private static Command getRegisterCommand() {
-        return getCommand("Register", FontImage.MATERIAL_PERSON_ADD, evt -> {
-            new RegisterMobileNumberStep1().show();
+    private static Button getRegisterButton() {
+        return constructSideMenuButton("REGISTER", FontImage.MATERIAL_PERSON_ADD, evt -> {
+            new SingUpForm().show();
         });
     }
 
-    private static Command getSignOutCommand() {
-        return getCommand("Sign out", FontImage.MATERIAL_EXIT_TO_APP, e -> {
+
+    private static Button getSignOutButton() {
+        Button sideMenuButton = new Button("Sign out", "SideMenuButtonSignOut");
+        sideMenuButton.addActionListener(evt -> {
             UserService.logout();
         });
+        return sideMenuButton;
     }
 
-    private static Command getCommand(String name, char materialIcon, final ActionListener<?> evt) {
-        Command cmd = Command.create(name, null, evt);
-        cmd.setIconGapMM(2);
-        cmd.setMaterialIcon(materialIcon);
-        return cmd;
+    private static Button constructSideMenuButton(String name, char materialIcon, final ActionListener<?> evt) {
+        Button sideMenuButton = new Button(name, "SideMenuButton");
+        sideMenuButton.setIconUIID("SideMenuButtonIcon");
+        sideMenuButton.setMaterialIcon(materialIcon);
+        sideMenuButton.setGap(convertToPixels(2));
+        sideMenuButton.addActionListener(evt);
+        sideMenuButton.addActionListener(evt1 -> {
+            sideMenu.setAnimateShow(false);
+            MainForm.get().getToolbar().closeLeftSideMenu();
+        });
+        return sideMenuButton;
     }
+
+
+    public static void sendSupportEmail() {
+        final String email = "info@your-domain.example.com";
+        String logText = "";
+        try {
+            byte[] read = Util.readInputStream(Storage.getInstance().createInputStream("CN1Log__$"));
+            logText = new String(read);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        final String userPhone = Preferences.get("phoneNumber", "not defined");
+        final String appVersion = Display.getInstance().getProperty("AppVersion", "0.1");
+        final String content = "\n \n \n -------------- user info ------------------ \n" +
+                "User: " + userPhone + "\n" +
+                "OS: " + Display.getInstance().getPlatformName() + "\n" +
+                "App version: " + appVersion + "\n" +
+                "Log: " + logText + "\n";
+        Message message = new Message(content);
+
+        Display.getInstance().sendMessage(new String[]{email}, "Support request", message);
+    }
+
+    public static Command getCloseToPrevFormCommand(Form prevForm) {
+        final float menuImageSize = Float.parseFloat(prevForm.getUIManager().getThemeConstant("menuImageSize", "4.5"));
+        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", menuImageSize);
+        return Command.create("", mat, e -> {
+
+            prevForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+            Component currEditing = prevForm.findCurrentlyEditingComponent();
+            if (currEditing != null) {
+                currEditing.stopEditing(() -> prevForm.show());
+            } else {
+                MainForm.get().show();
+            }
+        });
+    }
+
+
 }

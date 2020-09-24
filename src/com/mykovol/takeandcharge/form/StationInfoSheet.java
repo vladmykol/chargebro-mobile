@@ -3,6 +3,7 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.SpanLabel;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
+import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -60,7 +61,9 @@ public class StationInfoSheet extends Sheet {
         FontImage.setMaterialIcon(accessTimeLabel, FontImage.MATERIAL_ACCESS_TIME);
 
         Label availablePowerBanks = new Label("Available:", "StationsSheetAvailableText");
+        FontImage.setIcon(availablePowerBanks,FontImage.MATERIAL_ARROW_UPWARD,3);
         Label cabBeReturnedPowerBanks = new Label("Can be returned:", "StationsSheetAvailableText");
+        FontImage.setIcon(cabBeReturnedPowerBanks,FontImage.MATERIAL_ARROW_DOWNWARD,3);
         Container availableText = BoxLayout.encloseY(availablePowerBanks, cabBeReturnedPowerBanks);
         Container availableNumbers = BoxLayout.encloseY(availablePowerBanksNumber, cabBeReturnedPowerBanksNumber);
         availableContainer = BoxLayout.encloseX(availableText, availableNumbers);
@@ -146,6 +149,7 @@ public class StationInfoSheet extends Sheet {
                 availablePowerBanksNumber.setText("0");
                 cabBeReturnedPowerBanksNumber.setText("0");
                 errorLabel.setHidden(false);
+                errorLabel.getParent().revalidateWithAnimationSafety();
 //                });
             }
 

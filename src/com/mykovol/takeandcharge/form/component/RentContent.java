@@ -12,11 +12,11 @@ import static com.mykovol.takeandcharge.service.StyleConst.*;
 
 public class RentContent extends Container {
     private final Label rentTitle = new Label("Your rental", RENT_BORDER_HEADER);
-    private final Container rentInfo = new Container(BoxLayout.y());
+    private final Container rentDetails = new Container(BoxLayout.y());
 
     public RentContent() {
         super(BoxLayout.y());
-        addAll(rentTitle,rentInfo);
+        addAll(rentTitle, rentDetails);
     }
 
     public void hideTitle() {
@@ -33,32 +33,36 @@ public class RentContent extends Container {
 
     public RentBoard addRow(String serialNumber, long elapsedTime) {
         RentBoard rentBoard = new RentBoard(serialNumber, elapsedTime);
-        rentInfo.addComponent(0, rentBoard);
+        rentDetails.addComponent(0, rentBoard);
         return rentBoard;
     }
 
-    public boolean noRentRows() {
-        return rentInfo.getComponentCount() == 0;
+    public int getRentRows() {
+        return rentDetails.getComponentCount();
     }
 
-    public Map<String, RentBoard> getVisibleRentBoards() {
+    public void removeAllRows() {
+        rentDetails.removeAll();
+    }
+
+    public Map<String, RentBoard> getShowedRents() {
         Map<String, RentBoard> rentInfoMap = new HashMap<>();
-        for (int i = 0; i < rentInfo.getComponentCount(); i++) {
-            Component rentRow = rentInfo.getComponentAt(i);
+        for (int i = 0; i < rentDetails.getComponentCount(); i++) {
+            Component rentRow = rentDetails.getComponentAt(i);
             rentInfoMap.put(rentRow.getName(), (RentBoard) rentRow);
         }
         return rentInfoMap;
     }
 
     public RentBoard findRentBoardByName(String serialNumber) {
-        for (int i = 0; i < rentInfo.getComponentCount(); i++) {
-            if (serialNumber.equals(rentInfo.getComponentAt(i).getName()))
-                return (RentBoard) rentInfo.getComponentAt(i);
+        for (int i = 0; i < rentDetails.getComponentCount(); i++) {
+            if (serialNumber.equals(rentDetails.getComponentAt(i).getName()))
+                return (RentBoard) rentDetails.getComponentAt(i);
         }
         return null;
     }
 
     public void animateRentContent(int duration) {
-        rentInfo.animateLayoutAndWait(duration);
+        rentDetails.animateLayoutAndWait(duration);
     }
 }
