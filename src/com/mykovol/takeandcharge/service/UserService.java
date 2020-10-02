@@ -80,11 +80,12 @@ public class UserService {
 
     public static void logout() {
         Preferences.set("token", null);
-        WebSocketClient.get().disconnect();
+
         callSerially(() -> {
             CommonCode.refreshMenuItems();
             MainForm.get().removeAllRentRows();
             MainForm.get().refreshScanButton();
+            WebSocketClient.get().disconnect();
         });
     }
 
@@ -122,7 +123,6 @@ public class UserService {
                     Preferences.set("phoneNumber", PhoneFieldContainer.formattedPhoneNumber(request.name.get()));
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
-                    WebSocketClient.get().renewConnection();
                     MainForm.get().refreshScanButton();
                     CommonCode.refreshMenuItems();
 
@@ -133,6 +133,21 @@ public class UserService {
     public static boolean validateSMSActivationCode(String code) {
         String val = Preferences.get("phoneVerification", null);
         return code.contains(val) && code.length() < 80;
+    }
+
+    public static void checkVersion() {
+        Rest.post(GlobalConst.getServerUrl() + API_APP_VERSION)
+                .jsonContent()
+                .acceptJson()
+                .timeout(5000)
+                .queryParam("os", Display.getInstance().getPlatformName())
+                .queryParam("currentVersion", Display.getInstance().getProperty("AppVersion", "0.1"))
+                .onErrorCode(errorData -> {
+                    System.out.println("New app version error - "+errorData.getResponseCode());
+                }, ErrorResponse.class)
+                .fetchAsString(link -> {
+                   System.out.println("New app version - "+link);
+                });
     }
 
 
@@ -150,8 +165,8 @@ public class UserService {
                     Preferences.set("phoneNumber", phoneFieldContainer.getFormattedPhoneNumber());
                     String token = resp.getResponseData().get("token").toString();
                     setToken(token);
-                    WebSocketClient.get().renewConnection();
                     MainForm.get().refreshScanButton();
+                    MainForm.get().refreshRentContent();
                     CommonCode.refreshMenuItems();
                     callback.loginSuccessful();
                 })

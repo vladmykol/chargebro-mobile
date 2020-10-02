@@ -33,7 +33,7 @@
     /*multi size images end*/
     --main-bg-color: #249DA7;
     --grafit-color: #4B545A;
-    --fond-ProximaNova-Bold: "ProximaNova-Bold";
+    --font-ProximaNova-Bold: "ProximaNova-Bold";
     --font-ProximaNova-Regular: "ProximaNova-Regular";
     --font-ProximaNova-Semibold: "ProximaNova-Semibold";
     --font-ProximaNova-Light: "ProximaNova-Light";
@@ -85,12 +85,12 @@ Title {
 }
 
 TitleCommand {
-    padding: 1.1mm;
-    margin: 2mm 0mm 0mm 0mm;
+    padding: 1.2mm;
+    margin: 2.5mm 0mm 0mm 0mm;
     color: #555454;
     background: white;
     border-radius: 3.4mm;
-    border: lightgrey solid 0.05mm;
+    border: lightgrey solid 0.1mm;
 }
 
 TitleCommand.pressed {
@@ -123,6 +123,11 @@ ToastBarMessage {
     color: white;
 }
 
+PanelDelimiter {
+    border-bottom: 0.2mm solid rgba(128, 128, 128, 0.5);
+    margin: 0mm;
+    padding: 0.2mm 0mm;
+}
 
 /*====================== Login Form ==========================*/
 
@@ -207,7 +212,7 @@ LoginButton {
     background: var(--main-bg-color);
     padding: 2mm;
     margin: 5mm 0mm 2mm 0mm;
-    font-family: var(--fond-ProximaNova-Bold);
+    font-family: var(--font-ProximaNova-Bold);
     font-size: 3.2mm;
     text-align: center;
     border-radius: 1.5mm;
@@ -228,9 +233,9 @@ LoginButton.disabled  {
 SplashTitle {
     padding: 0mm;
     margin: 5mm 1mm 1mm 1mm;
-    color: #80acb1;
+    color: var(--main-bg-color);
     text-align: center;
-    font-family: var(--font-ProximaNova-Light);
+    font-family: var(--font-ProximaNova-Semibold);
     font-weight: bold;
     font-size: 5mm;
 }
@@ -257,7 +262,7 @@ TakePowerBankButton {
     /*box-shadow: 0px 14px 14px 12px #8FC0C5;*/
     /*cn1-box-shadow-spread: 4mm;*/
     /*cn1-box-shadow-blur: 4mm;*/
-    font-family: var(--fond-ProximaNova-Bold);
+    font-family: var(--font-ProximaNova-Bold);
     font-size: 3.5mm;
     text-align: center;
 }
@@ -273,13 +278,15 @@ MainFormTopMassage {
 
 ToolBox {
     background: white;
-    margin: 0mm 2.1mm;
+    margin: 0mm 2mm 0mm 0mm;
+    padding: 1mm 1mm;
     border-radius: 3.5mm;
     border: lightgrey solid 0.1mm;
 }
 
 ToolBoxButton {
-    padding: 1.2mm 0.2mm 1.2mm 0.3mm;
+    margin: 0mm;
+    padding: 1.4mm 0mm;
     font-size: 3.5mm;
     color: #616161;
     text-align: center;
@@ -300,8 +307,8 @@ BottomPanelFoldedTop {
 }
 
 BottomPanelFoldedTopText {
-    color: #535861;
-    font-family: "native:MainRegular";
+    color: var(--grafit-color);
+    font-family: var(--font-ProximaNova-Regular);
     font-size: 3.5mm;
     padding: 0mm 2mm;
     margin: 0mm;
@@ -353,10 +360,7 @@ PanelImage {
     text-align: center;
 }
 
-PanelDelimiter {
-    border-bottom: 0.2mm solid rgba(128, 128, 128, 0.5);
-    margin: 3mm;
-}
+
 
 RentBorder {
     border-radius: 2mm;
@@ -366,9 +370,14 @@ RentBorder {
     padding: 1.5mm 1mm;
 }
 
+RentBorderError{
+    cn1-derive:RentBorder;
+    box-shadow: 0mm 0.2mm 1mm 0mm #e81515;
+}
+
 RentBorderHeader {
-    font-family: var(--font-ProximaNova-Semibold);
-    color: #8FC0C5;
+    font-family: var(--font-ProximaNova-Regular);
+    color: var(--main-bg-color);
     font-size: 3.3mm;
     padding: 0mm 2mm;
     margin: 0mm;
@@ -376,7 +385,7 @@ RentBorderHeader {
 
 RentBorderSubHeader {
     cn1-derive: RentBorderHeader;
-    font-family: var(--font-ProximaNova-Light);
+    font-family: var(--font-ProximaNova-Regular);
     color: lightgrey;
     font-size: 2mm;
     padding: 0.7mm 2mm 0mm 2mm;
@@ -384,7 +393,7 @@ RentBorderSubHeader {
 
 RentBorderText {
     cn1-derive: RentBorderSubHeader;
-    font-family: var(--font-ProximaNova-Light);
+    font-family: var(--font-ProximaNova-Regular);
     color: #4B545A;
     font-size: 2.5mm;
     padding: 0.7mm 2mm 0mm 2mm;
@@ -429,7 +438,7 @@ AvatarPen {
 }
 
 AvatarText {
-    font-family: var(--fond-ProximaNova-Bold);
+    font-family: var(--font-ProximaNova-Bold);
     color: white;
     padding: 1.5mm 1mm 0mm 7mm;
     text-align: left;
@@ -447,8 +456,8 @@ AvatarSubText {
 SideMenuButton {
     color: var(--grafit-color);
     background: white;
-    padding: 5mm 3mm 0mm 3mm;
-    margin: 0mm;
+    padding: 1.5mm;
+    margin: 1mm;
     border: none;
     /*text-shadow: none;*/
     font-family: var(--font-ProximaNova-Semibold);
@@ -568,7 +577,7 @@ WalkthruPic {
 }
 
 WalkthruWhiteText {
-    font-family: var(--fond-ProximaNova-Bold);
+    font-family: var(--font-ProximaNova-Bold);
     color: #3E4958;
     text-align: center;
     font-size: 3.5mm;
@@ -596,7 +605,7 @@ WalkthruTab3 {
 
 
 WalkthrSkipButton {
-    font-style: var(--fond-ProximaNova-Bold);
+    font-style: var(--font-ProximaNova-Bold);
     font-size: 3mm;
     color: #249DA7;
     margin: 0mm 3mm 7mm 3mm;
@@ -612,7 +621,7 @@ ErrorMessageHolder {
     background: white;
     border-radius: 4.5mm 0mm 5mm 4.5mm;
     border: lightgrey solid 0.1mm;
-    margin: 0.5mm 2mm 0mm 2mm;
+    margin: 0.5mm 1.7mm 0mm 1.7mm;
 }
 
 ErrorMessageIcon {
@@ -633,5 +642,66 @@ ErrorMessageHeader {
     cn1-derive:ErrorMessageText;
     font-size: 2mm;
     margin: 1mm 2mm 0.5mm 0.7mm;
-    color: #bab8b8;
+    color: #868686;
+}
+
+/*====================== RentConfirmation ==========================*/
+
+RentConfirmationImage{
+    margin: 0mm 0mm 2mm 0mm;
+    padding: 0mm;
+    font-size: 10mm;
+    text-align: center;
+    color: var(--main-bg-color);
+}
+
+RentConfirmationSeparator{
+    margin: 0mm;
+    padding: 0mm;
+    font-size: 3mm;
+    text-align: center;
+    color: lightgrey;
+}
+
+RentConfirmationHeader{
+    margin: 0mm 0mm 3mm 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 3mm;
+    text-align: center;
+    color: #424347;
+}
+
+RentConfirmationText{
+    margin: 0mm 0mm 1mm 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 2.5mm;
+    color: #424347;
+}
+
+RentConfirmationHint{
+    margin: 0mm 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 2mm;
+    color: grey;
+    text-align: center;
+}
+
+RentConfirmationLink{
+    cn1-derive: RentConfirmationHint;
+    color: #0095A0;
+}
+
+RentConfirmationCancel {
+    cn1-derive: RentConfirmationText;
+    margin: 2mm 0mm 3mm 0mm;
+    color: #2775a4;
+    text-align: center;
+}
+
+RentConfirmationDelimiter {
+    cn1-derive: PanelDelimiter;
+    margin: 2mm 0mm;
 }

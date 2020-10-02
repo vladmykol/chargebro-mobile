@@ -30,6 +30,8 @@ import com.codename1.ui.Toolbar;
 import com.codename1.ui.layouts.BorderLayout;
 import com.mykovol.takeandcharge.tools.CommonCode;
 
+import static com.codename1.ui.CN.callSerially;
+
 /**
  * Authorization of a credit card
  *
@@ -43,7 +45,7 @@ public class BrowserPopUp extends Form {
         setToolbar(new Toolbar(false));
         getToolbar().setTitle(title);
 
-        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(MainForm.get());
+        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(previousForm);
         getToolbar().addCommandToRightBar(closeToPrevFormCommand);
 
         BrowserComponent browser = new BrowserComponent();
@@ -52,20 +54,14 @@ public class BrowserPopUp extends Form {
 
         browser.addBrowserNavigationCallback(currentUrl -> {
             if (returnUrl != null) {
-                if (currentUrl.indexOf(returnUrl) >= 0) {
-                    previousForm.show();
+                if (currentUrl.contains(returnUrl)) {
+                    callSerially(previousForm::show);
                     return false;
                 } else {
                     return true;
-                }
-            } else {
-                if (currentUrl.indexOf(url) >= 0) {
-                    return true;
-                } else {
-                    previousForm.show();
-                    return false;
                 }
             }
+            return true;
         });
 
     }

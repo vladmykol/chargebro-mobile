@@ -9,7 +9,6 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.mykovol.takeandcharge.service.WebSocketClient;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.layouts.BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE;
@@ -20,7 +19,7 @@ public class SplashScreen extends Form {
     private final Label logoImage2 = new Label(Resources.getGlobalResources().getImage("splash-logo-part-2.png"));
     private final Container animatedLogoImage2Container = BorderLayout.centerAbsolute(logoImage2);
 
-    private final Label logoTitle = new Label("Take&Charge", "SplashTitle");
+    private final Label logoTitle = new Label("ChargeBro", "SplashTitle");
     private final Label logoTitlePlaceHolder = new Label(" ", "SplashTitle");
     private final Label logoSubTitle = new Label("powerbank sharing solution", "SplashSubTitle");
     private final Label logoSubTitlePlaceholder = new Label(" ", "SplashSubTitle");
@@ -62,7 +61,6 @@ public class SplashScreen extends Form {
                 callSerially(() -> {
 //                    animateSubTitle();
                     MainForm.get();
-                    WebSocketClient.get();
 
                     boolean isWalkthruShowed = Preferences.get("isWalkthruShowed", false);
                     callSerially(() -> {

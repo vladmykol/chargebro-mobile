@@ -73,8 +73,11 @@ public class TakeAndChargeMain {
             } else {
                 if (err.getResponseCode() == 0) {
                     errorMsg = "No connection with server. Please try again latter";
-                } else
+                } else if (err.getError() != null) {
                     errorMsg = err.getResponseCode() + err.getError().toString() + " while connecting to " + err.getConnectionRequest().getUrl();
+                } else {
+                    errorMsg = "Unknown network error " + err.getResponseCode() + " while connecting to " + err.getConnectionRequest().getUrl();
+                }
 //                    Dialog.show("Connection Error " + err.getResponseCode(),
 //                            err.getError() + " while connecting to " + err.getConnectionRequest().getUrl(),
 //                            "OK", null);

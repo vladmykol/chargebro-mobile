@@ -51,7 +51,6 @@ public class WebSocketClient extends WebSocket {
 
     public WebSocketClient() {
         super(GlobalConst.getServerUrl() + SERVER_SOCKET_URL);
-        connect();
     }
 
     public static WebSocketClient get() {
@@ -69,14 +68,10 @@ public class WebSocketClient extends WebSocket {
         }
     }
 
-    public void renewConnection() {
-        disconnect();
-        instance = new WebSocketClient();
-    }
-
     public void disconnect() {
         autoReconnect(0);
         close();
+        instance = null;
     }
 
     @Override
@@ -160,12 +155,13 @@ public class WebSocketClient extends WebSocket {
             Log.p("websocket authentication issue - " + responseMessage);
         } else {
             Log.p("authenticated in websocket server " + responseMessage);
+            MainForm.get().refreshRentContent();
         }
     }
 
     @Override
     protected void onError(Exception e) {
-        Log.e(e);
+//        Log.e(e);
     }
 
 }

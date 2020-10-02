@@ -16,7 +16,7 @@ public class ToolBox extends Container {
     private final Button reportErrorButton = new Button("", "ToolBoxButton");
 
     public ToolBox(MapContainer mapContainer) {
-        super(BoxLayout.y());
+        super(BoxLayout.yCenter());
         this.mapContainer = mapContainer;
         setUIID("ToolBox");
 
@@ -28,7 +28,7 @@ public class ToolBox extends Container {
             MainForm.get().refreshMarkersOnMap();
             Display.getInstance().vibrate(1);
         });
-        reportErrorButton.setMaterialIcon(FontImage.MATERIAL_ERROR_OUTLINE);
+        reportErrorButton.setMaterialIcon(FontImage.MATERIAL_SUPPORT_AGENT);
         reportErrorButton.addActionListener(evt -> {
             CommonCode.sendSupportEmail();
         });
@@ -60,7 +60,6 @@ public class ToolBox extends Container {
 
     public void refreshState() {
         boolean isShowMyLocation = Preferences.get("showMyLocation", false);
-
         if (isShowMyLocation) {
             enableShowMyLocation(mapContainer);
         } else {
@@ -70,11 +69,21 @@ public class ToolBox extends Container {
 
     private void enableShowMyLocation(MapContainer mapContainer) {
         mapContainer.setShowMyLocation(true);
+        LocationService locationService = new LocationService();
+        locationService.moveToCurrentLocation(mapContainer);
         FontImage.setMaterialIcon(showMyLocationButton, FontImage.MATERIAL_LOCATION_ON);
     }
 
     private void disableShowMyLocation(MapContainer mapContainer) {
         mapContainer.setShowMyLocation(false);
         FontImage.setMaterialIcon(showMyLocationButton, FontImage.MATERIAL_LOCATION_OFF);
+    }
+
+    public void showMeOnMapIfAllowed() {
+        boolean isShowMyLocation = Preferences.get("showMyLocation", false);
+        if (isShowMyLocation) {
+            new LocationService().moveToCurrentLocation(mapContainer);
+            enableShowMyLocation(mapContainer);
+        }
     }
 }

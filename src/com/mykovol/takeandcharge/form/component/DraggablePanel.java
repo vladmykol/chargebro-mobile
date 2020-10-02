@@ -34,6 +34,7 @@ import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 
 import java.util.List;
@@ -58,7 +59,6 @@ public class DraggablePanel extends Container {
     private boolean isDraggingBottomPanel;
     private Container topToolbarPanel;
     private volatile boolean isInMove = false;
-    private volatile boolean isInUpdate = false;
     private volatile boolean isDragEnable = true;
 
     public DraggablePanel(Button screenBlocking,
@@ -80,16 +80,20 @@ public class DraggablePanel extends Container {
     }
 
     public void show() {
+        WebSocketClient.get().connect();
         contentHolder.setVisible(true);
         contentHolder.getParent().revalidate();
         contentHolder.setY(getDisplayHeight());
+        bottomScreenBlocking.setVisible(true);
         MainForm.get().hideScanButton();
+        MainGifLoader.get().stop();
         animateLayoutFade(300, 100);
     }
 
     public void hide() {
         MainForm.get().showScanButton();
         contentHolder.setY(getDisplayHeight());
+        bottomScreenBlocking.setVisible(false);
         animateUnlayout(300, 100, () -> {
             contentHolder.setVisible(false);
             revalidateWithAnimationSafety();

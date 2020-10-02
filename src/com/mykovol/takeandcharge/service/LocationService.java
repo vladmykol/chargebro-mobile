@@ -54,7 +54,7 @@ public class LocationService {
             public void locationUpdated(Location location) {
                 Coord crd = new Coord(location.getLatitude(), location.getLongitude());
                 mapContainer.setCameraPosition(crd);
-                mapContainer.zoom(crd, mapContainer.getMinZoom() + 13);
+//                mapContainer.zoom(crd, mapContainer.getMinZoom() + 13);
                 LocationManager.getLocationManager().setLocationListener(null);
             }
 

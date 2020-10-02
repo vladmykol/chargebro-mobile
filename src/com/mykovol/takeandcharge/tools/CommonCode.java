@@ -72,21 +72,21 @@ public class CommonCode {
     private final static Label avatarText = new Label("", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
-    private final static Button signOutButton = getSignOutButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
     private final static Button registerButton = getRegisterButton();
     private final static Button creditCardButton = getCreditCards();
-    private final static Button creditCardButton2 = getCreditCards2();
+    private final static Button PayForPbButton = getPayForPbButton();
     private final static Button priceButton = getPriceButton();
     private final static Button supportButton = getSupportButton();
+    private final static Button signOutButton = getSignOutButton();
 
     public static void refreshUserInfo() {
         if (UserService.isLoggedIn()) {
             avatarText.setText("Stranger");
             avatarSubText.setHidden(false);
         } else {
-            avatarText.setText("Take&Charge");
+            avatarText.setText("ChargeBro");
             avatarSubText.setHidden(true);
         }
         avatarSubText.setText(Preferences.get("phoneNumber", "* * * *"));
@@ -173,6 +173,7 @@ public class CommonCode {
                 BorderLayout.south(waveMask));
         tb.addComponentToSideMenu(menuTopPartHolder);
 
+        menuTopPartHolder.getParent().setTensileDragEnabled(false);
         if (Display.getInstance().getDeviceDensity() >= Display.DENSITY_HD) {
             menuTopPartHolder.getParent().setScrollableY(false);
         }
@@ -181,12 +182,12 @@ public class CommonCode {
                 loginButton,
                 registerButton,
                 creditCardButton,
-                creditCardButton2,
                 priceButton,
                 supportButton
         ));
         tb.addComponentToSideMenu(menuItemsContainer);
         menuItemsContainer.setScrollableY(true);
+        menuItemsContainer.setTensileDragEnabled(true);
         menuItemsContainer.setScrollVisible(false);
 
 
@@ -280,7 +281,6 @@ public class CommonCode {
             registerButton.setHidden(true);
 
             creditCardButton.setHidden(false);
-            creditCardButton2.setHidden(false);
             supportButton.setHidden(false);
             signOutButton.setHidden(false);
         } else {
@@ -288,7 +288,6 @@ public class CommonCode {
             registerButton.setHidden(false);
 
             creditCardButton.setHidden(true);
-            creditCardButton2.setHidden(true);
             supportButton.setHidden(true);
             signOutButton.setHidden(true);
         }
@@ -310,7 +309,7 @@ public class CommonCode {
     }
 
     private static Button getLoginButton() {
-        return constructSideMenuButton("LOGIN", FontImage.MATERIAL_PERSON, evt -> {
+        return constructSideMenuButton("Login", FontImage.MATERIAL_PERSON, evt -> {
             final LoginForm loginForm = new LoginForm();
             loginForm.setTransitionInAnimator(CommonTransitions.createFade(200));
             loginForm.show();
@@ -318,7 +317,7 @@ public class CommonCode {
     }
 
     private static Button getPriceButton() {
-        return constructSideMenuButton("PRICE", FontImage.MATERIAL_BAR_CHART, evt -> {
+        return constructSideMenuButton("Price", FontImage.MATERIAL_BAR_CHART, evt -> {
             final BrowserPopUp price = new BrowserPopUp(PRICE_URL, null, "Price", MainForm.get());
             price.setTransitionInAnimator(CommonTransitions.createFade(300));
             price.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
@@ -327,8 +326,27 @@ public class CommonCode {
     }
 
 
+//    private static Button getCreditCards() {
+//        return constructSideMenuButton("ADD CARD WEB", FontImage.MATERIAL_CREDIT_CARD, e -> {
+//            MainGifLoader.get().start();
+//            RentService.prepareCheckout(new Callback<String>() {
+//                @Override
+//                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+//                    MainGifLoader.get().stop();
+//                    MainForm.get().showError(errorMessage, errorCode);
+//                }
+//
+//                @Override
+//                public void onSucess(String checkoutUrl) {
+//                    MainGifLoader.get().stop();
+//                    Display.getInstance().execute(checkoutUrl);
+//                }
+//            });
+//        });
+//    }
+
     private static Button getCreditCards() {
-        return constructSideMenuButton("ADD CARD WEB", FontImage.MATERIAL_CREDIT_CARD, e -> {
+        return constructSideMenuButton("Add card", FontImage.MATERIAL_CREDIT_CARD, e -> {
             MainGifLoader.get().start();
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
@@ -340,30 +358,7 @@ public class CommonCode {
                 @Override
                 public void onSucess(String checkoutUrl) {
                     MainGifLoader.get().stop();
-                    Display.getInstance().execute(checkoutUrl);
-//                    BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "Add credit card", MainForm.get());
-//                    addMoney.setTransitionInAnimator(CommonTransitions.createFade(300));
-//                    addMoney.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-//                    addMoney.show();
-                }
-            });
-        });
-    }
-
-    private static Button getCreditCards2() {
-        return constructSideMenuButton("ADD CARD", FontImage.MATERIAL_CREDIT_CARD, e -> {
-            MainGifLoader.get().start();
-            RentService.prepareCheckout(new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainGifLoader.get().stop();
-                    MainForm.get().showError(errorMessage, errorCode);
-                }
-
-                @Override
-                public void onSucess(String checkoutUrl) {
-                    MainGifLoader.get().stop();
-                    BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "take-and-charge", "Add credit card", MainForm.get());
+                    BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "chargebro", "Add credit card", MainForm.get());
                     addMoney.setTransitionInAnimator(CommonTransitions.createFade(300));
                     addMoney.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
                     addMoney.show();
@@ -372,16 +367,36 @@ public class CommonCode {
         });
     }
 
+    private static Button getPayForPbButton() {
+        return constructSideMenuButton("Pay for rent", FontImage.MATERIAL_CREDIT_CARD, e -> {
+            MainGifLoader.get().start();
+            RentService.prepareCheckout(new Callback<String>() {
+                @Override
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    MainGifLoader.get().stop();
+                    MainForm.get().showError(errorMessage, errorCode);
+                }
+
+                @Override
+                public void onSucess(String checkoutUrl) {
+                    Display.getInstance().execute(checkoutUrl, evt -> {
+                        MainForm.get().showError("All good! Error is just for test", 0);
+                    });
+                }
+            });
+        });
+    }
+
 
     private static Button getSupportButton() {
-        return constructSideMenuButton("CONTACT US", FontImage.MATERIAL_EMAIL, evt -> {
+        return constructSideMenuButton("Contact us", FontImage.MATERIAL_EMAIL, evt -> {
             sendSupportEmail();
         });
     }
 
 
     private static Button getRegisterButton() {
-        return constructSideMenuButton("REGISTER", FontImage.MATERIAL_PERSON_ADD, evt -> {
+        return constructSideMenuButton("Register", FontImage.MATERIAL_PERSON_ADD, evt -> {
             new SingUpForm().show();
         });
     }
@@ -410,7 +425,7 @@ public class CommonCode {
 
 
     public static void sendSupportEmail() {
-        final String email = "info@your-domain.example.com";
+        final String email = "info@chargebro.com";
         String logText = "";
         try {
             byte[] read = Util.readInputStream(Storage.getInstance().createInputStream("CN1Log__$"));
@@ -421,7 +436,7 @@ public class CommonCode {
 
         final String userPhone = Preferences.get("phoneNumber", "not defined");
         final String appVersion = Display.getInstance().getProperty("AppVersion", "0.1");
-        final String content = "\n \n \n -------------- user info ------------------ \n" +
+        final String content = "\n \n \n -------------- user info (do not delete) ------------------ \n" +
                 "User: " + userPhone + "\n" +
                 "OS: " + Display.getInstance().getPlatformName() + "\n" +
                 "App version: " + appVersion + "\n" +

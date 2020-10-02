@@ -14,6 +14,7 @@ public class MessagePopUp extends Container {
     private static final int MESSAGE_CODE_PAYMENT_ERROR = 402;
     private static final int MESSAGE_CODE_UNAUTHORIZED = 401;
     private static final int MESSAGE_CODE_GENERAL_ERROR = 500;
+    private static final int MESSAGE_CODE_SERVICE_UNAVAILABLE_ERROR = 503;
     private String lastErrorTest;
 
     public MessagePopUp() {
@@ -22,7 +23,7 @@ public class MessagePopUp extends Container {
         topPlaceHolder.stripMarginAndPadding();
         topPlaceHolder.setSafeArea(true);
         topPlaceHolder.getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
-        topPlaceHolder.getAllStyles().setMarginTop(5);
+        topPlaceHolder.getAllStyles().setMarginTop(2);
         add(topPlaceHolder);
     }
 
@@ -45,17 +46,20 @@ public class MessagePopUp extends Container {
         Label errorMessageHeader = new Label("Error", "ErrorMessageHeader");
         if (type == MESSAGE_CODE_PAYMENT_ERROR) {
             errorMessageHeader.setText("Payment issue");
+        } else if (type == MESSAGE_CODE_GENERAL_ERROR) {
+            errorMessageHeader.setText("Unexpected error");
         }
         final Container errorMessageContainer = BoxLayout.encloseY(errorMessageHeader, errorMessageText);
         container.addAll(errorDotImage, errorMessageContainer);
         Container animatedContainer = BoxLayout.encloseY(container);
 
-        add(animatedContainer);
-        animatedContainer.revalidate();
-
         callSerially(() -> {
+            add(animatedContainer);
+//            errorMessageContainer.revalidate();
+            animatedContainer.revalidate();
+
             animatedContainer.setY(0);
-            animateLayout(500);
+            animateLayoutAndWait(500);
         });
 
         UITimer.timer(7000, false, getComponentForm(), () -> {
@@ -64,13 +68,13 @@ public class MessagePopUp extends Container {
                 animatedContainer.animateUnlayout(700, 50, () -> {
                     animatedContainer.remove();
                     lastErrorTest = null;
-                    animateLayout(100);
+                    animateLayoutAndWait(100);
                 });
             });
         });
     }
 
-    private void bindToComponent(Component parentComponent) {
+    public void bindToComponent(Component parentComponent) {
         Form f = parentComponent.getComponentForm();
         if (f != null && (f.getContentPane() == parentComponent || f == parentComponent)) {
             // special case for content pane installs the button directly on the content pane

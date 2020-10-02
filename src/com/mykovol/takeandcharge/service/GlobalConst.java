@@ -38,7 +38,9 @@ public final class GlobalConst {
     public static final String STATIONS_NEARBY_URL = STATIONS_URL + "/nearby";
     public static final String STATIONS_CAPACITY_URL = STATIONS_URL + "/{id}/capacity";
     public static final String SERVER_SOCKET_URL = "/socket/rent";
-
+    public static final String API_APP_VERSION = "/app/version";
+    public static final String POLICY_URL = "https://your-domain.example.com/policy";
+    public static final String PRICE_URL = "https://your-domain.example.com/pricing";
     private static final String API_AUTH = "/auth";
     public static final String API_LOGIN = API_AUTH + "/login";
     public static final String API_REGISTER_INIT = API_AUTH + "/register";
@@ -49,7 +51,4 @@ public final class GlobalConst {
         if (LOCAL) return "http://192.168.0.124:10381";
         else return "https://server.your-domain.example.com";
     }
-
-    public static final String POLICY_URL = "https://your-domain.example.com/policy";
-    public static final String PRICE_URL = "https://your-domain.example.com/pricing";
 }

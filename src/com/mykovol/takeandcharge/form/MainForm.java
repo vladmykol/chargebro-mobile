@@ -25,7 +25,6 @@ package com.mykovol.takeandcharge.form;
 
 
 import com.codename1.googlemaps.MapContainer;
-import com.codename1.io.Log;
 import com.codename1.io.Util;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
@@ -39,12 +38,14 @@ import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.util.Resources;
 import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
+import com.mykovol.takeandcharge.dataobj.BeforeRentInfo;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.component.DraggablePanel;
 import com.mykovol.takeandcharge.form.component.MessagePopUp;
 import com.mykovol.takeandcharge.form.component.ToolBox;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 
@@ -64,11 +65,11 @@ import static com.codename1.ui.plaf.Style.UNIT_TYPE_SCREEN_PERCENTAGE;
  */
 public class MainForm extends Form {
     private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RVpEYUpceVw+VSlDWzkjXWZ8bCJDSF5GRkZ4cm1DFVdE");
-    private static final Coord ukraineCoord = new Coord(50.480471, 30.412376);
+    private static final Coord kievCoord = new Coord(50.480471, 30.5238);
     private static MainForm instance;
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
     private final ToolBox toolBox = new ToolBox(mapContainer);
-    //    private final InfiniteProgress infiniteProgress = new InfiniteProgress();
+    //    private final InfiniteProgress infiniteProgress = new InfiniteProgress(draggablePanelScreenBlocker);
     private final ScanButton scanButton = new ScanButton("TakePowerBankButton");
     private final Button sheetInfoScreenBlocker = new Button();
     private final DraggablePanel draggablePanel;
@@ -76,7 +77,7 @@ public class MainForm extends Form {
     private final Image stationPointImage = Resources.getGlobalResources().getImage("map-point.png");
     private final Map<String, MapContainer.MapObject> mapMarkers = new HashMap<>();
     private final MessagePopUp messagePopUp = new MessagePopUp();
-    private Coord previousCoord = new Coord(ukraineCoord.getLatitude(), ukraineCoord.getLongitude());
+    private Coord previousCoord = new Coord(kievCoord.getLatitude(), kievCoord.getLongitude());
 
     private MainForm() {
         super(new LayeredLayout());
@@ -143,10 +144,13 @@ public class MainForm extends Form {
 
         add(BorderLayout.centerAbsolute(MainGifLoader.get()));
 
-        add(messagePopUp);
+//        add(messagePopUp);
+        messagePopUp.bindToComponent(this);
 
         CommonCode.constructSideMenu(getToolbar(), this);
         initMap();
+
+        UserService.checkVersion();
     }
 
     public static MainForm get() {
@@ -168,15 +172,16 @@ public class MainForm extends Form {
         toolBox.refreshState();
         UITimer.timer(3000, false, getComponentForm(), () -> {
             refreshRentContent();
-            refreshMarkersOnMap(ukraineCoord);
+            refreshMarkersOnMap(kievCoord);
         });
     }
 
     private void initMap() {
         addMapListenerToDrawStationsOnMap();
 
-        mapContainer.setCameraPosition(ukraineCoord);
-        mapContainer.zoom(ukraineCoord, mapContainer.getMinZoom() + 15);
+        mapContainer.setCameraPosition(kievCoord);
+        mapContainer.zoom(kievCoord, mapContainer.getMinZoom() + 17);
+        toolBox.showMeOnMapIfAllowed();
 
 //        UITimer.timer(3000, false, getComponentForm(), () -> {
 //            mapContainer.zoom(ukraineCoord, mapContainer.getMinZoom() + 15);
@@ -203,12 +208,12 @@ public class MainForm extends Form {
 
     public void removeAllRentRows() {
         callSerially(draggablePanel::removeAllRentRows);
+
     }
 
     public void showError(String text, int type) {
-        callSerially(() -> {
-            messagePopUp.showError(text, type);
-        });
+        MainGifLoader.get().stop();
+        messagePopUp.showError(text, type);
     }
 
     private void addMapListenerToDrawStationsOnMap() {
@@ -225,7 +230,7 @@ public class MainForm extends Form {
     }
 
     public void refreshMarkersOnMap() {
-        refreshMarkersOnMap(ukraineCoord);
+        refreshMarkersOnMap(kievCoord);
     }
 
     public void refreshMarkersOnMap(Coord position) {
@@ -233,7 +238,7 @@ public class MainForm extends Form {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                 if (errorCode != 404) {
-                    Log.p("cannot get station location update - " + errorCode + errorMessage);
+                    showError(errorMessage, errorCode);
                 }
             }
 
@@ -297,17 +302,18 @@ public class MainForm extends Form {
             if (MainGifLoader.get().isVisible()) return;
 
             if (UserService.isLoggedIn()) {
-                RentService.prepareForRent(new Callback<String>() {
+                RentService.prepareForRent(new Callback<BeforeRentInfo>() {
                     @Override
-                    public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                        showError(errorMessage, errorCode);
-//                    Dialog.show("Error", errorCode + " " + errorMessage, "Ok", null);
+                    public void onSucess(BeforeRentInfo value) {
+                        final RentConfirmation rentConfirmation = new RentConfirmation(value);
+                        rentConfirmation.show();
                     }
 
                     @Override
-                    public void onSucess(String powerBankId) {
-                        revalidate();
+                    public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                        showError(errorMessage, errorCode);
                     }
+
                 });
             } else {
                 new SingUpForm().show();

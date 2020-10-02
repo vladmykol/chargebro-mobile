@@ -33,10 +33,12 @@ import com.codename1.maps.Coord;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.util.Callback;
+import com.mykovol.takeandcharge.dataobj.BeforeRentInfo;
 import com.mykovol.takeandcharge.dataobj.ErrorResponse;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.LoginForm;
+import com.mykovol.takeandcharge.form.RentConfirmation;
 import com.mykovol.takeandcharge.tools.MainGifLoader;
 import org.littlemonkey.qrscanner.QRScanner;
 
@@ -51,7 +53,30 @@ import static com.mykovol.takeandcharge.service.GlobalConst.*;
  */
 public class RentService {
 
-    private static void sendRentRequest(String stationId, final Callback<String> callback) {
+    private static void getBeforeRentInfo(String stationId, final Callback<BeforeRentInfo> callback) {
+        MainGifLoader.get().start();
+        Rest.get(GlobalConst.getServerUrl() + RENT_URL)
+                .bearer(UserService.getToken())
+                .queryParam("stationId", stationId)
+                .acceptJson()
+                .timeout(60000)
+                .onErrorCode(errorData -> {
+                    MainGifLoader.get().stop();
+                    // TODO: 5/27/2020 move to general error handler
+                    if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
+                        new LoginForm().show();
+                        return;
+                    }
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsProperties(resp -> {
+                    MainGifLoader.get().stop();
+                    callback.onSucess((BeforeRentInfo) resp.getResponseData());
+                }, BeforeRentInfo.class);
+    }
+
+    public static void sendRentRequest(String stationId, final Callback<String> callback) {
         MainGifLoader.get().start();
         Rest.post(GlobalConst.getServerUrl() + RENT_URL)
                 .bearer(UserService.getToken())
@@ -69,7 +94,6 @@ public class RentService {
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsString(resp -> {
-                    MainGifLoader.get().stop();
                     callback.onSucess(resp.getResponseData());
                 });
     }
@@ -122,12 +146,11 @@ public class RentService {
                 });
     }
 
-    public static void prepareForRent(final Callback<String> callback) {
+    public static void prepareForRent(final Callback<BeforeRentInfo> callback) {
         if (!UserService.isLoggedIn()) {
             new LoginForm().show();
             return;
         }
-
 
         if (CodeScanner.getInstance() == null) {
             ToastBar.showErrorMessage("CodeScanner is not supported on this platform");
@@ -140,7 +163,7 @@ public class RentService {
 
             if (isUserAgreeToGiveCameraAccess) {
                 if (Display.getInstance().isSimulator()) {
-                    sendRentRequest("STWA312001000005", callback);
+                    getBeforeRentInfo("STWA312001000005", callback);
                     Preferences.set("isUserNotifiedAboutCameraUse", true);
                 } else {
                     // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option
@@ -151,7 +174,7 @@ public class RentService {
                         public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
                             Preferences.set("isUserNotifiedAboutCameraUse", true);
                             String stationId = contents.substring(contents.indexOf("id=") + 3);
-                            sendRentRequest(stationId, callback);
+                            getBeforeRentInfo(stationId, callback);
                         }
 
                         @Override

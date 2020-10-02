@@ -120,7 +120,7 @@ public class RegisterForm extends Form {
                         @Override
                         public void onSucess(String checkoutUrl) {
                             InfinityProgressBlocking.stop();
-                            new BrowserPopUp(checkoutUrl, "take-and-charge", "Add credit card", MainForm.get()).show();
+                            new BrowserPopUp(checkoutUrl, "chargebro.com", "Add credit card", MainForm.get()).show();
                         }
                     });
                 }
