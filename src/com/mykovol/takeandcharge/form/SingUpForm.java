@@ -42,7 +42,7 @@ import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
 /**
  * The Login form
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class SingUpForm extends Form {
 

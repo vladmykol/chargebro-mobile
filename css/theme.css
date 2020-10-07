@@ -81,12 +81,15 @@ TextHint {
 }
 
 Title {
-    cn1-derive: LoginHeader;
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 3.5mm;
 }
 
 TitleCommand {
     padding: 1.2mm;
-    margin: 2.5mm 0mm 0mm 0mm;
+    margin: 1.5mm 0mm 0mm 0mm;
     color: #555454;
     background: white;
     border-radius: 3.4mm;
@@ -289,7 +292,7 @@ ToolBoxButton {
     padding: 1.4mm 0mm;
     font-size: 3.5mm;
     color: #616161;
-    text-align: center;
+    text-align: left;
 }
 
 ToolBoxButton.pressed {
@@ -372,8 +375,10 @@ RentBorder {
 
 RentBorderError{
     cn1-derive:RentBorder;
-    box-shadow: 0mm 0.2mm 1mm 0mm #e81515;
+    box-shadow: 0mm 0.2mm 1mm 0mm #f53333;
 }
+
+
 
 RentBorderHeader {
     font-family: var(--font-ProximaNova-Regular);
@@ -399,6 +404,16 @@ RentBorderText {
     padding: 0.7mm 2mm 0mm 2mm;
 }
 
+RentBorderErrorHeader{
+    cn1-derive: RentBorderSubHeader;
+    padding: 0.7mm 0.5mm;
+}
+
+RentBorderErrorText{
+    cn1-derive: RentBorderText;
+    color: indianred;
+    padding: 0.5mm 0.2mm;
+}
 
 DraggableIcon {
     padding: 1mm 0mm 0.5mm 0mm;
@@ -429,18 +444,18 @@ AvatarImage {
 }
 
 AvatarButton {
-    margin: 3mm 2mm 0mm 7mm;
+    margin: 7mm 2mm 0mm 5mm;
 }
 
 AvatarPen {
-    margin: 3.5mm 2mm 0mm 17.5mm;
+    margin: 7.5mm 2mm 0mm 15.5mm;
     padding: 0mm;
 }
 
 AvatarText {
     font-family: var(--font-ProximaNova-Bold);
     color: white;
-    padding: 1.5mm 1mm 0mm 7mm;
+    padding: 1.5mm 1mm 0mm 5mm;
     text-align: left;
     font-size: 3.5mm;
 }
@@ -460,10 +475,10 @@ SideMenuButton {
     margin: 1mm;
     border: none;
     /*text-shadow: none;*/
-    font-family: var(--font-ProximaNova-Semibold);
+    font-family: var(--font-ProximaNova-Regular);
     /*font-family: "native:MainLight";*/
     border-radius: 2mm;
-    font-size: 2.5mm;
+    font-size: 2.7mm;
 }
 
 /*SideMenuButton.pressed {*/
@@ -499,6 +514,15 @@ LoadImage {
     /*font-family: "native:MainRegular";*/
     /*font-size: 2.2mm;*/
     /*padding: 0mm 15mm;*/
+    /*text-align: center;*/
+}
+
+LoadImageText {
+    font-family: var(--font-ProximaNova-Light);
+    font-size: 3mm;
+    color: black;
+    margin: 0mm;
+    padding: 0mm;
 }
 
 /*====================== Stations sheet ==========================*/
@@ -678,6 +702,11 @@ RentConfirmationText{
     font-family: var(--font-ProximaNova-Regular);
     font-size: 2.5mm;
     color: #424347;
+}
+
+RentConfirmationTextBonus {
+    cn1-derive: RentConfirmationText;
+    color: #3FB771;
 }
 
 RentConfirmationHint{

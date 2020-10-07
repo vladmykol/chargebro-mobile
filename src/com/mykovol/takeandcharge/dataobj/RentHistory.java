@@ -23,21 +23,31 @@
 
 package com.mykovol.takeandcharge.dataobj;
 
-import com.codename1.properties.LongProperty;
-import com.codename1.properties.Property;
-import com.codename1.properties.PropertyBusinessObject;
-import com.codename1.properties.PropertyIndex;
+import com.codename1.properties.*;
 
 /**
- * Property object representing a user
+ * Property object representing a rent
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class RentHistory implements PropertyBusinessObject {
     public final Property<String, RentHistory> powerBankId = new Property<>("powerBankId");
     public final LongProperty<RentHistory> rentPeriodMs = new LongProperty<>("rentPeriodMs");
+    public final IntProperty<RentHistory> isReturned = new IntProperty<>("isReturned");
+    public final IntProperty<RentHistory> errorCode = new IntProperty<>("errorCode");
+    public final Property<String, RentHistory> errorMessage = new Property<>("errorMessage");
 
-    private final PropertyIndex idx = new PropertyIndex(this, "RentHistory", powerBankId, rentPeriodMs);
+    private final PropertyIndex idx = new PropertyIndex(this, "RentHistory", powerBankId,
+            rentPeriodMs, isReturned, errorCode, errorMessage);
+
+    public static RentHistory buildStartingRent(String powerBankId) {
+        final RentHistory rentHistory = new RentHistory();
+        rentHistory.powerBankId.set(powerBankId);
+        rentHistory.rentPeriodMs.set(0L);
+        rentHistory.isReturned.set(0);
+        rentHistory.errorCode.set(0);
+        return rentHistory;
+    }
 
     @Override
     public PropertyIndex getPropertyIndex() {

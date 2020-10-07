@@ -21,30 +21,35 @@
  * need additional information or have any questions.
  */
 
-package com.mykovol.takeandcharge.dataobj;
+package com.mykovol.takeandcharge.form;
 
-import com.codename1.properties.*;
+import com.codename1.ui.BrowserComponent;
+import com.codename1.ui.Command;
+import com.codename1.ui.Form;
+import com.codename1.ui.Toolbar;
+import com.codename1.ui.layouts.BorderLayout;
+import com.mykovol.takeandcharge.tools.CommonCode;
+
+import static com.codename1.ui.CN.callSerially;
 
 /**
- * Property object representing a user
+ * For features in implementation
  *
  * @author Vlad Mykol
  */
-public class StationInfo implements PropertyBusinessObject {
-    public final Property<String, StationInfo> id = new Property<>("id");
-    public final DoubleProperty<StationInfo> locationX = new DoubleProperty<>("locationX");
-    public final DoubleProperty<StationInfo> locationY = new DoubleProperty<>("locationY");
-    public final IntProperty<StationInfo> maxCapacity = new IntProperty<>("maxCapacity");
-    public final Property<String, StationInfo> placeName = new Property<>("placeName");
-    public final Property<String, StationInfo> address = new Property<>("address");
-    public final Property<String, StationInfo> mapUrl = new Property<>("mapUrl");
+public class ComingSoonForm extends Form {
 
-    private final PropertyIndex idx = new PropertyIndex(this, "StationInfo", id, locationX,
-            locationY, maxCapacity, placeName, address, mapUrl);
+    public ComingSoonForm(String title, Form previousForm) {
+        super(new BorderLayout());
+//        CommonCode.removeTransitionsTemporarily(previous);
+        setToolbar(new Toolbar(false));
+        getToolbar().setTitle(title);
 
-    @Override
-    public PropertyIndex getPropertyIndex() {
-        return idx;
+        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(previousForm);
+        getToolbar().addCommandToRightBar(closeToPrevFormCommand);
+
+
+
     }
 
 }

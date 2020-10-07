@@ -31,15 +31,14 @@ import com.codename1.properties.PropertyIndex;
 /**
  * Property object representing a user
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class BeforeRentInfo implements PropertyBusinessObject {
     public final Property<String, BeforeRentInfo> stationId = new Property<>("stationId");
-    public final IntProperty<BeforeRentInfo> holdAmount = new IntProperty<>("holdAmount");
-    public final IntProperty<BeforeRentInfo> bonusAmount = new IntProperty<>("bonusAmount");
-    public final IntProperty<BeforeRentInfo> powerLevel = new IntProperty<>("powerLevel");
+    public final Property<String, BeforeRentInfo> holdAmount = new Property<>("holdAmount");
+    public final Property<String, BeforeRentInfo> bonusAmount = new Property<>("bonusAmount");
 
-    private final PropertyIndex idx = new PropertyIndex(this, "BeforeRentInfo", stationId, holdAmount, bonusAmount, powerLevel);
+    private final PropertyIndex idx = new PropertyIndex(this, "BeforeRentInfo", stationId, holdAmount, bonusAmount);
 
     @Override
     public PropertyIndex getPropertyIndex() {

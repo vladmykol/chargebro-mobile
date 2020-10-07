@@ -42,10 +42,7 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
-import com.mykovol.takeandcharge.form.BrowserPopUp;
-import com.mykovol.takeandcharge.form.LoginForm;
-import com.mykovol.takeandcharge.form.MainForm;
-import com.mykovol.takeandcharge.form.SingUpForm;
+import com.mykovol.takeandcharge.form.*;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
@@ -62,7 +59,7 @@ import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class CommonCode {
     private final static ScaleImageLabel waveMask = new ScaleImageLabel(Resources.getGlobalResources().getImage("wave.png"));
@@ -72,14 +69,17 @@ public class CommonCode {
     private final static Label avatarText = new Label("", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
+    private final static Button signOutButton = getSignOutButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
     private final static Button registerButton = getRegisterButton();
+    private final static Button historyButton = getHistoryButton();
+    private final static Button promoCodeButton = getPromoCodeButton();
     private final static Button creditCardButton = getCreditCards();
     private final static Button PayForPbButton = getPayForPbButton();
     private final static Button priceButton = getPriceButton();
     private final static Button supportButton = getSupportButton();
-    private final static Button signOutButton = getSignOutButton();
+    private final static Button settingsButton = getSettingsButton();
 
     public static void refreshUserInfo() {
         if (UserService.isLoggedIn()) {
@@ -155,7 +155,6 @@ public class CommonCode {
             waveMask.setBackgroundType(BACKGROUND_IMAGE_SCALED);
         }
 
-
         int size = convertToPixels(4);
         Image penImage = Resources.getGlobalResources().getImage("avatarPen.png").fill(size, size);
         Label avatarPenImage = new Label(penImage, "AvatarPen");
@@ -163,8 +162,11 @@ public class CommonCode {
         Label spaceHolder = new Label();
         spaceHolder.setShowEvenIfBlank(true);
         spaceHolder.getAllStyles().setMarginBottom(100);
-        Container avatarContainer = BoxLayout.encloseY(LayeredLayout.encloseIn(avatarButton, FlowLayout.encloseIn(avatarPenImage)),
+
+        final Container avatarAndPen = LayeredLayout.encloseIn(avatarButton, FlowLayout.encloseIn(avatarPenImage));
+        Container avatarContainer = BoxLayout.encloseY(avatarAndPen,
                 avatarText, avatarSubText, spaceHolder);
+        avatarContainer.setSafeAreaRoot(false);
         avatarContainer.setSafeArea(true);
 
 
@@ -174,22 +176,25 @@ public class CommonCode {
         tb.addComponentToSideMenu(menuTopPartHolder);
 
         menuTopPartHolder.getParent().setTensileDragEnabled(false);
-        if (Display.getInstance().getDeviceDensity() >= Display.DENSITY_HD) {
-            menuTopPartHolder.getParent().setScrollableY(false);
-        }
+//        if (Display.getInstance().getDeviceDensity() >= Display.DENSITY_HD) {
+//            menuTopPartHolder.getParent().setScrollableY(false);
+//        }
 
         Container menuItemsContainer = BorderLayout.west(BoxLayout.encloseY(
                 loginButton,
                 registerButton,
+                historyButton,
                 creditCardButton,
                 priceButton,
-                supportButton
+                promoCodeButton,
+                supportButton,
+                settingsButton
         ));
+
         tb.addComponentToSideMenu(menuItemsContainer);
         menuItemsContainer.setScrollableY(true);
         menuItemsContainer.setTensileDragEnabled(true);
         menuItemsContainer.setScrollVisible(false);
-
 
         Container bottomContainer = BorderLayout.centerAbsolute(signOutButton);
         bottomContainer.setUIID("SideNavigationPanel");
@@ -280,15 +285,15 @@ public class CommonCode {
             loginButton.setHidden(true);
             registerButton.setHidden(true);
 
+            historyButton.setHidden(false);
             creditCardButton.setHidden(false);
-            supportButton.setHidden(false);
             signOutButton.setHidden(false);
         } else {
             loginButton.setHidden(false);
             registerButton.setHidden(false);
 
+            historyButton.setHidden(true);
             creditCardButton.setHidden(true);
-            supportButton.setHidden(true);
             signOutButton.setHidden(true);
         }
     }
@@ -346,24 +351,20 @@ public class CommonCode {
 //    }
 
     private static Button getCreditCards() {
-        return constructSideMenuButton("Add card", FontImage.MATERIAL_CREDIT_CARD, e -> {
-            MainGifLoader.get().start();
-            RentService.prepareCheckout(new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainGifLoader.get().stop();
-                    MainForm.get().showError(errorMessage, errorCode);
-                }
+        return constructSideMenuButton("Wallet", FontImage.MATERIAL_CREDIT_CARD, e -> {
+            new NotImplementedScreen("Credit cards", MainForm.get()).show();
+        });
+    }
 
-                @Override
-                public void onSucess(String checkoutUrl) {
-                    MainGifLoader.get().stop();
-                    BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "chargebro", "Add credit card", MainForm.get());
-                    addMoney.setTransitionInAnimator(CommonTransitions.createFade(300));
-                    addMoney.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-                    addMoney.show();
-                }
-            });
+    private static Button getHistoryButton() {
+        return constructSideMenuButton("History", FontImage.MATERIAL_HISTORY, e -> {
+            new NotImplementedScreen("Rent history", MainForm.get()).show();
+        });
+    }
+
+    private static Button getPromoCodeButton() {
+        return constructSideMenuButton("Promocode", FontImage.MATERIAL_LOCAL_OFFER, e -> {
+            new NotImplementedScreen("Promocode", MainForm.get()).show();
         });
     }
 
@@ -373,7 +374,6 @@ public class CommonCode {
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainGifLoader.get().stop();
                     MainForm.get().showError(errorMessage, errorCode);
                 }
 
@@ -408,6 +408,12 @@ public class CommonCode {
             UserService.logout();
         });
         return sideMenuButton;
+    }
+
+    private static Button getSettingsButton() {
+        return constructSideMenuButton("Settings", FontImage.MATERIAL_SETTINGS, evt -> {
+            new SettingsForm().show();
+        });
     }
 
     private static Button constructSideMenuButton(String name, char materialIcon, final ActionListener<?> evt) {
@@ -451,7 +457,6 @@ public class CommonCode {
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", menuImageSize);
         return Command.create("", mat, e -> {
 
-            destForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
             Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
             if (currEditing != null) {
                 currEditing.stopEditing(() -> destForm.show());

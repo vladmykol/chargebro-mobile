@@ -29,12 +29,14 @@ import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.BeforeRentInfo;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.tools.RentFullScreenLoader;
 
 import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 
@@ -44,10 +46,17 @@ import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 public class RentConfirmation extends Form {
 
     public RentConfirmation(BeforeRentInfo beforeRentInfo) {
-        super(new BorderLayout());
+        super(new LayeredLayout());
+        WebSocketClient.get().disconnect();
+        WebSocketClient.get();
+
+        final Container mainContent = new Container(new BorderLayout());
+
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(true));
         setTransitionOutAnimator(CommonTransitions.createEmpty());
+        setTransitionInAnimator(CommonTransitions.createEmpty());
+//        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
 //        getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
@@ -63,8 +72,8 @@ public class RentConfirmation extends Form {
         SpanLabel headerTextLabel = new SpanLabel("You are about to rent a powerbank", "RentConfirmationHeader");
         headerTextLabel.setEnabled(false);
 
-        Label depositAmountLabel = new Label(String.valueOf(beforeRentInfo.holdAmount.getInt()), "RentConfirmationText");
-        Label bonusAmountLabel = new Label(String.valueOf(beforeRentInfo.bonusAmount.getInt()), "RentConfirmationText");
+        Label depositAmountLabel = new Label(beforeRentInfo.holdAmount.get(), "RentConfirmationText");
+        Label bonusAmountLabel = new Label(beforeRentInfo.bonusAmount.get(), "RentConfirmationTextBonus");
 
         final Label panelDelimiterLabel = new Label("", "RentConfirmationDelimiter");
         panelDelimiterLabel.setShowEvenIfBlank(true);
@@ -74,13 +83,13 @@ public class RentConfirmation extends Form {
         final Container summaryAmountHolder = BoxLayout.encloseY(
                 panelDelimiterLabel,
                 BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(depositAmountLabel), new Label("Deposit", "RentConfirmationText")),
-                BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(bonusAmountLabel), new Label("Bonus to be used", "RentConfirmationText")),
+                BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(bonusAmountLabel), new Label("Bonus to be used", "RentConfirmationTextBonus")),
                 panelDelimiterLabel2
         );
 
         Label amountHintLabel = new Label("We will hold", "RentConfirmationHint");
         Label amountHintLabel1 = new Label(" ", "RentConfirmationHint");
-        Label amountHintLabel2 = new Label(String.valueOf(beforeRentInfo.holdAmount.getInt()), "RentConfirmationHint");
+        Label amountHintLabel2 = new Label(String.valueOf(beforeRentInfo.holdAmount.get()), "RentConfirmationHint");
         Label amountHintLabel3 = new Label(" ", "RentConfirmationHint");
         Label amountHintLabel4 = new Label("UAH wich will be", "RentConfirmationHint");
         Label amountHintLabel5 = new Label(" ", "RentConfirmationHint");
@@ -94,7 +103,7 @@ public class RentConfirmation extends Form {
                 headerTextLabel,
                 spaceLabel,
                 summaryAmountHolder,
-                FlowLayout.encloseCenter(amountHintLabel,
+                FlowLayout.encloseCenterMiddle(amountHintLabel,
                         amountHintLabel1,
                         amountHintLabel2,
                         amountHintLabel3,
@@ -109,14 +118,16 @@ public class RentConfirmation extends Form {
         centerHolder.setScrollableY(true);
         centerHolder.setScrollVisible(false);
         centerHolder.setTensileDragEnabled(false);
-        add(BorderLayout.CENTER, centerHolder);
+        mainContent.add(BorderLayout.CENTER, centerHolder);
 
         final Label priceHintLabel1 = new Label("Once you return a powerbank", "RentConfirmationHint");
         final Label priceHintLabel2 = new Label(" ", "RentConfirmationHint");
-        final Label priceHintLabel3 = new Label("you will be", "RentConfirmationHint");
+        final Label priceHintLabel3 = new Label("additional charge", "RentConfirmationHint");
         final Label priceHintLabel4 = new Label(" ", "RentConfirmationHint");
-        final Label priceHintLabel5 = new Label("charged according to", "RentConfirmationHint");
+        final Label priceHintLabel5 = new Label("may be applied", "RentConfirmationHint");
         final Label priceHintLabel6 = new Label(" ", "RentConfirmationHint");
+        final Label priceHintLabel7 = new Label("according to", "RentConfirmationHint");
+        final Label priceHintLabel8 = new Label(" ", "RentConfirmationHint");
         final Button priceHintLinkButton = new Button("rent price", "RentConfirmationLink");
         final BrowserPopUp priceForm = new BrowserPopUp(PRICE_URL, null, "Price", this);
         priceForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
@@ -130,10 +141,20 @@ public class RentConfirmation extends Form {
 
         Button cancelButton = new Button("Cancel", "RentConfirmationCancel");
         cancelButton.addActionListener(evt -> {
+            priceForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
             MainForm.get().show();
         });
 
+//        addShowListener(evt -> {
+//            EasyThread et = EasyThread.start("imageBluer");
+//            et.run(() -> {
+//                RentGifLoader.get().setBackgroundForm(this);
+//            });
+//        });
+
         unlockPowerBankButton.addActionListener(evt -> {
+            RentFullScreenLoader.get().setBackgroundForm(this);
+            RentFullScreenLoader.get().start();
             RentService.sendRentRequest(beforeRentInfo.stationId.get(), new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -142,26 +163,27 @@ public class RentConfirmation extends Form {
 
                 @Override
                 public void onSucess(String value) {
-                    WebSocketClient.get().connect();
-                    MainForm.get().revalidate();
-//                    wait for async response for webSocke client
                 }
             });
-            MainForm.get().show();
         });
 
         final Container bottomHolder = BoxLayout.encloseY(
-                FlowLayout.encloseCenter(priceHintLabel1,
+                FlowLayout.encloseCenterMiddle(priceHintLabel1,
                         priceHintLabel2,
                         priceHintLabel3,
                         priceHintLabel4,
                         priceHintLabel5,
                         priceHintLabel6,
+                        priceHintLabel7,
+                        priceHintLabel8,
                         priceHintLinkButton),
                 unlockPowerBankButton,
                 cancelButton
         );
         bottomHolder.setScrollableY(false);
-        add(BorderLayout.SOUTH, bottomHolder);
+
+        mainContent.add(BorderLayout.SOUTH, bottomHolder);
+
+        add(mainContent);
     }
 }

@@ -26,7 +26,7 @@ package com.mykovol.takeandcharge.service;
 /**
  * Global settings used in the application
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public final class GlobalConst {
     public static final boolean LOCAL = true;

@@ -4,6 +4,7 @@ import com.codename1.ui.Component;
 import com.codename1.ui.Container;
 import com.codename1.ui.Label;
 import com.codename1.ui.layouts.BoxLayout;
+import com.mykovol.takeandcharge.dataobj.RentHistory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +32,8 @@ public class RentContent extends Container {
         return rentTitle.getText();
     }
 
-    public RentBoard addRow(String serialNumber, long elapsedTime) {
-        RentBoard rentBoard = new RentBoard(serialNumber, elapsedTime);
+    public RentBoard addRow(RentHistory rentHistory) {
+        RentBoard rentBoard = new RentBoard(rentHistory);
         rentDetails.addComponent(0, rentBoard);
         return rentBoard;
     }

@@ -23,27 +23,35 @@
 
 package com.mykovol.takeandcharge.tools;
 
-import com.codename1.components.ScaleImageLabel;
 import com.codename1.gif.GifImage;
+import com.codename1.ui.Container;
 import com.codename1.ui.Display;
 import com.codename1.ui.Image;
+import com.codename1.ui.Label;
+import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.util.Resources;
+import com.codename1.ui.util.UITimer;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import static com.codename1.ui.CN.callSerially;
+import static com.codename1.ui.CN.getDisplayWidth;
 
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
-public class MainGifLoader extends ScaleImageLabel {
+public class MainGifLoader extends Container {
     private static MainGifLoader instance;
+    private static Label image;
 
     private MainGifLoader(Image i) {
-        super(i);
+        super(BorderLayout.absolute());
+        image = new Label(i);
+        add(BorderLayout.CENTER, image);
     }
 
     public static MainGifLoader get() {
@@ -64,13 +72,14 @@ public class MainGifLoader extends ScaleImageLabel {
     public void start() {
         callSerially(() -> {
             setVisible(true);
+            revalidate();
         });
     }
 
     public void stop() {
         callSerially(() -> {
             setVisible(false);
+            revalidate();
         });
     }
-
 }

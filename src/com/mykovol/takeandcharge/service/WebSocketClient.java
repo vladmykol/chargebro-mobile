@@ -35,7 +35,7 @@ import static com.mykovol.takeandcharge.service.GlobalConst.SERVER_SOCKET_URL;
 /**
  * Connects to the server and updates every time we move using the websocket API
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class WebSocketClient extends WebSocket {
     private static final short MESSAGE_TYPE_AUTH = 1;
@@ -56,16 +56,10 @@ public class WebSocketClient extends WebSocket {
     public static WebSocketClient get() {
         if (instance == null) {
             instance = new WebSocketClient();
+            instance.autoReconnect(1000);
+            instance.connect();
         }
         return instance;
-    }
-
-    @Override
-    public void connect() {
-        if (UserService.isLoggedIn()) {
-            autoReconnect(10000);
-            super.connect();
-        }
     }
 
     public void disconnect() {
@@ -147,7 +141,8 @@ public class WebSocketClient extends WebSocket {
     }
 
     private void takePowerBankAction(String serialNumber) {
-        MainForm.get().addRentRow(serialNumber);
+        MainForm.get().showIfNotVisible();
+        MainForm.get().refreshRentContent();
     }
 
     private void authAction(short messageCode, String responseMessage) {

@@ -19,7 +19,7 @@ import static com.codename1.ui.plaf.Style.UNIT_TYPE_SCREEN_PERCENTAGE;
 /**
  * A swipe tutorial for the application
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class WalkthruForm extends Form {
     private final Button skipButton = new Button("Get Started", "WalkthrSkipButton");

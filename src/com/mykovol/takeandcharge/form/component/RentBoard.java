@@ -1,27 +1,31 @@
 package com.mykovol.takeandcharge.form.component;
 
+import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Style;
+import com.mykovol.takeandcharge.dataobj.RentHistory;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.util.Resources.getGlobalResources;
-import static com.mykovol.takeandcharge.service.StyleConst.*;
+import static com.mykovol.takeandcharge.service.StyleConst.RENT_BORDER_SUB_HEADER;
+import static com.mykovol.takeandcharge.service.StyleConst.RENT_BORDER_TEXT;
 
 public class RentBoard extends Container {
     private final TimeLabel rentTime;
+    private final Container errorMessageContainer;
+    private final SpanLabel errorMessageText = new SpanLabel("", "RentBorderErrorText");
     private long startTime;
     private long lastRenderedTime = 0;
 
-    public RentBoard(String name, long elapsedTime) {
+    public RentBoard(RentHistory rentHistory) {
         super(BorderLayout.center());
-        setUIID(RENT_BORDER);
+        final String name = rentHistory.powerBankId.get();
         setName(name);
-        startTime = System.currentTimeMillis() - elapsedTime;
         rentTime = new TimeLabel(RENT_BORDER_TEXT);
         Container timeContainer = BoxLayout.encloseY(new Label("Time", RENT_BORDER_SUB_HEADER),
                 rentTime);
-        updateTimer();
         final String shortName = "STW-" + name.substring(name.length() - 4);
         Container serialNumberContainer = BoxLayout.encloseY(new Label("Serial number", RENT_BORDER_SUB_HEADER),
                 new Label(shortName, RENT_BORDER_TEXT));
@@ -33,13 +37,40 @@ public class RentBoard extends Container {
         FontImage.setIcon(button, FontImage.MATERIAL_ARROW_DROP_DOWN, 4);
 
         add(BorderLayout.NORTH, mainInfo);
+
+        final Label panelDelimiterLabel = new Label("", "RentConfirmationDelimiter");
+        panelDelimiterLabel.setShowEvenIfBlank(true);
+
+        errorMessageText.setEnabled(false);
+        Label errorMessageHeader = new Label("Error", "RentBorderErrorHeader");
+        errorMessageContainer = BoxLayout.encloseY(panelDelimiterLabel, errorMessageHeader, errorMessageText);
+        errorMessageContainer.getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
+        errorMessageContainer.getAllStyles().setMargin(0, 2, 2f, 2f);
+        setUpdatableRentInfo(rentHistory);
+
+        add(BorderLayout.SOUTH, errorMessageContainer);
     }
 
-    public void updateExisting(long timeElapsed) {
+    public void updateExisting(RentHistory rentHistory) {
         callSerially(() -> {
-            startTime = System.currentTimeMillis() - timeElapsed;
-            updateTimer();
+            setUpdatableRentInfo(rentHistory);
         });
+    }
+
+    public void setUpdatableRentInfo(RentHistory rentHistory) {
+        if (rentHistory.errorCode.get() > 0) {
+            setUIID("RentBorderError");
+            errorMessageText.setText(rentHistory.errorMessage.get());
+            if (getParent() != null) {
+                getParent().revalidate();
+            }
+        } else {
+            errorMessageContainer.setHidden(true);
+            setUIID("RentBorder");
+        }
+
+        startTime = System.currentTimeMillis() - rentHistory.rentPeriodMs.getLong();
+        updateTimer();
     }
 
     @Override

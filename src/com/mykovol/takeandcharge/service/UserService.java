@@ -53,9 +53,10 @@ import static com.mykovol.takeandcharge.service.GlobalConst.*;
 /**
  * A generic service class that handles login/creation etc.
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class UserService {
+    private static final String TOKEN_PROP_NAME = "token1";
     private static User me = new User();
 
     public static User getUser() {
@@ -64,11 +65,11 @@ public class UserService {
     }
 
     public static String getToken() {
-        return Preferences.get("token", null);
+        return Preferences.get(TOKEN_PROP_NAME, null);
     }
 
     private static void setToken(String token) {
-        Preferences.set("token", token);
+        Preferences.set(TOKEN_PROP_NAME, token);
     }
 
     public static void loadUser() {
@@ -79,7 +80,7 @@ public class UserService {
     }
 
     public static void logout() {
-        Preferences.set("token", null);
+        Preferences.set(TOKEN_PROP_NAME, null);
 
         callSerially(() -> {
             CommonCode.refreshMenuItems();
@@ -174,9 +175,9 @@ public class UserService {
     }
 
     public static void fetchAvatar(long id, SuccessCallback<Image> callback) {
-        ConnectionRequest cr = new ConnectionRequest(GlobalConst.getServerUrl() + "/user/avatar/" + id, false);
-        cr.setFailSilently(true);
-        cr.downloadImageToStorage("avatarImage-" + id, callback);
+//        ConnectionRequest cr = new ConnectionRequest(GlobalConst.getServerUrl() + "/user/avatar/" + id, false);
+//        cr.setFailSilently(true);
+//        cr.downloadImageToStorage("avatarImage-" + id, callback);
     }
 
 

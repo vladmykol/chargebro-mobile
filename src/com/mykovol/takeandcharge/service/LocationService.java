@@ -33,7 +33,7 @@ import com.codename1.ui.Dialog;
 /**
  * A generic service class that handles login/creation etc.
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class LocationService {
     private final LocationManager lm = LocationManager.getLocationManager();

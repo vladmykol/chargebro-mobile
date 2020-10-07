@@ -28,7 +28,7 @@ import com.codename1.properties.*;
 /**
  * Property object representing a user
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class UserLogin implements PropertyBusinessObject {
       public final Property<String, UserLogin> username = new Property<>("username");

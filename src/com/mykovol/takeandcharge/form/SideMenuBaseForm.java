@@ -27,7 +27,7 @@ import com.codename1.ui.util.Resources;
 /**
  * Common code that can setup the side menu
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public abstract class SideMenuBaseForm extends Form {
 

@@ -37,7 +37,7 @@ import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 /**
  * The Login form
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class LoginForm extends Form {
 

@@ -27,6 +27,7 @@ import com.codename1.ui.BrowserComponent;
 import com.codename1.ui.Command;
 import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
+import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.mykovol.takeandcharge.tools.CommonCode;
 
@@ -44,6 +45,7 @@ public class BrowserPopUp extends Form {
 //        CommonCode.removeTransitionsTemporarily(previous);
         setToolbar(new Toolbar(false));
         getToolbar().setTitle(title);
+        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
 
         final Command closeToPrevFormCommand = CommonCode.getCloseCommand(previousForm);
         getToolbar().addCommandToRightBar(closeToPrevFormCommand);

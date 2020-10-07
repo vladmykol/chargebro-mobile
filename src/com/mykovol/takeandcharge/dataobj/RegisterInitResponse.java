@@ -31,7 +31,7 @@ import com.codename1.properties.PropertyIndex;
 /**
  * Property object representing a user
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class RegisterInitResponse implements PropertyBusinessObject {
     public final IntProperty<RegisterInitResponse> validForMin = new IntProperty<>("validForMin");

@@ -2,6 +2,7 @@ package com.mykovol.takeandcharge;
 
 import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
+import com.codename1.io.Preferences;
 import com.codename1.l10n.L10NManager;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
@@ -57,7 +58,8 @@ public class TakeAndChargeMain {
         Display.getInstance().setEnableAsyncStackTraces(true);
 
         // Pro only feature
-        Log.bindCrashProtection(false);
+//        Log.bindCrashProtection(false);
+
         loadLocalization();
 
         addNetworkErrorListener(err -> {
@@ -94,7 +96,14 @@ public class TakeAndChargeMain {
     }
 
     private void loadLocalization() {
-        String local = L10NManager.getInstance().getLanguage();
+        final String userLang = Preferences.get("userLang", null);
+        String local;
+        if (userLang != null) {
+            local = userLang;
+        } else {
+            local = L10NManager.getInstance().getLanguage();
+        }
+
 //        String local = "ru";
         Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local.toLowerCase());
         UIManager.getInstance().setBundle(localizationBundle);

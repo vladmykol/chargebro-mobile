@@ -49,19 +49,17 @@ import static com.mykovol.takeandcharge.service.GlobalConst.*;
 /**
  * A generic service class that handles login/creation etc.
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class RentService {
 
     private static void getBeforeRentInfo(String stationId, final Callback<BeforeRentInfo> callback) {
-        MainGifLoader.get().start();
         Rest.get(GlobalConst.getServerUrl() + RENT_URL)
                 .bearer(UserService.getToken())
                 .queryParam("stationId", stationId)
                 .acceptJson()
                 .timeout(60000)
                 .onErrorCode(errorData -> {
-                    MainGifLoader.get().stop();
                     // TODO: 5/27/2020 move to general error handler
                     if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
                         new LoginForm().show();
@@ -71,22 +69,20 @@ public class RentService {
                     callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsProperties(resp -> {
-                    MainGifLoader.get().stop();
                     callback.onSucess((BeforeRentInfo) resp.getResponseData());
                 }, BeforeRentInfo.class);
     }
 
     public static void sendRentRequest(String stationId, final Callback<String> callback) {
-        MainGifLoader.get().start();
         Rest.post(GlobalConst.getServerUrl() + RENT_URL)
                 .bearer(UserService.getToken())
                 .queryParam("stationId", stationId)
                 .acceptJson()
                 .timeout(60000)
                 .onErrorCode(errorData -> {
-                    MainGifLoader.get().stop();
                     // TODO: 5/27/2020 move to general error handler
                     if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
+                        MainGifLoader.get().stop();
                         new LoginForm().show();
                         return;
                     }
@@ -173,8 +169,7 @@ public class RentService {
                         @Override
                         public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
                             Preferences.set("isUserNotifiedAboutCameraUse", true);
-                            String stationId = contents.substring(contents.indexOf("id=") + 3);
-                            getBeforeRentInfo(stationId, callback);
+                            getBeforeRentInfo(contents, callback);
                         }
 
                         @Override

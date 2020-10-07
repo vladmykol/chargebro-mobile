@@ -32,7 +32,7 @@ import com.codename1.ui.util.Resources;
 
 /**
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class StatsForm extends SideMenuBaseForm {
     private static final int[] COLORS = {0xf8e478, 0x60e6ce, 0x878aee};

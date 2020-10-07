@@ -25,6 +25,7 @@ package com.mykovol.takeandcharge.form;
 
 
 import com.codename1.googlemaps.MapContainer;
+import com.codename1.io.Preferences;
 import com.codename1.io.Util;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
@@ -43,6 +44,7 @@ import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.component.DraggablePanel;
 import com.mykovol.takeandcharge.form.component.MessagePopUp;
 import com.mykovol.takeandcharge.form.component.ToolBox;
+import com.mykovol.takeandcharge.service.LocationService;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.service.WebSocketClient;
@@ -61,7 +63,7 @@ import static com.codename1.ui.plaf.Style.UNIT_TYPE_SCREEN_PERCENTAGE;
 /**
  * The main form of the application containing the map code
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class MainForm extends Form {
     private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RVpEYUpceVw+VSlDWzkjXWZ8bCJDSF5GRkZ4cm1DFVdE");
@@ -142,7 +144,7 @@ public class MainForm extends Form {
 
         add(draggablePanel);
 
-        add(BorderLayout.centerAbsolute(MainGifLoader.get()));
+        add(MainGifLoader.get());
 
 //        add(messagePopUp);
         messagePopUp.bindToComponent(this);
@@ -169,10 +171,19 @@ public class MainForm extends Form {
     @Override
     public void show() {
         super.show();
-        toolBox.refreshState();
+        showMeOnMap();
         UITimer.timer(3000, false, getComponentForm(), () -> {
+            WebSocketClient.get().disconnect();
+            WebSocketClient.get();
             refreshRentContent();
             refreshMarkersOnMap(kievCoord);
+        });
+    }
+
+    public void showIfNotVisible() {
+        MainGifLoader.get().stop();
+        callSerially(() -> {
+            if (Display.getInstance().getCurrent() != this) super.show();
         });
     }
 
@@ -180,14 +191,41 @@ public class MainForm extends Form {
         addMapListenerToDrawStationsOnMap();
 
         mapContainer.setCameraPosition(kievCoord);
-        mapContainer.zoom(kievCoord, mapContainer.getMinZoom() + 17);
-        toolBox.showMeOnMapIfAllowed();
+        mapContainer.zoom(kievCoord, mapContainer.getMinZoom() + 12);
 
 //        UITimer.timer(3000, false, getComponentForm(), () -> {
 //            mapContainer.zoom(ukraineCoord, mapContainer.getMinZoom() + 15);
 //            scanButton.setVisible(true);
 //            revalidateWithAnimationSafety();
 //        });
+    }
+
+    public void showMeOnMap() {
+        boolean isShowMyLocation = Preferences.get("showMyLocation", false);
+        if (isShowMyLocation) {
+            new LocationService().moveToCurrentLocation(mapContainer);
+            mapContainer.setShowMyLocation(true);
+            LocationService locationService = new LocationService();
+            locationService.moveToCurrentLocation(mapContainer);
+        } else {
+            UITimer.timer(5000, false, getComponentForm(), () -> {
+                boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutLocationUse", false);
+                boolean isUserAgreeToGiveLocationAccess = true;
+                if (!isUserNotifiedAboutLocationUse) {
+                    isUserAgreeToGiveLocationAccess = Dialog.show("Permission required", "Please allow using of geolocation to show nearest stations", "OK", "Cancel");
+                }
+                if (isUserAgreeToGiveLocationAccess) {
+                    LocationService locationService = new LocationService();
+                    Preferences.set("isUserNotifiedAboutLocationUse", true);
+                    if (locationService.checkGpsEnabled()) {
+                        locationService.moveToCurrentLocation(mapContainer);
+                    }
+                }
+                mapContainer.setShowMyLocation(true);
+
+                Preferences.set("showMyLocation", mapContainer.isShowMyLocation());
+            });
+        }
     }
 
     public void refreshRentContent() {
@@ -212,7 +250,7 @@ public class MainForm extends Form {
     }
 
     public void showError(String text, int type) {
-        MainGifLoader.get().stop();
+        showIfNotVisible();
         messagePopUp.showError(text, type);
     }
 
@@ -269,10 +307,6 @@ public class MainForm extends Form {
         scanButton.refresh();
     }
 
-    public void addRentRow(String powerBankId) {
-        draggablePanel.addRentRow(powerBankId, 0);
-    }
-
     public class ScanButton extends Button {
         private Font fnt = Font.createTrueTypeFont("icomoon", "icomoon.ttf");
 
@@ -302,9 +336,11 @@ public class MainForm extends Form {
             if (MainGifLoader.get().isVisible()) return;
 
             if (UserService.isLoggedIn()) {
+                MainGifLoader.get().start();
                 RentService.prepareForRent(new Callback<BeforeRentInfo>() {
                     @Override
                     public void onSucess(BeforeRentInfo value) {
+                        MainGifLoader.get().stop();
                         final RentConfirmation rentConfirmation = new RentConfirmation(value);
                         rentConfirmation.show();
                     }

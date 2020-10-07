@@ -42,7 +42,7 @@ import static com.codename1.ui.CN.getCurrentForm;
 /**
  * Settings form UI
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class EditAccountForm extends Form {
     public EditAccountForm() {

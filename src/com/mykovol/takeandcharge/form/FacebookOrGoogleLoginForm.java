@@ -44,7 +44,7 @@ import java.util.Map;
 import static com.codename1.ui.CN.getCurrentForm;
 
 /**
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class FacebookOrGoogleLoginForm extends Form {
     public FacebookOrGoogleLoginForm() {

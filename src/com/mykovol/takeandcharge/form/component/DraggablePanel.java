@@ -35,7 +35,6 @@ import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.service.WebSocketClient;
-import com.mykovol.takeandcharge.tools.MainGifLoader;
 
 import java.util.List;
 import java.util.Map;
@@ -59,6 +58,7 @@ public class DraggablePanel extends Container {
     private boolean isDraggingBottomPanel;
     private Container topToolbarPanel;
     private volatile boolean isInMove = false;
+    private volatile boolean isInUpdate = false;
     private volatile boolean isDragEnable = true;
 
     public DraggablePanel(Button screenBlocking,
@@ -80,14 +80,13 @@ public class DraggablePanel extends Container {
     }
 
     public void show() {
-        WebSocketClient.get().connect();
+        WebSocketClient.get();
         contentHolder.setVisible(true);
         contentHolder.getParent().revalidate();
         contentHolder.setY(getDisplayHeight());
         bottomScreenBlocking.setVisible(true);
         MainForm.get().hideScanButton();
-        MainGifLoader.get().stop();
-        animateLayoutFade(300, 100);
+        animateLayoutFadeAndWait(300, 100);
     }
 
     public void hide() {
@@ -96,7 +95,7 @@ public class DraggablePanel extends Container {
         bottomScreenBlocking.setVisible(false);
         animateUnlayout(300, 100, () -> {
             contentHolder.setVisible(false);
-            revalidateWithAnimationSafety();
+            revalidate();
         });
     }
 
@@ -113,6 +112,8 @@ public class DraggablePanel extends Container {
     }
 
     public void refreshRentContent() {
+        if (isInUpdate) return;
+        isInUpdate = true;
         if (UserService.isLoggedIn()) {
             RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
                 @Override
@@ -122,26 +123,28 @@ public class DraggablePanel extends Container {
                     } else {
                         MainForm.get().showError(errorMessage, errorCode);
                     }
+                    isInUpdate = false;
                 }
 
                 @Override
                 public void onSucess(List<RentHistory> rentHistoryList) {
                     syncWithRentBoard(rentHistoryList);
+                    isInUpdate = false;
                 }
             });
         }
     }
 
-    public synchronized void syncWithRentBoard(List<RentHistory> rentHistoryList) {
+    public void syncWithRentBoard(List<RentHistory> rentHistoryList) {
         Map<String, RentBoard> showedRents = rentContent.getShowedRents();
         for (RentHistory rentHistory : rentHistoryList) {
             String serialNumber = rentHistory.powerBankId.get();
-            long timeElapsed = rentHistory.rentPeriodMs.getLong();
             RentBoard existingRentRow = showedRents.remove(serialNumber);
             if (existingRentRow == null) {
-                addRentRow(serialNumber, timeElapsed);
+                addRentRow(rentHistory);
             } else {
-                existingRentRow.updateExisting(timeElapsed);
+                setAnimationForTimeCounter(rentHistory.isReturned.getInt(), existingRentRow);
+                existingRentRow.updateExisting(rentHistory);
             }
         }
         for (RentBoard showedRent : showedRents.values()) {
@@ -149,10 +152,18 @@ public class DraggablePanel extends Container {
         }
     }
 
-    public void addRentRow(String serialNumber, long elapsedTime) {
+    public void setAnimationForTimeCounter(int isReturned, RentBoard rentBoard) {
+        if (isReturned == 0) {
+            registerAnimationForTimeCounter(rentBoard);
+        } else {
+            deregisterAnimationForTimeCounter(rentBoard);
+        }
+    }
+
+    public void addRentRow(RentHistory rentHistory) {
         callSerially(() -> {
-            RentBoard rentBoard = rentContent.addRow(serialNumber, elapsedTime);
-            getCurrentForm().registerAnimated(rentBoard);
+            RentBoard rentBoard = rentContent.addRow(rentHistory);
+            setAnimationForTimeCounter(rentHistory.isReturned.getInt(), rentBoard);
 
             if (rentContent.getRentRows() == 1) {
                 show();
@@ -162,9 +173,17 @@ public class DraggablePanel extends Container {
         });
     }
 
+    public void deregisterAnimationForTimeCounter(RentBoard existingRentRow) {
+        getCurrentForm().deregisterAnimated(existingRentRow);
+    }
+
+    public void registerAnimationForTimeCounter(RentBoard rentBoard) {
+        getCurrentForm().registerAnimated(rentBoard);
+    }
+
     public void removeRentRow(RentBoard rentBoard) {
         callSerially(() -> {
-            getCurrentForm().deregisterAnimated(rentBoard);
+            deregisterAnimationForTimeCounter(rentBoard);
             rentBoard.remove();
 
             if (rentContent.getRentRows() == 0) {

@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  *
  *
- * @author Shai Almog
+ * @author Vlad Mykol
  */
 public class ImageForm extends Form {
     private final EncodedImage placeholder = EncodedImage.createFromImage(

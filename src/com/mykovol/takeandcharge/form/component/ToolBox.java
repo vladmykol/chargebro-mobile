@@ -2,16 +2,17 @@ package com.mykovol.takeandcharge.form.component;
 
 
 import com.codename1.googlemaps.MapContainer;
-import com.codename1.io.Preferences;
-import com.codename1.ui.*;
+import com.codename1.ui.Button;
+import com.codename1.ui.Container;
+import com.codename1.ui.Display;
+import com.codename1.ui.FontImage;
 import com.codename1.ui.layouts.BoxLayout;
 import com.mykovol.takeandcharge.form.MainForm;
-import com.mykovol.takeandcharge.service.LocationService;
-import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.form.NotImplementedScreen;
 
 public class ToolBox extends Container {
     private final MapContainer mapContainer;
-    private final Button showMyLocationButton = new Button("", "ToolBoxButton");
+    private final Button showNearestStationsButton = new Button("", "ToolBoxButton");
     private final Button refreshButton = new Button("", "ToolBoxButton");
     private final Button reportErrorButton = new Button("", "ToolBoxButton");
 
@@ -19,8 +20,6 @@ public class ToolBox extends Container {
         super(BoxLayout.yCenter());
         this.mapContainer = mapContainer;
         setUIID("ToolBox");
-
-        refreshState();
 
         refreshButton.setMaterialIcon(FontImage.MATERIAL_LOOP);
         refreshButton.addActionListener(evt -> {
@@ -30,60 +29,16 @@ public class ToolBox extends Container {
         });
         reportErrorButton.setMaterialIcon(FontImage.MATERIAL_SUPPORT_AGENT);
         reportErrorButton.addActionListener(evt -> {
-            CommonCode.sendSupportEmail();
+            new NotImplementedScreen("Support", MainForm.get()).show();
+        });
+        showNearestStationsButton.addActionListener(evt -> {
+            new NotImplementedScreen("Nearest stations", MainForm.get()).show();
         });
 
-        showMyLocationButton.addActionListener(evt -> {
-            boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutLocationUse", false);
-            boolean isUserAgreeToGiveLocationAccess = true;
-            if (!isUserNotifiedAboutLocationUse) {
-                isUserAgreeToGiveLocationAccess = Dialog.show("Permission required", "Please allow using of geolocation to show nearest stations", "OK", "Cancel");
-            }
-            if (isUserAgreeToGiveLocationAccess) {
-                LocationService locationService = new LocationService();
-                Preferences.set("isUserNotifiedAboutLocationUse", true);
-                if (locationService.checkGpsEnabled()) {
-                    locationService.moveToCurrentLocation(mapContainer);
-                    enableShowMyLocation(mapContainer);
-                } else {
-                    disableShowMyLocation(mapContainer);
-                }
-            } else {
-                disableShowMyLocation(mapContainer);
-            }
+        FontImage.setMaterialIcon(showNearestStationsButton, FontImage.MATERIAL_STOREFRONT);
 
-            Preferences.set("showMyLocation", mapContainer.isShowMyLocation());
-        });
 
-        addAll(reportErrorButton, refreshButton, showMyLocationButton);
+        addAll(reportErrorButton, refreshButton, showNearestStationsButton);
     }
 
-    public void refreshState() {
-        boolean isShowMyLocation = Preferences.get("showMyLocation", false);
-        if (isShowMyLocation) {
-            enableShowMyLocation(mapContainer);
-        } else {
-            disableShowMyLocation(mapContainer);
-        }
-    }
-
-    private void enableShowMyLocation(MapContainer mapContainer) {
-        mapContainer.setShowMyLocation(true);
-        LocationService locationService = new LocationService();
-        locationService.moveToCurrentLocation(mapContainer);
-        FontImage.setMaterialIcon(showMyLocationButton, FontImage.MATERIAL_LOCATION_ON);
-    }
-
-    private void disableShowMyLocation(MapContainer mapContainer) {
-        mapContainer.setShowMyLocation(false);
-        FontImage.setMaterialIcon(showMyLocationButton, FontImage.MATERIAL_LOCATION_OFF);
-    }
-
-    public void showMeOnMapIfAllowed() {
-        boolean isShowMyLocation = Preferences.get("showMyLocation", false);
-        if (isShowMyLocation) {
-            new LocationService().moveToCurrentLocation(mapContainer);
-            enableShowMyLocation(mapContainer);
-        }
-    }
 }
