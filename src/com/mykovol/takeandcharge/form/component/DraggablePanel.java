@@ -58,7 +58,6 @@ public class DraggablePanel extends Container {
     private boolean isDraggingBottomPanel;
     private Container topToolbarPanel;
     private volatile boolean isInMove = false;
-    private volatile boolean isInUpdate = false;
     private volatile boolean isDragEnable = true;
 
     public DraggablePanel(Button screenBlocking,
@@ -112,8 +111,6 @@ public class DraggablePanel extends Container {
     }
 
     public void refreshRentContent() {
-        if (isInUpdate) return;
-        isInUpdate = true;
         if (UserService.isLoggedIn()) {
             RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
                 @Override
@@ -123,13 +120,11 @@ public class DraggablePanel extends Container {
                     } else {
                         MainForm.get().showError(errorMessage, errorCode);
                     }
-                    isInUpdate = false;
                 }
 
                 @Override
                 public void onSucess(List<RentHistory> rentHistoryList) {
                     syncWithRentBoard(rentHistoryList);
-                    isInUpdate = false;
                 }
             });
         }

@@ -27,14 +27,12 @@ import com.codename1.components.SpanLabel;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.events.ActionEvent;
-import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.tools.CommonCode;
-import com.mykovol.takeandcharge.tools.MainGifLoader;
+import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
 /**
  * @author Vlad Mykol
@@ -89,7 +87,7 @@ public class SettingsForm extends Form {
         final Button addCreditCard = new Button("Add Credit Card", "WalkthrSkipButton");
 
         addCreditCard.addActionListener(evt -> {
-            MainGifLoader.get().start();
+            MainNoBlockingLoader.get().start();
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -101,7 +99,7 @@ public class SettingsForm extends Form {
                     BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "chargebro", "Add credit card", MainForm.get());
                     addMoney.setTransitionInAnimator(CommonTransitions.createFade(300));
                     addMoney.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-                    MainGifLoader.get().stop();
+                    MainNoBlockingLoader.get().stop();
                     addMoney.show();
                 }
             });

@@ -38,8 +38,7 @@ import com.mykovol.takeandcharge.dataobj.ErrorResponse;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.LoginForm;
-import com.mykovol.takeandcharge.form.RentConfirmation;
-import com.mykovol.takeandcharge.tools.MainGifLoader;
+import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 import org.littlemonkey.qrscanner.QRScanner;
 
 import java.util.List;
@@ -82,7 +81,7 @@ public class RentService {
                 .onErrorCode(errorData -> {
                     // TODO: 5/27/2020 move to general error handler
                     if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
-                        MainGifLoader.get().stop();
+                        MainNoBlockingLoader.get().stop();
                         new LoginForm().show();
                         return;
                     }

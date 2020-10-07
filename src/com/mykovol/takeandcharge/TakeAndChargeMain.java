@@ -14,7 +14,7 @@ import com.codename1.util.StringUtil;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
-import com.mykovol.takeandcharge.tools.MainGifLoader;
+import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 import org.littlemonkey.connectivity.Connectivity;
 
 import java.io.IOException;
@@ -86,7 +86,7 @@ public class TakeAndChargeMain {
             }
             Log.p("Network error:" + errorMsg);
             InfinityProgressBlocking.stop();
-            MainGifLoader.get().stop();
+            MainNoBlockingLoader.get().stop();
             if (Display.getInstance().getCurrent().equals(MainForm.get())) {
                 MainForm.get().showError(errorMsg, 500);
             } else {

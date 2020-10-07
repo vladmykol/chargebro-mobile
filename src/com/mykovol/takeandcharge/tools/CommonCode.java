@@ -370,7 +370,6 @@ public class CommonCode {
 
     private static Button getPayForPbButton() {
         return constructSideMenuButton("Pay for rent", FontImage.MATERIAL_CREDIT_CARD, e -> {
-            MainGifLoader.get().start();
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {

@@ -49,7 +49,7 @@ import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.CommonCode;
-import com.mykovol.takeandcharge.tools.MainGifLoader;
+import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +144,7 @@ public class MainForm extends Form {
 
         add(draggablePanel);
 
-        add(MainGifLoader.get());
+        add(MainNoBlockingLoader.get());
 
 //        add(messagePopUp);
         messagePopUp.bindToComponent(this);
@@ -181,7 +181,7 @@ public class MainForm extends Form {
     }
 
     public void showIfNotVisible() {
-        MainGifLoader.get().stop();
+        MainNoBlockingLoader.get().stop();
         callSerially(() -> {
             if (Display.getInstance().getCurrent() != this) super.show();
         });
@@ -333,15 +333,15 @@ public class MainForm extends Form {
         }
 
         private void scanButtonAction(ActionEvent evt) {
-            if (MainGifLoader.get().isVisible()) return;
+            if (MainNoBlockingLoader.get().isVisible()) return;
 
             if (UserService.isLoggedIn()) {
-                MainGifLoader.get().start();
+                MainNoBlockingLoader.get().start();
                 RentService.prepareForRent(new Callback<BeforeRentInfo>() {
                     @Override
                     public void onSucess(BeforeRentInfo value) {
-                        MainGifLoader.get().stop();
                         final RentConfirmation rentConfirmation = new RentConfirmation(value);
+                        MainNoBlockingLoader.get().stop();
                         rentConfirmation.show();
                     }
 
@@ -349,7 +349,6 @@ public class MainForm extends Form {
                     public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                         showError(errorMessage, errorCode);
                     }
-
                 });
             } else {
                 new SingUpForm().show();

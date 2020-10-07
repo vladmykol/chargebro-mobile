@@ -29,7 +29,6 @@ import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.ui.Label;
 import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.util.Resources;
 import com.codename1.ui.util.UITimer;
 
@@ -37,28 +36,28 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static com.codename1.ui.CN.callSerially;
-import static com.codename1.ui.CN.getDisplayWidth;
 
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
  *
  * @author Vlad Mykol
  */
-public class MainGifLoader extends Container {
-    private static MainGifLoader instance;
+public class MainNoBlockingLoader extends Container {
+    private static MainNoBlockingLoader instance;
     private static Label image;
+    private UITimer timer;
 
-    private MainGifLoader(Image i) {
+    private MainNoBlockingLoader(Image i) {
         super(BorderLayout.absolute());
         image = new Label(i);
         add(BorderLayout.CENTER, image);
     }
 
-    public static MainGifLoader get() {
+    public static MainNoBlockingLoader get() {
         if (instance == null) {
             try {
                 InputStream gifFile = Display.getInstance().getResourceAsStream(Resources.class, "/load2.gif");
-                instance = new MainGifLoader(GifImage.decode(gifFile, 98306));
+                instance = new MainNoBlockingLoader(GifImage.decode(gifFile, 98306));
                 instance.setUIID("LoadImage");
                 instance.setVisible(false);
             } catch (IOException e) {
@@ -70,9 +69,16 @@ public class MainGifLoader extends Container {
     }
 
     public void start() {
+        if (timer != null) {
+            timer.cancel();
+        }
         callSerially(() -> {
             setVisible(true);
             revalidate();
+        });
+
+        timer = UITimer.timer(5000, false, getComponentForm(), () -> {
+            callSerially(this::stop);
         });
     }
 
