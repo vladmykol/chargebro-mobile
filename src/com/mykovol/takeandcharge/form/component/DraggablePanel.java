@@ -127,6 +127,8 @@ public class DraggablePanel extends Container {
                     syncWithRentBoard(rentHistoryList);
                 }
             });
+        } else {
+            MainForm.get().showScanButton();
         }
     }
 

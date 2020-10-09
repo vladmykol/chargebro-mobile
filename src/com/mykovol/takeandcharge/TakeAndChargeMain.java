@@ -2,6 +2,7 @@ package com.mykovol.takeandcharge;
 
 import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
+import com.codename1.io.NetworkManager;
 import com.codename1.io.Preferences;
 import com.codename1.l10n.L10NManager;
 import com.codename1.ui.Dialog;
@@ -48,9 +49,9 @@ public class TakeAndChargeMain {
 //        Toolbar.setOnTopSideMenu(false);
         Toolbar.setOnTopSideMenu(true);
 
-        Dialog.setDefaultBlurBackgroundRadius(10);
+        Dialog.setDefaultBlurBackgroundRadius(13);
         Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
-        Display.getInstance().setProperty("syncNativeCookies", "true");
+        Display.getInstance().setProperty("syncNativeCookies", "false");
 
 //        Label.setDefaultGap(convertToPixels(2));
         // only portrait mode
@@ -62,6 +63,7 @@ public class TakeAndChargeMain {
 
         loadLocalization();
 
+        NetworkManager.getInstance().setTimeout(5000);
         addNetworkErrorListener(err -> {
             // prevent the event from propagating
             err.consume();
@@ -96,9 +98,9 @@ public class TakeAndChargeMain {
     }
 
     private void loadLocalization() {
-        final String userLang = Preferences.get("userLang", null);
+        final String userLang = Preferences.get("userLang", "default");
         String local;
-        if (userLang != null) {
+        if (!userLang.equals("default")) {
             local = userLang;
         } else {
             local = L10NManager.getInstance().getLanguage();

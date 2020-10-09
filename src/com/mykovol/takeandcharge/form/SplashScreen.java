@@ -9,6 +9,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.mykovol.takeandcharge.service.UserService;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.layouts.BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE;
@@ -68,6 +69,7 @@ public class SplashScreen extends Form {
                             Preferences.set("isWalkthruShowed", true);
                             new WalkthruForm().show();
                         } else {
+//                            UserService.checkForNewVersion();
                             MainForm.get().show();
                         }
                     });

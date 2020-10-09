@@ -22,8 +22,6 @@ public class MessagePopUp extends Container {
         Container topPlaceHolder = new Container();
         topPlaceHolder.stripMarginAndPadding();
         topPlaceHolder.setSafeArea(true);
-        topPlaceHolder.getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
-        topPlaceHolder.getAllStyles().setMarginTop(2);
         add(topPlaceHolder);
     }
 

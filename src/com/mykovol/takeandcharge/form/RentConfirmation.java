@@ -47,7 +47,6 @@ public class RentConfirmation extends Form {
 
     public RentConfirmation(BeforeRentInfo beforeRentInfo) {
         super(new LayeredLayout());
-        WebSocketClient.get().disconnect();
         WebSocketClient.get();
 
         final Container mainContent = new Container(new BorderLayout());
@@ -83,7 +82,7 @@ public class RentConfirmation extends Form {
         final Container summaryAmountHolder = BoxLayout.encloseY(
                 panelDelimiterLabel,
                 BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(depositAmountLabel), new Label("Deposit", "RentConfirmationText")),
-                BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(bonusAmountLabel), new Label("Bonus to be used", "RentConfirmationTextBonus")),
+                BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(bonusAmountLabel), new Label("Available discount", "RentConfirmationTextBonus")),
                 panelDelimiterLabel2
         );
 
@@ -129,7 +128,9 @@ public class RentConfirmation extends Form {
         final Label priceHintLabel7 = new Label("according to", "RentConfirmationHint");
         final Label priceHintLabel8 = new Label(" ", "RentConfirmationHint");
         final Button priceHintLinkButton = new Button("rent price", "RentConfirmationLink");
-        final BrowserPopUp priceForm = new BrowserPopUp(PRICE_URL, null, "Price", this);
+        final BrowserPopUp priceForm = new BrowserPopUp("Price");
+        priceForm.setUrl(PRICE_URL);
+        priceForm.setBackAction(this);
         priceForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         priceForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         priceHintLinkButton.addActionListener(evt -> {

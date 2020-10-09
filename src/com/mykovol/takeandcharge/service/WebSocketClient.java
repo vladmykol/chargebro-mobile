@@ -62,12 +62,6 @@ public class WebSocketClient extends WebSocket {
         return instance;
     }
 
-    public void disconnect() {
-        autoReconnect(0);
-        close();
-        instance = null;
-    }
-
     @Override
     protected void onOpen() {
         sendAuthInfo();

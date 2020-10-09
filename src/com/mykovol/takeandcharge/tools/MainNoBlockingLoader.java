@@ -26,7 +26,6 @@ package com.mykovol.takeandcharge.tools;
 import com.codename1.gif.GifImage;
 import com.codename1.ui.Container;
 import com.codename1.ui.Display;
-import com.codename1.ui.Image;
 import com.codename1.ui.Label;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.util.Resources;
@@ -44,12 +43,13 @@ import static com.codename1.ui.CN.callSerially;
  */
 public class MainNoBlockingLoader extends Container {
     private static MainNoBlockingLoader instance;
-    private static Label image;
+    private GifImage gifImage;
     private UITimer timer;
 
-    private MainNoBlockingLoader(Image i) {
+    private MainNoBlockingLoader(GifImage gifImage) {
         super(BorderLayout.absolute());
-        image = new Label(i);
+        this.gifImage = gifImage;
+        Label image = new Label(gifImage);
         add(BorderLayout.CENTER, image);
     }
 
@@ -66,6 +66,10 @@ public class MainNoBlockingLoader extends Container {
 
         }
         return instance;
+    }
+
+    public GifImage getGifImage() {
+        return gifImage;
     }
 
     public void start() {

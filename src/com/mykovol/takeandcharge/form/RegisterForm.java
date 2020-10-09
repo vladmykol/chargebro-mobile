@@ -24,7 +24,9 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
+import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
@@ -114,13 +116,16 @@ public class RegisterForm extends Form {
                         @Override
                         public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                             InfinityProgressBlocking.stop();
+                            setTransitionOutAnimator(CommonTransitions.createEmpty());
                             showError(errorMessage);
                         }
 
                         @Override
                         public void onSucess(String checkoutUrl) {
                             InfinityProgressBlocking.stop();
-                            new BrowserPopUp(checkoutUrl, "chargebro", "Add credit card", MainForm.get()).show();
+                            Preferences.set("noPaymentMethod", "true");
+                            setTransitionOutAnimator(CommonTransitions.createEmpty());
+                            MainForm.get().show();
                         }
                     });
                 }

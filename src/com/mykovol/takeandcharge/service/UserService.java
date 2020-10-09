@@ -24,27 +24,26 @@
 package com.mykovol.takeandcharge.service;
 
 import com.codename1.components.ToastBar;
-import com.codename1.io.ConnectionRequest;
 import com.codename1.io.Log;
 import com.codename1.io.MultipartRequest;
 import com.codename1.io.Preferences;
 import com.codename1.io.rest.Rest;
 import com.codename1.properties.PreferencesObject;
 import com.codename1.social.LoginCallback;
+import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.util.Callback;
+import com.codename1.util.FailureCallback;
 import com.codename1.util.SuccessCallback;
-import com.mykovol.takeandcharge.dataobj.ErrorResponse;
-import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
-import com.mykovol.takeandcharge.dataobj.User;
-import com.mykovol.takeandcharge.dataobj.UserLogin;
+import com.mykovol.takeandcharge.dataobj.*;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.codename1.ui.CN.addToQueue;
 import static com.codename1.ui.CN.callSerially;
@@ -86,7 +85,6 @@ public class UserService {
             CommonCode.refreshMenuItems();
             MainForm.get().removeAllRentRows();
             MainForm.get().refreshScanButton();
-            WebSocketClient.get().disconnect();
         });
     }
 
@@ -136,18 +134,53 @@ public class UserService {
         return code.contains(val) && code.length() < 80;
     }
 
-    public static void checkVersion() {
-        Rest.post(GlobalConst.getServerUrl() + API_APP_VERSION)
+    public static void checkForNewVersion() {
+        Rest.get(GlobalConst.getServerUrl() + API_APP_VERSION)
                 .jsonContent()
                 .acceptJson()
                 .timeout(5000)
                 .queryParam("os", Display.getInstance().getPlatformName())
                 .queryParam("currentVersion", Display.getInstance().getProperty("AppVersion", "0.1"))
                 .onErrorCode(errorData -> {
-                    System.out.println("New app version error - "+errorData.getResponseCode());
+                    System.out.println("New app version error - " + errorData.getResponseCode());
                 }, ErrorResponse.class)
                 .fetchAsString(link -> {
-                   System.out.println("New app version - "+link);
+                    System.out.println("New app version is here");
+                    if (Dialog.show("New version available", "Update to latest version and get new feature and improvements", "Update", "Later")) {
+                        Display.getInstance().execute(link.getResponseData());
+                    }
+                });
+    }
+
+
+    public static void fetchUserCards(final Callback<List<UserCardResponse>> callback) {
+        Rest.get(GlobalConst.getServerUrl() + API_APP_USER_CARD)
+                .bearer(UserService.getToken())
+                .jsonContent()
+                .acceptJson()
+                .timeout(5000)
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsPropertyList(resp -> {
+                    List<UserCardResponse> responseData = (List<UserCardResponse>) (List<?>) resp.getResponseData();
+                    callback.onSucess(responseData);
+                }, UserCardResponse.class);
+    }
+
+    public static void removeUserCard(String id, final FailureCallback<String> errorCallback) {
+        Rest.delete(GlobalConst.getServerUrl() + API_APP_USER_CARD + "/{id}")
+                .bearer(UserService.getToken())
+                .pathParam("id", id)
+                .jsonContent()
+                .acceptJson()
+                .timeout(5000)
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    errorCallback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsString(v -> {
                 });
     }
 

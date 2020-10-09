@@ -29,7 +29,7 @@ package com.mykovol.takeandcharge.service;
  * @author Vlad Mykol
  */
 public final class GlobalConst {
-    public static final boolean LOCAL = true;
+    public static final boolean LOCAL = false;
 
     public static final String RENT_URL = "/rent";
     public static final String PAY_URL = "/pay/checkout";
@@ -39,8 +39,10 @@ public final class GlobalConst {
     public static final String STATIONS_CAPACITY_URL = STATIONS_URL + "/{id}/capacity";
     public static final String SERVER_SOCKET_URL = "/socket/rent";
     public static final String API_APP_VERSION = "/app/version";
-    public static final String POLICY_URL = "https://your-domain.example.com/policy";
-    public static final String PRICE_URL = "https://your-domain.example.com/pricing";
+    public static final String API_APP_USER = "/user";
+    public static final String API_APP_USER_CARD = API_APP_USER + "/card";
+    public static final String POLICY_URL = "https://chargebro.com/policy";
+    public static final String PRICE_URL = "https://chargebro.com/pricing";
     private static final String API_AUTH = "/auth";
     public static final String API_LOGIN = API_AUTH + "/login";
     public static final String API_REGISTER_INIT = API_AUTH + "/register";

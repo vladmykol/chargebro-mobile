@@ -23,21 +23,20 @@
 
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.components.SpanLabel;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
-import com.codename1.util.Callback;
-import com.mykovol.takeandcharge.service.RentService;
+import com.codename1.ui.spinner.Picker;
 import com.mykovol.takeandcharge.tools.CommonCode;
-import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
 /**
  * @author Vlad Mykol
  */
 public class SettingsForm extends Form {
+    private final Label headerText = new Label("Settings", "WalletFromHeader");
 
     public SettingsForm() {
         super(new BoxLayout(BoxLayout.Y_AXIS));
@@ -47,64 +46,55 @@ public class SettingsForm extends Form {
 
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
-        setTitle("Settings");
         setTransitionInAnimator(CommonTransitions.createEmpty());
         setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
 
         getToolbar().addCommandToRightBar(CommonCode.getCloseCommand(MainForm.get()));
 
+        Label spaceLabel = new Label(" ");
+        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
+            spaceLabel = new Label();
+            setTitle(headerText.getText());
+            headerText.setHidden(true);
+            spaceLabel.setHidden(true);
+        }
+
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
 
-        SpanLabel headerSubText = new SpanLabel("Settings tab is in development. " +
-                "Not all feature working. No design", "RentConfirmationHint");
-        headerSubText.setEnabled(false);
+        Picker landPicket = new Picker();
+        landPicket.setType(Display.PICKER_TYPE_STRINGS);
 
-        add(headerSubText);
+        landPicket.setStrings("ua", "ru", "en", "default");
+        landPicket.setSelectedString(Preferences.get("userLang", "default"));
 
-        final Button buttonUa = new Button("ua", "SideMenuButton");
-        final Button buttonRu = new Button("ru", "SideMenuButton");
-        final Button buttonEn = new Button("en", "SideMenuButton");
-        final Button buttonDef = new Button("def", "SideMenuButton");
-
-        buttonEn.addActionListener(evt -> {
-            Preferences.set("userLang", "en");
-        });
-        buttonUa.addActionListener(evt -> {
-            Preferences.set("userLang", "uk");
-        });
-        buttonRu.addActionListener(evt -> {
-            Preferences.set("userLang", "ru");
-        });
-        buttonDef.addActionListener(evt -> {
-            Preferences.set("userLang", null);
+        landPicket.addActionListener(evt -> {
+//            UITimer.timer(1000, false, this, () -> {
+            if (landPicket.getSelectedString().equals("ua")) {
+                Preferences.set("userLang", "uk");
+            } else {
+                Preferences.set("userLang", landPicket.getSelectedString());
+            }
+            Dialog.show("Warning", "In order to language changes take effect, you need to restart the application", "Ok", null);
+//            });
         });
 
-        final Container langTool = BoxLayout.encloseX(buttonUa, buttonRu, buttonEn, buttonDef);
+//        SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
+//        switchList.addActionListener(e -> {
+//            Dialog.show("Info", "You selected " + Arrays.toString(switchList.getMultiListModel().getSelectedIndices()), "Ok", null);
+//        });
+//        switchList.setScrollableY(true);
 
-        add(langTool);
+        final Label delimiter = new Label("", "SettingsFormDelimiter");
+        delimiter.setShowEvenIfBlank(true);
+        final Label delimiter2 = new Label("", "SettingsFormDelimiter");
+        delimiter2.setShowEvenIfBlank(true);
 
-        final Button addCreditCard = new Button("Add Credit Card", "WalkthrSkipButton");
-
-        addCreditCard.addActionListener(evt -> {
-            MainNoBlockingLoader.get().start();
-            RentService.prepareCheckout(new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().showError(errorMessage, errorCode);
-                }
-
-                @Override
-                public void onSucess(String checkoutUrl) {
-                    BrowserPopUp addMoney = new BrowserPopUp(checkoutUrl, "chargebro", "Add credit card", MainForm.get());
-                    addMoney.setTransitionInAnimator(CommonTransitions.createFade(300));
-                    addMoney.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-                    MainNoBlockingLoader.get().stop();
-                    addMoney.show();
-                }
-            });
-        });
-
-        add(addCreditCard);
+        addAll(headerText,
+                spaceLabel,
+                delimiter,
+                BorderLayout.centerEastWest(landPicket, null, new Label("Language", "SettingsFormText")),
+                delimiter2
+        );
     }
 }

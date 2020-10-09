@@ -38,6 +38,7 @@ import com.mykovol.takeandcharge.dataobj.ErrorResponse;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.form.LoginForm;
+import com.mykovol.takeandcharge.form.WalletForm;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 import org.littlemonkey.qrscanner.QRScanner;
 
@@ -62,6 +63,10 @@ public class RentService {
                     // TODO: 5/27/2020 move to general error handler
                     if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
                         new LoginForm().show();
+                        return;
+                    }
+                    if (errorData.getResponseCode() == 402) {
+                        new WalletForm().show();
                         return;
                     }
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
@@ -96,6 +101,7 @@ public class RentService {
     public static void getRentHistory(boolean onlyCurrentlyInRent, final Callback<List<RentHistory>> callback) {
         Rest.get(GlobalConst.getServerUrl() + RENT_HISTORY_URL)
                 .bearer(UserService.getToken())
+                .timeout(5000)
                 .queryParam("onlyActive", String.valueOf(onlyCurrentlyInRent))
                 .acceptJson()
                 .onErrorCode(errorData -> {
@@ -129,6 +135,7 @@ public class RentService {
     public static void getRemainingPowerBanks(String stationId, final Callback<Integer> callback) {
         Rest.get(GlobalConst.getServerUrl() + STATIONS_CAPACITY_URL)
                 .bearer(UserService.getToken())
+                .timeout(5000)
                 .pathParam("id", stationId)
                 .acceptJson()
                 .onErrorCode(errorData -> {
@@ -147,6 +154,10 @@ public class RentService {
             return;
         }
 
+        if (Preferences.get("noPaymentMethod", "false").equals("true")) {
+            new WalletForm().show();
+        }
+
         if (CodeScanner.getInstance() == null) {
             ToastBar.showErrorMessage("CodeScanner is not supported on this platform");
         } else {
@@ -158,7 +169,7 @@ public class RentService {
 
             if (isUserAgreeToGiveCameraAccess) {
                 if (Display.getInstance().isSimulator()) {
-                    getBeforeRentInfo("STWA312001000005", callback);
+                    getBeforeRentInfo("STWA062001000013", callback);
                     Preferences.set("isUserNotifiedAboutCameraUse", true);
                 } else {
                     // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option

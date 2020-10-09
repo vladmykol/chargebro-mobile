@@ -40,15 +40,6 @@ public class RentHistory implements PropertyBusinessObject {
     private final PropertyIndex idx = new PropertyIndex(this, "RentHistory", powerBankId,
             rentPeriodMs, isReturned, errorCode, errorMessage);
 
-    public static RentHistory buildStartingRent(String powerBankId) {
-        final RentHistory rentHistory = new RentHistory();
-        rentHistory.powerBankId.set(powerBankId);
-        rentHistory.rentPeriodMs.set(0L);
-        rentHistory.isReturned.set(0);
-        rentHistory.errorCode.set(0);
-        return rentHistory;
-    }
-
     @Override
     public PropertyIndex getPropertyIndex() {
         return idx;

@@ -30,6 +30,8 @@
     defaultAvatarImage: "defaultAvatar.png";
     avatarPenImage: "avatarPen.png";
     menuBgrImage: "menuBgr.png";
+    visaLogoImage: "visa-logo.png";
+    masterCardLogoImage: "mastercard-logo.png";
     /*multi size images end*/
     --main-bg-color: #249DA7;
     --grafit-color: #4B545A;
@@ -88,11 +90,11 @@ Title {
 }
 
 TitleCommand {
-    padding: 1.2mm;
-    margin: 1.5mm 0mm 0mm 0mm;
+    padding: 1.3mm;
+    margin: 2.5mm 0mm 0mm 0mm;
     color: #555454;
     background: white;
-    border-radius: 3.4mm;
+    border-radius: 3.6mm;
     border: lightgrey solid 0.1mm;
 }
 
@@ -132,6 +134,27 @@ PanelDelimiter {
     padding: 0.2mm 0mm;
 }
 
+
+DialogBody {
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3mm;
+}
+
+DialogTitle {
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 3mm;
+}
+
+Picker {
+    margin: 0mm 1mm;
+    padding: 0mm;
+    border: none;
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 3mm;
+    text-align: right;
+}
+
+
 /*====================== Login Form ==========================*/
 
 LoginHeader {
@@ -142,7 +165,7 @@ LoginHeader {
 }
 
 LoginSubHeader {
-    cn1-derive:LoginHeader;
+    cn1-derive: LoginHeader;
     padding: 2mm 0mm 0mm 0mm;
     font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm;
@@ -364,7 +387,6 @@ PanelImage {
 }
 
 
-
 RentBorder {
     border-radius: 2mm;
     box-shadow: 0mm 0.2mm 1mm 0mm #8FC0C5;
@@ -373,11 +395,10 @@ RentBorder {
     padding: 1.5mm 1mm;
 }
 
-RentBorderError{
-    cn1-derive:RentBorder;
+RentBorderError {
+    cn1-derive: RentBorder;
     box-shadow: 0mm 0.2mm 1mm 0mm #f53333;
 }
-
 
 
 RentBorderHeader {
@@ -404,12 +425,12 @@ RentBorderText {
     padding: 0.7mm 2mm 0mm 2mm;
 }
 
-RentBorderErrorHeader{
+RentBorderErrorHeader {
     cn1-derive: RentBorderSubHeader;
     padding: 0.7mm 0.5mm;
 }
 
-RentBorderErrorText{
+RentBorderErrorText {
     cn1-derive: RentBorderText;
     color: indianred;
     padding: 0.5mm 0.2mm;
@@ -448,7 +469,7 @@ AvatarButton {
 }
 
 AvatarPen {
-    margin: 7.5mm 2mm 0mm 15.5mm;
+    margin: 0mm 2mm 0mm 15.5mm;
     padding: 0mm;
 }
 
@@ -521,8 +542,9 @@ LoadImageText {
     font-family: var(--font-ProximaNova-Light);
     font-size: 3mm;
     color: black;
-    margin: 0mm;
+    margin: 0mm 2mm;
     padding: 0mm;
+    text-align: center;
 }
 
 /*====================== Stations sheet ==========================*/
@@ -663,7 +685,7 @@ ErrorMessageText {
 }
 
 ErrorMessageHeader {
-    cn1-derive:ErrorMessageText;
+    cn1-derive: ErrorMessageText;
     font-size: 2mm;
     margin: 1mm 2mm 0.5mm 0.7mm;
     color: #868686;
@@ -671,7 +693,7 @@ ErrorMessageHeader {
 
 /*====================== RentConfirmation ==========================*/
 
-RentConfirmationImage{
+RentConfirmationImage {
     margin: 0mm 0mm 2mm 0mm;
     padding: 0mm;
     font-size: 10mm;
@@ -679,7 +701,7 @@ RentConfirmationImage{
     color: var(--main-bg-color);
 }
 
-RentConfirmationSeparator{
+RentConfirmationSeparator {
     margin: 0mm;
     padding: 0mm;
     font-size: 3mm;
@@ -687,7 +709,7 @@ RentConfirmationSeparator{
     color: lightgrey;
 }
 
-RentConfirmationHeader{
+RentConfirmationHeader {
     margin: 0mm 0mm 3mm 0mm;
     padding: 0mm;
     font-family: var(--font-ProximaNova-Semibold);
@@ -696,7 +718,7 @@ RentConfirmationHeader{
     color: #424347;
 }
 
-RentConfirmationText{
+RentConfirmationText {
     margin: 0mm 0mm 1mm 0mm;
     padding: 0mm;
     font-family: var(--font-ProximaNova-Regular);
@@ -709,7 +731,7 @@ RentConfirmationTextBonus {
     color: #3FB771;
 }
 
-RentConfirmationHint{
+RentConfirmationHint {
     margin: 0mm 0mm;
     padding: 0mm;
     font-family: var(--font-ProximaNova-Regular);
@@ -718,7 +740,7 @@ RentConfirmationHint{
     text-align: center;
 }
 
-RentConfirmationLink{
+RentConfirmationLink {
     cn1-derive: RentConfirmationHint;
     color: #0095A0;
 }
@@ -733,4 +755,58 @@ RentConfirmationCancel {
 RentConfirmationDelimiter {
     cn1-derive: PanelDelimiter;
     margin: 2mm 0mm;
+}
+
+/*====================== WalletFrom ==========================*/
+
+WalletFromHeader {
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 5mm;
+}
+
+WalletFromNewCardButton {
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3mm;
+}
+
+WalletFormCardBoard {
+    border-radius: 2mm;
+    box-shadow: 0mm 0mm 1.5mm 0.1mm #cecece;
+    background: white;
+    margin: 1mm 1mm 0.5mm 1mm;
+    padding: 1.5mm 1mm;
+}
+
+WalletFormDelimiter {
+    border-bottom: 0.2mm solid rgba(128, 128, 128, 0.25);
+    margin: 4mm 3mm 2mm 3mm;
+}
+
+WalletFormCardRemoveLabel {
+    font-size: 3.7mm;
+    color: indianred;
+    margin: 0mm 1.5mm;
+    padding: 0mm;
+}
+
+WalletFormHint {
+    cn1-derive: RentConfirmationHint;
+    font-size: 2.7mm;
+}
+
+/*====================== SettingsForm ==========================*/
+
+SettingsFormText {
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3mm;
+}
+
+SettingsFormDelimiter {
+    border-bottom: 0.2mm solid rgba(128, 128, 128, 0.25);
+    margin: 2.5mm 0mm 2.5mm 0mm;
+    padding: 0.2mm;
 }

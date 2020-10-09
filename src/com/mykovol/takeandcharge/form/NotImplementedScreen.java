@@ -26,6 +26,7 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.animations.FlipTransition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -43,12 +44,12 @@ public class NotImplementedScreen extends Form {
         setToolbar(new Toolbar(true));
         setTitle(title);
         setTransitionInAnimator(CommonTransitions.createEmpty());
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+        setTransitionOutAnimator(new FlipTransition(-1, 300));
 
         getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
-        getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
+        getContentPane().getAllStyles().setMargin(0, 5, 3.5f, 3.5f);
 
         Label headerImage = new Label("", "RentConfirmationImage");
         headerImage.setMaterialIcon(FontImage.MATERIAL_EMOJI_OBJECTS);

@@ -2,6 +2,7 @@ package com.mykovol.takeandcharge.form.component;
 
 
 import com.codename1.googlemaps.MapContainer;
+import com.codename1.io.NetworkManager;
 import com.codename1.ui.Button;
 import com.codename1.ui.Container;
 import com.codename1.ui.Display;
@@ -9,6 +10,7 @@ import com.codename1.ui.FontImage;
 import com.codename1.ui.layouts.BoxLayout;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.NotImplementedScreen;
+import com.mykovol.takeandcharge.service.WebSocketClient;
 
 public class ToolBox extends Container {
     private final MapContainer mapContainer;
@@ -23,9 +25,11 @@ public class ToolBox extends Container {
 
         refreshButton.setMaterialIcon(FontImage.MATERIAL_LOOP);
         refreshButton.addActionListener(evt -> {
+            Display.getInstance().vibrate(1);
+            NetworkManager.getInstance().shutdown();
+            NetworkManager.getInstance().start();
             MainForm.get().refreshRentContent();
             MainForm.get().refreshMarkersOnMap();
-            Display.getInstance().vibrate(1);
         });
         reportErrorButton.setMaterialIcon(FontImage.MATERIAL_SUPPORT_AGENT);
         reportErrorButton.addActionListener(evt -> {
@@ -36,7 +40,6 @@ public class ToolBox extends Container {
         });
 
         FontImage.setMaterialIcon(showNearestStationsButton, FontImage.MATERIAL_STOREFRONT);
-
 
         addAll(reportErrorButton, refreshButton, showNearestStationsButton);
     }

@@ -26,7 +26,8 @@ package com.mykovol.takeandcharge.tools;
 import com.codename1.capture.Capture;
 import com.codename1.components.InteractionDialog;
 import com.codename1.components.ScaleImageLabel;
-import com.codename1.io.Log;
+import com.codename1.gif.GifImage;
+import com.codename1.io.FileSystemStorage;
 import com.codename1.io.Preferences;
 import com.codename1.io.Storage;
 import com.codename1.io.Util;
@@ -38,8 +39,8 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
+import com.codename1.ui.util.ImageIO;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.form.*;
@@ -47,6 +48,8 @@ import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import static com.codename1.ui.CN.convertToPixels;
 import static com.codename1.ui.CN.getCurrentForm;
@@ -66,52 +69,68 @@ public class CommonCode {
     private final static Image defaultAvatarImage = Resources.getGlobalResources().getImage("defaultAvatar.png");
     private final static Container avatarBackground = new Container();
     private static final String SIDE_MENU_SWIPE_START_X = "sideMenuSwipeStartX";
-    private final static Label avatarText = new Label("", "AvatarText");
+    private final static Label avatarText = new Label("ChargeBro", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
-    private final static Button signOutButton = getSignOutButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
     private final static Button registerButton = getRegisterButton();
     private final static Button historyButton = getHistoryButton();
     private final static Button promoCodeButton = getPromoCodeButton();
     private final static Button creditCardButton = getCreditCards();
+    private final static Button signOutButton = getSignOutButton();
     private final static Button PayForPbButton = getPayForPbButton();
     private final static Button priceButton = getPriceButton();
     private final static Button supportButton = getSupportButton();
     private final static Button settingsButton = getSettingsButton();
+    private static Label avatarPenImage;
 
     public static void refreshUserInfo() {
         if (UserService.isLoggedIn()) {
-            avatarText.setText("Stranger");
+//            avatarText.setHidden(true);;
             avatarSubText.setHidden(false);
+            loadAndSetAvatar();
         } else {
-            avatarText.setText("ChargeBro");
+//            avatarText.setHidden(false);
             avatarSubText.setHidden(true);
+            setAvatar(defaultAvatarImage);
         }
         avatarSubText.setText(Preferences.get("phoneNumber", "* * * *"));
         avatarText.getParent().revalidateWithAnimationSafety();
-        UserService.fetchAvatar(1, image -> {
-            if (image != null && image.getHeight() > 0) {
-                setAvatar(image);
-            }
-        });
     }
 
     public static void setAvatar(Image image) {
+        if (image.equals(defaultAvatarImage)) {
+            avatarPenImage.setVisible(true);
+        } else {
+            avatarPenImage.setVisible(false);
+        }
+
         Image maskedImage = applyMaskToAvatar(image);
         avatarButton.setIcon(maskedImage);
     }
 
-    public static void setAvatar(String imageFile) {
-        Image img;
+    public static void saveAndSetAvatar(String imageFile) {
         try {
-            img = Image.createImage(imageFile);
-        } catch (IOException e) {
-            Log.e(e);
-            return;
+            String pathToBeStored = FileSystemStorage.getInstance().getAppHomePath() + "userAvatar.jpg";
+            Image img = Image.createImage(imageFile);
+            OutputStream os = FileSystemStorage.getInstance().openOutputStream(pathToBeStored);
+            ImageIO.getImageIO().save(img, os, ImageIO.FORMAT_JPEG, 0.9f);
+            os.close();
+            setAvatar(img);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        setAvatar(img);
+    }
+
+    public static void loadAndSetAvatar() {
+        String pathToImage = FileSystemStorage.getInstance().getAppHomePath() + "userAvatar.jpg";
+        try {
+            Image img = Image.createImage(FileSystemStorage.getInstance().openInputStream(pathToImage));
+            setAvatar(img);
+        } catch (Exception ex) {
+            setAvatar(defaultAvatarImage);
+        }
     }
 
     public static Image applyMaskToAvatar(Image image) {
@@ -135,7 +154,6 @@ public class CommonCode {
 
     public static void constructSideMenu(Toolbar tb, Form parentForm) {
         avatarButton.setUIID("AvatarButton");
-        setAvatar(defaultAvatarImage);
 
 
         avatarButton.addActionListener(e -> {
@@ -157,18 +175,19 @@ public class CommonCode {
 
         int size = convertToPixels(4);
         Image penImage = Resources.getGlobalResources().getImage("avatarPen.png").fill(size, size);
-        Label avatarPenImage = new Label(penImage, "AvatarPen");
+        avatarPenImage = new Label(penImage, "AvatarPen");
 
         Label spaceHolder = new Label();
         spaceHolder.setShowEvenIfBlank(true);
         spaceHolder.getAllStyles().setMarginBottom(100);
 
-        final Container avatarAndPen = LayeredLayout.encloseIn(avatarButton, FlowLayout.encloseIn(avatarPenImage));
+        final Container avatarAndPen = LayeredLayout.encloseIn(avatarButton, avatarPenImage);
         Container avatarContainer = BoxLayout.encloseY(avatarAndPen,
                 avatarText, avatarSubText, spaceHolder);
         avatarContainer.setSafeAreaRoot(false);
         avatarContainer.setSafeArea(true);
 
+        loadAndSetAvatar();
 
         Container menuTopPartHolder = LayeredLayout.encloseIn(avatarBackground,
                 avatarContainer,
@@ -183,9 +202,9 @@ public class CommonCode {
         Container menuItemsContainer = BorderLayout.west(BoxLayout.encloseY(
                 loginButton,
                 registerButton,
-                historyButton,
                 creditCardButton,
                 priceButton,
+                historyButton,
                 promoCodeButton,
                 supportButton,
                 settingsButton
@@ -267,12 +286,12 @@ public class CommonCode {
         if (Dialog.show("Camera or Gallery", "Would you like to use the camera or the gallery for the picture?", "Camera", "Gallery")) {
             String pic = Capture.capturePhoto();
             if (pic != null) {
-                setAvatar(pic);
+                saveAndSetAvatar(pic);
             }
         } else {
             CN.openGallery(ee -> {
                 if (ee.getSource() != null) {
-                    setAvatar((String) ee.getSource());
+                    saveAndSetAvatar((String) ee.getSource());
                 }
             }, GALLERY_IMAGE);
         }
@@ -323,10 +342,12 @@ public class CommonCode {
 
     private static Button getPriceButton() {
         return constructSideMenuButton("Price", FontImage.MATERIAL_BAR_CHART, evt -> {
-            final BrowserPopUp price = new BrowserPopUp(PRICE_URL, null, "Price", MainForm.get());
+            final BrowserPopUp price = new BrowserPopUp("Price");
+            price.setCloseAction(MainForm.get());
             price.setTransitionInAnimator(CommonTransitions.createFade(300));
             price.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
             price.show();
+            price.setUrl(PRICE_URL);
         });
     }
 
@@ -352,7 +373,7 @@ public class CommonCode {
 
     private static Button getCreditCards() {
         return constructSideMenuButton("Wallet", FontImage.MATERIAL_CREDIT_CARD, e -> {
-            new NotImplementedScreen("Credit cards", MainForm.get()).show();
+            new WalletForm().show();
         });
     }
 
@@ -464,6 +485,5 @@ public class CommonCode {
             }
         });
     }
-
 
 }

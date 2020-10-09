@@ -28,6 +28,7 @@ import com.codename1.ui.Command;
 import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.mykovol.takeandcharge.tools.CommonCode;
 
@@ -39,25 +40,27 @@ import static com.codename1.ui.CN.callSerially;
  * @author Vlad Mykol
  */
 public class BrowserPopUp extends Form {
+    private final BrowserComponent browser;
 
-    public BrowserPopUp(String url, String returnUrl, String title, Form previousForm) {
+    public BrowserPopUp(String title) {
         super(new BorderLayout());
 //        CommonCode.removeTransitionsTemporarily(previous);
         setToolbar(new Toolbar(false));
         getToolbar().setTitle(title);
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-
-        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(previousForm);
-        getToolbar().addCommandToRightBar(closeToPrevFormCommand);
-
-        BrowserComponent browser = new BrowserComponent();
+        browser = new BrowserComponent();
         add(BorderLayout.CENTER, browser);
-        browser.setURL(url);
+    }
 
+    public void setUrl(String url) {
+        setUrl(url, null, null);
+    }
+
+    public void setUrl(String url, String closeUrl, Form closeToForm) {
+        browser.setURL(url);
         browser.addBrowserNavigationCallback(currentUrl -> {
-            if (returnUrl != null) {
-                if (currentUrl.contains(returnUrl)) {
-                    callSerially(previousForm::show);
+            if (closeUrl != null) {
+                if (currentUrl.contains(closeUrl)) {
+                    callSerially(closeToForm::show);
                     return false;
                 } else {
                     return true;
@@ -65,7 +68,22 @@ public class BrowserPopUp extends Form {
             }
             return true;
         });
+    }
 
+    public void setBackAction(Form form) {
+        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
+        getToolbar().setBackCommand(new Command("") {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                form.showBack();
+            }
+        }, Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
+    }
+
+    public void setCloseAction(Form form) {
+        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(form);
+        getToolbar().addCommandToRightBar(closeToPrevFormCommand);
     }
 
 }

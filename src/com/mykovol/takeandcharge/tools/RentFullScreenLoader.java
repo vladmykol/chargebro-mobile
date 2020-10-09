@@ -24,18 +24,13 @@
 package com.mykovol.takeandcharge.tools;
 
 import com.codename1.components.SpanLabel;
-import com.codename1.gif.GifImage;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
-import com.codename1.ui.util.Resources;
 import com.codename1.ui.util.UITimer;
 import com.mykovol.takeandcharge.form.MainForm;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 import static com.codename1.ui.CN.callSerially;
 
@@ -46,7 +41,6 @@ import static com.codename1.ui.CN.callSerially;
  */
 public class RentFullScreenLoader extends Form {
     private static RentFullScreenLoader instance;
-    private static Label imageLabel;
     final SpanLabel loadText;
     private UITimer timer;
     private Form backRoundForm;
@@ -56,24 +50,18 @@ public class RentFullScreenLoader extends Form {
         setToolbar(new Toolbar(true));
         setTransitionOutAnimator(CommonTransitions.createEmpty());
         setTransitionInAnimator(CommonTransitions.createEmpty());
-        imageLabel = new Label(i);
+        Label imageLabel = new Label(i);
         loadText = new SpanLabel(" ", "LoadImageText");
         loadText.setEnabled(true);
         add(BorderLayout.centerAbsolute(imageLabel));
-        add(BorderLayout.centerAbsolute(loadText));
+        add(loadText);
     }
 
     public static RentFullScreenLoader get() {
         if (instance == null) {
-            try {
-                InputStream gifFile = Display.getInstance().getResourceAsStream(Resources.class, "/load2.gif");
-                instance = new RentFullScreenLoader(GifImage.decode(gifFile, 98306));
-                instance.setUIID("LoadImage");
-                instance.setVisible(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            instance = new RentFullScreenLoader(MainNoBlockingLoader.get().getGifImage());
+            instance.setUIID("LoadImage");
+            instance.setVisible(true);
         }
         return instance;
     }
@@ -132,7 +120,7 @@ public class RentFullScreenLoader extends Form {
     }
 
     public float getBlurBackgroundRadius() {
-        return 17;
+        return 20;
     }
 
 }

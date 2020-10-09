@@ -147,7 +147,9 @@ public class SingUpForm extends Form {
         final Label termsLabel3 = new Label("agree to the", "LoginTermsText");
         final Label termsLabel3Space = new Label(" ", "LoginTermsText");
         final Button termsLinkButton = new Button("Terms", "LoginTermsLink");
-        final BrowserPopUp termsForm = new BrowserPopUp(POLICY_URL, null, "Terms&Conditions", this);
+        final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
+        termsForm.setBackAction(this);
+        termsForm.setUrl(POLICY_URL);
         termsForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         termsForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         termsLinkButton.addActionListener(evt -> {

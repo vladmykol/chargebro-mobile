@@ -47,7 +47,6 @@ import com.mykovol.takeandcharge.form.component.ToolBox;
 import com.mykovol.takeandcharge.service.LocationService;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
-import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
@@ -87,6 +86,7 @@ public class MainForm extends Form {
         setScrollableY(false);
         setToolbar(new Toolbar(true));
         setTransitionOutAnimator(CommonTransitions.createEmpty());
+        setTransitionInAnimator(CommonTransitions.createEmpty());
 
         Button draggablePanelScreenBlocker = new Button();
         Button draggablePanelScreenBottomBlocker = new Button();
@@ -99,6 +99,7 @@ public class MainForm extends Form {
 
         add(FlowLayout.encloseRightMiddle(toolBox));
 
+        scanButton.setVisible(false);
         add(BorderLayout.south(
                 FlowLayout.encloseCenter(scanButton)
         ));
@@ -151,8 +152,6 @@ public class MainForm extends Form {
 
         CommonCode.constructSideMenu(getToolbar(), this);
         initMap();
-
-        UserService.checkVersion();
     }
 
     public static MainForm get() {
@@ -172,12 +171,11 @@ public class MainForm extends Form {
     public void show() {
         super.show();
         showMeOnMap();
-        UITimer.timer(3000, false, getComponentForm(), () -> {
-            WebSocketClient.get().disconnect();
-            WebSocketClient.get();
-            refreshRentContent();
-            refreshMarkersOnMap(kievCoord);
-        });
+//        UITimer.timer(3000, false, getComponentForm(), () -> {
+        refreshRentContent();
+        refreshMarkersOnMap(kievCoord);
+//        });
+        MainNoBlockingLoader.get().stop();
     }
 
     public void showIfNotVisible() {
@@ -192,7 +190,6 @@ public class MainForm extends Form {
 
         mapContainer.setCameraPosition(kievCoord);
         mapContainer.zoom(kievCoord, mapContainer.getMinZoom() + 12);
-
 //        UITimer.timer(3000, false, getComponentForm(), () -> {
 //            mapContainer.zoom(ukraineCoord, mapContainer.getMinZoom() + 15);
 //            scanButton.setVisible(true);
@@ -237,7 +234,11 @@ public class MainForm extends Form {
     }
 
     public void showScanButton() {
-        scanButton.setVisible(true);
+        callSerially(() -> {
+            scanButton.setY(getDisplayHeight());
+            scanButton.setVisible(true);
+            scanButton.getParent().getParent().animateLayout(300);
+        });
     }
 
     public void removeRentRow(String serialNumber) {
@@ -246,7 +247,7 @@ public class MainForm extends Form {
 
     public void removeAllRentRows() {
         callSerially(draggablePanel::removeAllRentRows);
-
+        showScanButton();
     }
 
     public void showError(String text, int type) {
