@@ -23,13 +23,16 @@
 
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.components.SwitchList;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.spinner.Picker;
+import com.mykovol.takeandcharge.TakeAndChargeMain;
 import com.mykovol.takeandcharge.tools.CommonCode;
 
 /**
@@ -66,7 +69,7 @@ public class SettingsForm extends Form {
         landPicket.setType(Display.PICKER_TYPE_STRINGS);
 
         landPicket.setStrings("ua", "ru", "en", "default");
-        landPicket.setSelectedString(Preferences.get("userLang", "default"));
+        landPicket.setSelectedString(">");
 
         landPicket.addActionListener(evt -> {
 //            UITimer.timer(1000, false, this, () -> {
@@ -75,11 +78,12 @@ public class SettingsForm extends Form {
             } else {
                 Preferences.set("userLang", landPicket.getSelectedString());
             }
-            Dialog.show("Warning", "In order to language changes take effect, you need to restart the application", "Ok", null);
+            TakeAndChargeMain.loadLocalization();
+            Dialog.show("Warning", "In order to language changes take effect, you need to restart the application", "OK", null);
 //            });
         });
 
-//        SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
+        SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
 //        switchList.addActionListener(e -> {
 //            Dialog.show("Info", "You selected " + Arrays.toString(switchList.getMultiListModel().getSelectedIndices()), "Ok", null);
 //        });

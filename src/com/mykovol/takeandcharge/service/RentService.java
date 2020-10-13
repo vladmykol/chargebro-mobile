@@ -156,6 +156,7 @@ public class RentService {
 
         if (Preferences.get("noPaymentMethod", "false").equals("true")) {
             new WalletForm().show();
+            return;
         }
 
         if (CodeScanner.getInstance() == null) {

@@ -53,13 +53,21 @@ public class WebSocketClient extends WebSocket {
         super(GlobalConst.getServerUrl() + SERVER_SOCKET_URL);
     }
 
-    public static WebSocketClient get() {
+    public static WebSocketClient ensureConnection() {
         if (instance == null) {
             instance = new WebSocketClient();
-            instance.autoReconnect(1000);
+            instance.autoReconnect(3000);
             instance.connect();
         }
         return instance;
+    }
+
+    public static void disconnect() {
+        if (instance != null) {
+            instance.autoReconnect(0);
+            instance.close();
+            instance = null;
+        }
     }
 
     @Override
@@ -135,13 +143,13 @@ public class WebSocketClient extends WebSocket {
     }
 
     private void takePowerBankAction(String serialNumber) {
-        MainForm.get().showIfNotVisible();
-        MainForm.get().refreshRentContent();
+        MainForm.get().addRentRowOffline(serialNumber);
     }
 
     private void authAction(short messageCode, String responseMessage) {
         if (messageCode != MESSAGE_CODE_OK) {
             Log.p("websocket authentication issue - " + responseMessage);
+            disconnect();
         } else {
             Log.p("authenticated in websocket server " + responseMessage);
             MainForm.get().refreshRentContent();

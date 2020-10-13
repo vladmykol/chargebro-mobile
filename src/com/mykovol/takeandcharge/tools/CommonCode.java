@@ -26,7 +26,6 @@ package com.mykovol.takeandcharge.tools;
 import com.codename1.capture.Capture;
 import com.codename1.components.InteractionDialog;
 import com.codename1.components.ScaleImageLabel;
-import com.codename1.gif.GifImage;
 import com.codename1.io.FileSystemStorage;
 import com.codename1.io.Preferences;
 import com.codename1.io.Storage;
@@ -44,11 +43,11 @@ import com.codename1.ui.util.ImageIO;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.form.*;
+import com.mykovol.takeandcharge.service.GlobalConst;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import static com.codename1.ui.CN.convertToPixels;
@@ -72,13 +71,13 @@ public class CommonCode {
     private final static Label avatarText = new Label("ChargeBro", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
+    private final static Button signOutButton = getSignOutButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
     private final static Button registerButton = getRegisterButton();
     private final static Button historyButton = getHistoryButton();
     private final static Button promoCodeButton = getPromoCodeButton();
     private final static Button creditCardButton = getCreditCards();
-    private final static Button signOutButton = getSignOutButton();
     private final static Button PayForPbButton = getPayForPbButton();
     private final static Button priceButton = getPriceButton();
     private final static Button supportButton = getSupportButton();
@@ -346,8 +345,7 @@ public class CommonCode {
             price.setCloseAction(MainForm.get());
             price.setTransitionInAnimator(CommonTransitions.createFade(300));
             price.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-            price.show();
-            price.setUrl(PRICE_URL);
+            price.show(PRICE_URL);
         });
     }
 
@@ -372,20 +370,20 @@ public class CommonCode {
 //    }
 
     private static Button getCreditCards() {
-        return constructSideMenuButton("Wallet", FontImage.MATERIAL_CREDIT_CARD, e -> {
+        return constructSideMenuButton("Payment", FontImage.MATERIAL_CREDIT_CARD, e -> {
             new WalletForm().show();
         });
     }
 
     private static Button getHistoryButton() {
         return constructSideMenuButton("History", FontImage.MATERIAL_HISTORY, e -> {
-            new NotImplementedScreen("Rent history", MainForm.get()).show();
+            new ComingSoonForm("Rent history", MainForm.get()).show();
         });
     }
 
     private static Button getPromoCodeButton() {
         return constructSideMenuButton("Promocode", FontImage.MATERIAL_LOCAL_OFFER, e -> {
-            new NotImplementedScreen("Promocode", MainForm.get()).show();
+            new ComingSoonForm("Promocode", MainForm.get()).show();
         });
     }
 
@@ -417,7 +415,7 @@ public class CommonCode {
 
     private static Button getRegisterButton() {
         return constructSideMenuButton("Register", FontImage.MATERIAL_PERSON_ADD, evt -> {
-            new SingUpForm().show();
+            new RegistrationForm().show();
         });
     }
 
@@ -425,7 +423,7 @@ public class CommonCode {
     private static Button getSignOutButton() {
         Button sideMenuButton = new Button("Sign out", "SideMenuButtonSignOut");
         sideMenuButton.addActionListener(evt -> {
-            UserService.logout();
+            UserService.onUserLogout();
         });
         return sideMenuButton;
     }
@@ -465,7 +463,7 @@ public class CommonCode {
         final String content = "\n \n \n -------------- user info (do not delete) ------------------ \n" +
                 "User: " + userPhone + "\n" +
                 "OS: " + Display.getInstance().getPlatformName() + "\n" +
-                "App version: " + appVersion + "\n" +
+                "App version: " + appVersion + (GlobalConst.LOCAL ? "(debug mode)" : "") + "\n" +
                 "Log: " + logText + "\n";
         Message message = new Message(content);
 

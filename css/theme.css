@@ -26,7 +26,6 @@
     selectedWalkthruImage: "selected-walkthru.png";
     walkthru1Image: "walkthru1.png";
     walkthru2Image: "walkthru2.png";
-    walkthru3Image: "walkthru3.png";
     defaultAvatarImage: "defaultAvatar.png";
     avatarPenImage: "avatarPen.png";
     menuBgrImage: "menuBgr.png";
@@ -87,6 +86,7 @@ Title {
     padding: 0mm;
     font-family: var(--font-ProximaNova-Semibold);
     font-size: 3.5mm;
+    text-align: center;
 }
 
 TitleCommand {
@@ -94,7 +94,7 @@ TitleCommand {
     margin: 2.5mm 0mm 0mm 0mm;
     color: #555454;
     background: white;
-    border-radius: 3.6mm;
+    border-radius: 3.5mm;
     border: lightgrey solid 0.1mm;
 }
 
@@ -146,12 +146,23 @@ DialogTitle {
 }
 
 Picker {
-    margin: 0mm 1mm;
-    padding: 0mm;
+    margin: 0mm 0mm;
+    padding: 2mm 3mm;
     border: none;
-    font-family: var(--font-ProximaNova-Semibold);
+    font-family: var(--font-ProximaNova-Bold);
     font-size: 3mm;
     text-align: right;
+    /*background: lightgrey;*/
+}
+
+PickerDialog {
+    font-family: var(--font-ProximaNova-Semibold);
+    color: green;
+}
+
+PickerButtonBar {
+    font-family: var(--font-ProximaNova-Semibold);
+    color: yellow;
 }
 
 
@@ -367,7 +378,7 @@ PanelHeader {
     color: #8FC0C5;
     padding: 1mm 3mm;
     margin: 0mm;
-    font-family: "native:MainLight";
+    font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm;
     font-weight: bold;
     text-align: center;
@@ -375,7 +386,7 @@ PanelHeader {
 
 PanelText {
     padding: 0mm 2mm;
-    font-family: "native:MainLight";
+    font-family: var(--font-ProximaNova-Regular);
     font-size: 2.5mm;
     text-align: center;
 }
@@ -553,7 +564,7 @@ Sheet {
 }
 
 StationsSheetTitle {
-    font-family: "native:MainLight";
+    font-family: var(--font-ProximaNova-Regular);
     font-size: 4mm;
     padding: 0mm;
     margin: 2mm;
@@ -566,7 +577,7 @@ StationsSheetImage {
 }
 
 StationsSheetText {
-    font-family: "native:MainLight";
+    font-family: var(--font-ProximaNova-Regular);
     color: #808080;
     font-size: 2.5mm;
     margin: 0mm 1mm 1mm 1mm;
@@ -622,31 +633,33 @@ WalkthruPic {
     text-align: center;
 }
 
-WalkthruWhiteText {
-    font-family: var(--font-ProximaNova-Bold);
+WalkthruText {
+    font-family: var(--font-ProximaNova-Semibold);
     color: #3E4958;
     text-align: center;
     font-size: 3.5mm;
-    margin: 1mm 2mm;
+    margin: 5mm 2mm 10mm 2mm;
 }
 
 WalkthruSubText {
     cn1-derive: WalkthruWhiteText;
     font-family: var(--font-ProximaNova-Light);
     font-size: 2.5mm;
-    margin: 0.3mm 2mm 10mm 2mm;
+    margin: 2mm;
 }
 
 WalkthruTab1 {
+    /*background: #fdeff7;*/
     background: #F4F0DC;
 }
 
 WalkthruTab2 {
-    background: #CCF4FF;
+    /*background: #D7E0FF;*/
+    background: #dcf5f6;
 }
 
 WalkthruTab3 {
-    background: #D7E0FF;
+    background: #F4F0DC;
 }
 
 
@@ -740,6 +753,11 @@ RentConfirmationHint {
     text-align: center;
 }
 
+RentConfirmationHintNoCenter {
+    cn1-derive: RentConfirmationHint;
+    text-align: left;
+}
+
 RentConfirmationLink {
     cn1-derive: RentConfirmationHint;
     color: #0095A0;
@@ -807,6 +825,43 @@ SettingsFormText {
 
 SettingsFormDelimiter {
     border-bottom: 0.2mm solid rgba(128, 128, 128, 0.25);
-    margin: 2.5mm 0mm 2.5mm 0mm;
+    margin: 1mm 0mm 1mm 0mm;
     padding: 0.2mm;
+}
+
+
+Switch {
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3mm;
+}
+
+/*====================== ComingSoonForm ==========================*/
+
+ComingSoonFormHeader {
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Bold);
+    font-size: 5mm;
+    text-align: center;
+    color: var(--grafit-color);
+}
+
+/*====================== PermissionAccessForm ==========================*/
+
+PermissionAccessFormHeader {
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Bold);
+    font-size: 5mm;
+    text-align: center;
+    color: var(--grafit-color);
+}
+
+PermissionAccessFormText {
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3mm;
 }

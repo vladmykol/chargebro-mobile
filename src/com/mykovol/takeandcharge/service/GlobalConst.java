@@ -44,9 +44,10 @@ public final class GlobalConst {
     public static final String POLICY_URL = "https://chargebro.com/policy";
     public static final String PRICE_URL = "https://chargebro.com/pricing";
     private static final String API_AUTH = "/auth";
+    public static final String API_INIT = API_AUTH + "/init";
+    public static final String API_RESET_PASS = API_AUTH + "/reset";
+    public static final String API_REGISTER = API_AUTH + "/register";
     public static final String API_LOGIN = API_AUTH + "/login";
-    public static final String API_REGISTER_INIT = API_AUTH + "/register";
-    public static final String API_REGISTER = API_AUTH + "/singup";
     public static final String API_LOGOUT = API_AUTH + "/logout";
 
     public static String getServerUrl() {

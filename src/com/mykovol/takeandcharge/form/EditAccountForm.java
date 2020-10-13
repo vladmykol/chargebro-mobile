@@ -33,7 +33,7 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.Style;
-import com.mykovol.takeandcharge.dataobj.User;
+import com.mykovol.takeandcharge.dataobj.UserCreationRequest;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
 
@@ -57,12 +57,12 @@ public class EditAccountForm extends Form {
         Container avatarContainer = LayeredLayout.encloseIn(avatar,
                 FlowLayout.encloseBottom(edit));
 
-        User user = UserService.getUser();
+        UserCreationRequest userCreationRequest = UserService.getUser();
         UiBinding uib = new UiBinding();
 
-        String userString = user.getPropertyIndex().toString();
+        String userString = userCreationRequest.getPropertyIndex().toString();
 
-        TextField firstName = createTextField(uib, user.name, TextField.ANY);
+        TextField firstName = createTextField(uib, userCreationRequest.name, TextField.ANY);
 
         addAll(avatarContainer,
                 CommonCode.createSeparator(),
@@ -75,8 +75,8 @@ public class EditAccountForm extends Form {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 previous.removeShowListener(this);
-                UiBinding.unbind(user);
-                String newUserString = user.getPropertyIndex().toString();
+                UiBinding.unbind(userCreationRequest);
+                String newUserString = userCreationRequest.getPropertyIndex().toString();
                 if (!newUserString.equals(userString)) {
 //                    UserService.editUser(user);
                 }

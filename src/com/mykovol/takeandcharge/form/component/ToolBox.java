@@ -8,8 +8,8 @@ import com.codename1.ui.Container;
 import com.codename1.ui.Display;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.layouts.BoxLayout;
+import com.mykovol.takeandcharge.form.ComingSoonForm;
 import com.mykovol.takeandcharge.form.MainForm;
-import com.mykovol.takeandcharge.form.NotImplementedScreen;
 import com.mykovol.takeandcharge.service.WebSocketClient;
 
 public class ToolBox extends Container {
@@ -26,17 +26,17 @@ public class ToolBox extends Container {
         refreshButton.setMaterialIcon(FontImage.MATERIAL_LOOP);
         refreshButton.addActionListener(evt -> {
             Display.getInstance().vibrate(1);
-            NetworkManager.getInstance().shutdown();
+            NetworkManager.getInstance().shutdownSync();
             NetworkManager.getInstance().start();
-            MainForm.get().refreshRentContent();
-            MainForm.get().refreshMarkersOnMap();
+            WebSocketClient.disconnect();
+            WebSocketClient.ensureConnection();
         });
         reportErrorButton.setMaterialIcon(FontImage.MATERIAL_SUPPORT_AGENT);
         reportErrorButton.addActionListener(evt -> {
-            new NotImplementedScreen("Support", MainForm.get()).show();
+            new ComingSoonForm("Support", MainForm.get()).show();
         });
         showNearestStationsButton.addActionListener(evt -> {
-            new NotImplementedScreen("Nearest stations", MainForm.get()).show();
+            new ComingSoonForm("Nearest stations", MainForm.get()).show();
         });
 
         FontImage.setMaterialIcon(showNearestStationsButton, FontImage.MATERIAL_STOREFRONT);

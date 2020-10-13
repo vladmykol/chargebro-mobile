@@ -33,6 +33,7 @@ import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.RoundBorder;
@@ -47,6 +48,7 @@ import com.mykovol.takeandcharge.form.component.ToolBox;
 import com.mykovol.takeandcharge.service.LocationService;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
@@ -66,7 +68,6 @@ import static com.codename1.ui.plaf.Style.UNIT_TYPE_SCREEN_PERCENTAGE;
  */
 public class MainForm extends Form {
     private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RVpEYUpceVw+VSlDWzkjXWZ8bCJDSF5GRkZ4cm1DFVdE");
-    private static final Coord kievCoord = new Coord(50.480471, 30.5238);
     private static MainForm instance;
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
     private final ToolBox toolBox = new ToolBox(mapContainer);
@@ -78,7 +79,7 @@ public class MainForm extends Form {
     private final Image stationPointImage = Resources.getGlobalResources().getImage("map-point.png");
     private final Map<String, MapContainer.MapObject> mapMarkers = new HashMap<>();
     private final MessagePopUp messagePopUp = new MessagePopUp();
-    private Coord previousCoord = new Coord(kievCoord.getLatitude(), kievCoord.getLongitude());
+    private Coord previousCoord;
 
     private MainForm() {
         super(new LayeredLayout());
@@ -101,7 +102,7 @@ public class MainForm extends Form {
 
         scanButton.setVisible(false);
         add(BorderLayout.south(
-                FlowLayout.encloseCenter(scanButton)
+                BoxLayout.encloseXCenter(scanButton)
         ));
 
         addPointerDraggedListener(evt -> {
@@ -169,27 +170,31 @@ public class MainForm extends Form {
 
     @Override
     public void show() {
-        super.show();
-        showMeOnMap();
-//        UITimer.timer(3000, false, getComponentForm(), () -> {
-        refreshRentContent();
-        refreshMarkersOnMap(kievCoord);
-//        });
         MainNoBlockingLoader.get().stop();
+        super.show();
+        UITimer.timer(2000, false, getComponentForm(), () -> {
+            showMeOnMap();
+            refreshRentContent();
+        });
+//        refreshMarkersOnMap(kievCoord);
+//        });
     }
 
-    public void showIfNotVisible() {
+    public void showNoUpdate() {
         MainNoBlockingLoader.get().stop();
-        callSerially(() -> {
-            if (Display.getInstance().getCurrent() != this) super.show();
-        });
+        super.show();
     }
 
     private void initMap() {
-        addMapListenerToDrawStationsOnMap();
+        final double lastPositionX = Preferences.get("lastPositionX", 0d);
+        final double lastPositionY = Preferences.get("lastPositionY", 0d);
+        if (lastPositionX > 0 && lastPositionY > 0) {
+            final Coord coord = new Coord(lastPositionX, lastPositionY);
+            mapContainer.setCameraPosition(coord);
+            mapContainer.zoom(coord, mapContainer.getMinZoom() + 12);
+        }
 
-        mapContainer.setCameraPosition(kievCoord);
-        mapContainer.zoom(kievCoord, mapContainer.getMinZoom() + 12);
+        addMapListenerToDrawStationsOnMap();
 //        UITimer.timer(3000, false, getComponentForm(), () -> {
 //            mapContainer.zoom(ukraineCoord, mapContainer.getMinZoom() + 15);
 //            scanButton.setVisible(true);
@@ -200,7 +205,6 @@ public class MainForm extends Form {
     public void showMeOnMap() {
         boolean isShowMyLocation = Preferences.get("showMyLocation", false);
         if (isShowMyLocation) {
-            new LocationService().moveToCurrentLocation(mapContainer);
             mapContainer.setShowMyLocation(true);
             LocationService locationService = new LocationService();
             locationService.moveToCurrentLocation(mapContainer);
@@ -229,16 +233,22 @@ public class MainForm extends Form {
         draggablePanel.refreshRentContent();
     }
 
+    public void addRentRowOffline(String powerBankId) {
+        draggablePanel.addRentRowOffline(powerBankId);
+    }
+
     public void hideScanButton() {
         scanButton.setVisible(false);
     }
 
     public void showScanButton() {
-        callSerially(() -> {
-            scanButton.setY(getDisplayHeight());
-            scanButton.setVisible(true);
-            scanButton.getParent().getParent().animateLayout(300);
-        });
+        if (!scanButton.isVisible()) {
+            callSerially(() -> {
+                scanButton.setY(getDisplayHeight());
+                scanButton.setVisible(true);
+                scanButton.getParent().animateLayout(500);
+            });
+        }
     }
 
     public void removeRentRow(String serialNumber) {
@@ -251,25 +261,30 @@ public class MainForm extends Form {
     }
 
     public void showError(String text, int type) {
-        showIfNotVisible();
+        showNoUpdate();
         messagePopUp.showError(text, type);
     }
 
     private void addMapListenerToDrawStationsOnMap() {
         mapContainer.addMapListener((source, zoom, center) -> {
-            double x = previousCoord.getLatitude() - center.getLatitude();
-            double y = previousCoord.getLongitude() - center.getLongitude();
-            double size = Math.abs(x * y);
-            if (size > 0.1) {
-                previousCoord = center;
-
-                refreshMarkersOnMap(center);
+            if (previousCoord != null) {
+                double x = previousCoord.getLatitude() - center.getLatitude();
+                double y = previousCoord.getLongitude() - center.getLongitude();
+                double size = Math.abs(x * y);
+                if (size > 0.1) {
+                    refreshMarkersOnPoint(center);
+                }
+            } else {
+                refreshMarkersOnPoint(center);
             }
         });
     }
 
-    public void refreshMarkersOnMap() {
-        refreshMarkersOnMap(kievCoord);
+    private void refreshMarkersOnPoint(Coord center) {
+        previousCoord = center;
+        Preferences.set("lastPositionX", center.getLatitude());
+        Preferences.set("lastPositionY", center.getLongitude());
+        refreshMarkersOnMap(center);
     }
 
     public void refreshMarkersOnMap(Coord position) {
@@ -343,6 +358,7 @@ public class MainForm extends Form {
                     public void onSucess(BeforeRentInfo value) {
                         final RentConfirmation rentConfirmation = new RentConfirmation(value);
                         MainNoBlockingLoader.get().stop();
+                        WebSocketClient.ensureConnection();
                         rentConfirmation.show();
                     }
 
@@ -352,7 +368,7 @@ public class MainForm extends Form {
                     }
                 });
             } else {
-                new SingUpForm().show();
+                new RegistrationForm().show();
             }
         }
 

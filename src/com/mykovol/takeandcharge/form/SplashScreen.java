@@ -1,7 +1,6 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.ScaleImageLabel;
-import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
@@ -9,10 +8,10 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.mykovol.takeandcharge.service.UserService;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.layouts.BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE;
+import static com.mykovol.takeandcharge.form.WalkthruForm.isWalkthruShowed;
 
 public class SplashScreen extends Form {
     private final ScaleImageLabel logoImage1 = new ScaleImageLabel(Resources.getGlobalResources().getImage("splash-logo-part-1.png"));
@@ -49,6 +48,7 @@ public class SplashScreen extends Form {
         Component.setSameWidth(logoTitle, logoSubTitle, mainContainer);
     }
 
+
     @Override
     public void show() {
         super.show();
@@ -63,10 +63,8 @@ public class SplashScreen extends Form {
 //                    animateSubTitle();
                     MainForm.get();
 
-                    boolean isWalkthruShowed = Preferences.get("isWalkthruShowed", false);
                     callSerially(() -> {
-                        if (!isWalkthruShowed) {
-                            Preferences.set("isWalkthruShowed", true);
+                        if (!isWalkthruShowed()) {
                             new WalkthruForm().show();
                         } else {
 //                            UserService.checkForNewVersion();
@@ -85,7 +83,6 @@ public class SplashScreen extends Form {
 //                    }
                 });
             });
-
 
 //                MainForm mainForm = MainForm.get();
 //                callSerially(() -> {

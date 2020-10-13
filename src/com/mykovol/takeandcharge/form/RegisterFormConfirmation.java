@@ -24,20 +24,18 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
-import com.codename1.io.Preferences;
+import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.validation.Validator;
-import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
-import com.mykovol.takeandcharge.dataobj.User;
+import com.mykovol.takeandcharge.dataobj.UserCreationRequest;
 import com.mykovol.takeandcharge.form.component.PasswordFieldContainer;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.form.component.SmsFieldContainer;
-import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
@@ -46,24 +44,25 @@ import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
  *
  * @author Vlad Mykol
  */
-public class RegisterForm extends Form {
+public class RegisterFormConfirmation extends Form {
     private final SmsFieldContainer smsCodeField;
     private final PasswordFieldContainer passwordField = new PasswordFieldContainer();
 
     private final SpanLabel errorLabel = new SpanLabel("", "LoginError");
-    private final User user = new User();
+    private final UserCreationRequest userCreationRequest = new UserCreationRequest();
     private final Validator smsValidator = new Validator();
     private final Validator passwordValidator = new Validator();
+    private final Button registerButton = new Button("OK", "LoginButton");
 
-    public RegisterForm(Form previousForm, PhoneFieldContainer phoneFieldContainer,
-                        RegisterInitResponse response) {
+    public RegisterFormConfirmation(Form previousForm, PhoneFieldContainer phoneFieldContainer,
+                                    RegisterInitResponse response) {
         super(BoxLayout.y());
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
         getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
 
         Label spaceLabel = new Label(" ");
-        Label headerText = new Label("Sign Up", "LoginHeader");
+        Label headerText = new Label("Confirmation", "LoginHeader");
         if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
             spaceLabel = new Label();
             setTitle(headerText.getText());
@@ -78,11 +77,10 @@ public class RegisterForm extends Form {
         Label phoneNumberHolder = new Label("", "LoginSubHeader");
         phoneNumberHolder.setText(phoneFieldContainer.getFormattedPhoneNumber());
 
-        user.name.set(phoneFieldContainer.getFullPhoneNumber());
-        user.token.set(response.token.get());
+        userCreationRequest.name.set(phoneFieldContainer.getFullPhoneNumber());
+        userCreationRequest.token.set(response.token.get());
 
         Validator.setValidateOnEveryKey(true);
-        Button registerButton = new Button("Register", "LoginButton");
         smsValidator.addSubmitButtons(registerButton);
         smsValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
         smsCodeField.setValidator(smsValidator);
@@ -100,34 +98,20 @@ public class RegisterForm extends Form {
             setEditOnShow(null);
             InfinityProgressBlocking.start();
 
-            user.password.set(passwordField.getValue());
-            user.smsCode.set(smsCodeField.getValue());
+            userCreationRequest.password.set(passwordField.getValue());
+            userCreationRequest.smsCode.set(smsCodeField.getValue());
 
-            UserService.registerUser(user, new Callback<String>() {
+            UserService.registerUser(userCreationRequest, new LoginCallback() {
                 @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                public void loginFailed(String errorMessage) {
                     InfinityProgressBlocking.stop();
                     showError(errorMessage);
                 }
 
                 @Override
-                public void onSucess(String response) {
-                    RentService.prepareCheckout(new Callback<String>() {
-                        @Override
-                        public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                            InfinityProgressBlocking.stop();
-                            setTransitionOutAnimator(CommonTransitions.createEmpty());
-                            showError(errorMessage);
-                        }
-
-                        @Override
-                        public void onSucess(String checkoutUrl) {
-                            InfinityProgressBlocking.stop();
-                            Preferences.set("noPaymentMethod", "true");
-                            setTransitionOutAnimator(CommonTransitions.createEmpty());
-                            MainForm.get().show();
-                        }
-                    });
+                public void loginSuccessful() {
+                    setTransitionOutAnimator(CommonTransitions.createEmpty());
+                    MainForm.get().show();
                 }
             });
         });
@@ -152,6 +136,10 @@ public class RegisterForm extends Form {
     }
 
 
+    public void setPasswordFieldName(String text) {
+
+    }
+
     private void showError(String errorMessage) {
         errorLabel.setText(errorMessage);
         errorLabel.setHidden(false);
@@ -168,7 +156,6 @@ public class RegisterForm extends Form {
         };
     }
 
-
     private boolean isValid() {
         if (!smsValidator.isValid()) {
             showError(smsCodeField.getErrorMessage());
@@ -179,4 +166,7 @@ public class RegisterForm extends Form {
         return smsValidator.isValid() && passwordValidator.isValid();
     }
 
+    public void setResetMode() {
+        passwordField.setLabelText("New password");
+    }
 }

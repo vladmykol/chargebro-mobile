@@ -75,4 +75,7 @@ public class PasswordFieldContainer extends Container {
         return textField;
     }
 
+    public void setLabelText(String text) {
+        textLabel.setText(text);
+    }
 }

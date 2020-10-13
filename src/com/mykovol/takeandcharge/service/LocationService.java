@@ -29,6 +29,8 @@ import com.codename1.location.LocationListener;
 import com.codename1.location.LocationManager;
 import com.codename1.maps.Coord;
 import com.codename1.ui.Dialog;
+import com.codename1.ui.Display;
+import com.mykovol.takeandcharge.form.MainForm;
 
 /**
  * A generic service class that handles login/creation etc.
@@ -52,9 +54,11 @@ public class LocationService {
         LocationManager.getLocationManager().setLocationListener(new LocationListener() {
             @Override
             public void locationUpdated(Location location) {
+//                not correct coord in simulator
+                if (Display.getInstance().isSimulator()) return;
                 Coord crd = new Coord(location.getLatitude(), location.getLongitude());
                 mapContainer.setCameraPosition(crd);
-//                mapContainer.zoom(crd, mapContainer.getMinZoom() + 13);
+                MainForm.get().refreshMarkersOnMap(crd);
                 LocationManager.getLocationManager().setLocationListener(null);
             }
 

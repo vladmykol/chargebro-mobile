@@ -44,14 +44,15 @@ import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
  *
  * @author Vlad Mykol
  */
-public class SingUpForm extends Form {
+public class RegistrationForm extends Form {
 
     private final Validator phoneValidator = new Validator();
     private final SpanLabel errorLabel = new SpanLabel("Password error", "LoginError");
     private final PhoneFieldContainer phoneFieldContainer = new PhoneFieldContainer();
     private final Label headerText = new Label("Sign Up", "LoginHeader");
+    private boolean isReset = false;
 
-    public SingUpForm() {
+    public RegistrationForm() {
         super(new BorderLayout());
 //        CommonCode.removeTransitionsTemporarily(previous);
         setFormBottomPaddingEditingMode(true);
@@ -96,7 +97,7 @@ public class SingUpForm extends Form {
             }
 
 
-            UserService.validateUserPhone(phoneFieldContainer.getFullPhoneNumber(), new Callback<RegisterInitResponse>() {
+            UserService.validateUserPhone(phoneFieldContainer.getFullPhoneNumber(), isReset, new Callback<RegisterInitResponse>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                     if (errorCode == 409) {
@@ -111,8 +112,11 @@ public class SingUpForm extends Form {
 
                 @Override
                 public void onSucess(RegisterInitResponse response) {
-                    RegisterForm step2Form = new RegisterForm(getCurrentForm(),
+                    RegisterFormConfirmation step2Form = new RegisterFormConfirmation(getCurrentForm(),
                             phoneFieldContainer, response);
+                    if (isReset) {
+                        step2Form.setResetMode();
+                    }
                     step2Form.show();
                     InfinityProgressBlocking.stop();
                 }
@@ -149,12 +153,11 @@ public class SingUpForm extends Form {
         final Button termsLinkButton = new Button("Terms", "LoginTermsLink");
         final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
         termsForm.setBackAction(this);
-        termsForm.setUrl(POLICY_URL);
         termsForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         termsForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         termsLinkButton.addActionListener(evt -> {
             CommonCode.removeTransitionsTemporarily(this);
-            termsForm.show();
+            termsForm.show(POLICY_URL);
         });
 //        final Label termsLinkButtonSpace = new Label(" ", "LoginTermsText");
 //        final Label andLabel = new Label("and", "LoginTermsText");
@@ -207,4 +210,8 @@ public class SingUpForm extends Form {
         }
     }
 
+    public void setResetPassMode() {
+        isReset = true;
+        setHeader(("Reset password"));
+    }
 }

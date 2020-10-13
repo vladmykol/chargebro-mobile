@@ -23,33 +23,72 @@
 
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.ui.BrowserComponent;
-import com.codename1.ui.Command;
-import com.codename1.ui.Form;
-import com.codename1.ui.Toolbar;
+import com.codename1.components.SpanLabel;
+import com.codename1.ui.*;
+import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.animations.FlipTransition;
+import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
-import com.mykovol.takeandcharge.tools.CommonCode;
-
-import static com.codename1.ui.CN.callSerially;
+import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Style;
 
 /**
- * For features in implementation
- *
  * @author Vlad Mykol
  */
 public class ComingSoonForm extends Form {
+    private final Label headerText = new Label("", "ComingSoonFormHeader");
 
     public ComingSoonForm(String title, Form previousForm) {
         super(new BorderLayout());
-//        CommonCode.removeTransitionsTemporarily(previous);
+
+        setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
-        getToolbar().setTitle(title);
+        setTransitionInAnimator(CommonTransitions.createEmpty());
+        setTransitionOutAnimator(new FlipTransition(-1, 300));
 
-        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(previousForm);
-        getToolbar().addCommandToRightBar(closeToPrevFormCommand);
+//        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
+//            setTitle(title);
+//            headerText.setHidden(true);
+//        } else {
+        headerText.setText(title);
+//        }
 
+        getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
 
+        getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
+        getContentPane().getAllStyles().setMargin(0, 5, 3.5f, 3.5f);
 
+        Label headerImage = new Label("", "RentConfirmationImage");
+        headerImage.setMaterialIcon(FontImage.MATERIAL_EMOJI_OBJECTS);
+        SpanLabel headerTextLabel = new SpanLabel("Coming soon...", "RentConfirmationHeader");
+        headerTextLabel.setEnabled(false);
+
+        SpanLabel headerSubText = new SpanLabel("This feature is not implemented yet. Check out the new app version and get more features", "RentConfirmationHint");
+        headerSubText.setEnabled(false);
+
+        final Container centerHolder = BoxLayout.encloseYCenter(headerImage,
+                headerTextLabel,
+                headerSubText);
+        centerHolder.setScrollableY(false);
+        centerHolder.setTensileDragEnabled(false);
+
+        add(BorderLayout.NORTH, headerText);
+        add(BorderLayout.CENTER, centerHolder);
+
+        Button okButton = new Button("OK", "LoginButton");
+        okButton.addActionListener(evt -> {
+            previousForm.showBack();
+        });
+
+        add(BorderLayout.SOUTH, okButton);
     }
 
+    private Command constructBackCommand(Form previousForm) {
+        return new Command("") {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                previousForm.showBack();
+            }
+        };
+    }
 }

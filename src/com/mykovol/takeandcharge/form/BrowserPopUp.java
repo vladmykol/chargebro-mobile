@@ -23,6 +23,7 @@
 
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.io.Preferences;
 import com.codename1.ui.BrowserComponent;
 import com.codename1.ui.Command;
 import com.codename1.ui.Form;
@@ -51,11 +52,12 @@ public class BrowserPopUp extends Form {
         add(BorderLayout.CENTER, browser);
     }
 
-    public void setUrl(String url) {
-        setUrl(url, null, null);
+    public void show(String url) {
+        browser.setURL(url);
+        super.show();
     }
 
-    public void setUrl(String url, String closeUrl, Form closeToForm) {
+    public void show(String url, String closeUrl, Form closeToForm) {
         browser.setURL(url);
         browser.addBrowserNavigationCallback(currentUrl -> {
             if (closeUrl != null) {
@@ -68,6 +70,21 @@ public class BrowserPopUp extends Form {
             }
             return true;
         });
+        super.show();
+    }
+
+    public void showPaymentPage(String url) {
+        browser.setURL(url);
+        browser.addBrowserNavigationCallback(currentUrl -> {
+            if (currentUrl.contains("chargebro")) {
+                MainForm.get().showNoUpdate();
+                Preferences.set("noPaymentMethod", "false");
+                return false;
+            } else {
+                return true;
+            }
+        });
+        super.show();
     }
 
     public void setBackAction(Form form) {

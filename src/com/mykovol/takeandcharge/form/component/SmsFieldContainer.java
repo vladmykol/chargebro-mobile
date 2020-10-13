@@ -88,7 +88,7 @@ public class SmsFieldContainer extends Container {
     }
 
     private String formatSeconds(int time) {
-        return twoDigits(time / 60) + ":" + twoDigits(time % 60);
+        return twoDigits(time / 60) + ":" + twoDigits(time % 60) + " ";
     }
 
     private String twoDigits(int t) {

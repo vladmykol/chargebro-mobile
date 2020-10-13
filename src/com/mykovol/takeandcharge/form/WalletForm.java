@@ -46,8 +46,8 @@ import static com.codename1.ui.CN.getDisplayWidth;
  * @author Vlad Mykol
  */
 public class WalletForm extends Form {
-    final SpanLabel noCardsHint = new SpanLabel("You must add at least one card before taking a powerbank", "WalletFormHint");
-    private final Label headerText = new Label("Credit cards", "WalletFromHeader");
+    final SpanLabel noCardsHint = new SpanLabel("You must add payment card before taking a powerbank", "WalletFormHint");
+    private final Label headerText = new Label("Payment cards", "WalletFromHeader");
     private final Container cardContainer = new Container(BoxLayout.y());
 
     public WalletForm() {
@@ -63,12 +63,12 @@ public class WalletForm extends Form {
 //        CommonCode.removeTransitionsTemporarily(previous);
         // We remove the extra space for low resolution devices so things fit better
         Label spaceLabel = new Label(" ");
-        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
-            spaceLabel = new Label();
-            setTitle(headerText.getText());
-            headerText.setHidden(true);
-            spaceLabel.setHidden(true);
-        }
+//        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
+//            spaceLabel = new Label();
+//            setTitle(headerText.getText());
+//            headerText.setHidden(true);
+//            spaceLabel.setHidden(true);
+//        }
 
         getToolbar().setBackCommand(new Command("") {
             @Override
@@ -92,10 +92,10 @@ public class WalletForm extends Form {
         final Label delimiter = new Label("", "WalletFormDelimiter");
         delimiter.setShowEvenIfBlank(true);
 
-        final Button addCardButton = new Button("Add New Card", "WalletFromNewCardButton");
+        final Button addCardButton = new Button("Add Card", "WalletFromNewCardButton");
         addCardButton.setMaterialIcon(FontImage.MATERIAL_ADD);
         addCardButton.addActionListener(evt -> {
-            BrowserPopUp addCardForm = new BrowserPopUp("Add credit card");
+            BrowserPopUp addCardForm = new BrowserPopUp("Card authorization");
             addCardForm.setBackAction(Display.getInstance().getCurrent());
             addCardForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
             addCardForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
@@ -108,7 +108,8 @@ public class WalletForm extends Form {
 
                 @Override
                 public void onSucess(String checkoutUrl) {
-                    addCardForm.setUrl(checkoutUrl, "chargebro", Display.getInstance().getCurrent());
+                    addCardForm.showPaymentPage(checkoutUrl);
+
                 }
             });
         });
@@ -131,6 +132,7 @@ public class WalletForm extends Form {
                     public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
                         if (errorCode == 404) {
                             noCardsHint.setHidden(false);
+                            Preferences.set("noPaymentMethod", "true");
                             noCardsHint.getParent().animateLayout(400);
                         } else {
                             ToastBar.showErrorMessage(errorMessage);
@@ -143,6 +145,7 @@ public class WalletForm extends Form {
                             cardContainer.add(new CardBoard(cardDetails));
                         }
                         getToolbar().addCommandToRightBar(getEditCommand());
+                        Preferences.set("noPaymentMethod", "false");
                         cardContainer.getParent().animateLayout(400);
                     }
                 });
@@ -207,7 +210,7 @@ public class WalletForm extends Form {
             add(BorderLayout.EAST, BorderLayout.centerAbsolute(removeButton));
 
             removeButton.addActionListener(evt -> {
-                if (Dialog.show("Confirmation", "Are you sure you want to delete this credit card from your account?",
+                if (Dialog.show("Confirmation", "Are you sure you want to delete this card from your account?",
                         "Ok", "Cancel")) {
                     UserService.removeUserCard(getName(), new FailureCallback<String>() {
                         @Override

@@ -1,7 +1,6 @@
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.components.ScaleImageLabel;
-import com.codename1.components.SpanLabel;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
@@ -34,7 +33,7 @@ public class WalkthruForm extends Form {
         ArrayList<TabPage> pages = new ArrayList<>();
         pages.add(getFirstTab());
         pages.add(getSecondTab());
-        pages.add(getThirdTab());
+//        pages.add(getThirdTab());
 
 
         Tabs walkthruTabs = new Tabs();
@@ -75,6 +74,7 @@ public class WalkthruForm extends Form {
 //        skipButton.getAllStyles().setMarginRight(0);
 
         skipButton.addActionListener(evt -> {
+            setWalkthruShowed();
             MainForm.get().show();
         });
         radioContainer.getAllStyles().setMarginUnit(UNIT_TYPE_SCREEN_PERCENTAGE);
@@ -96,24 +96,25 @@ public class WalkthruForm extends Form {
         add(radioContainer);
         revalidate();
 
-        int lastElementOnSlideEndingY = 0;
-        for (TabPage page : pages) {
-            if (lastElementOnSlideEndingY < page.getLastComponentEndingY()) {
-                lastElementOnSlideEndingY = page.getLastComponentEndingY();
-            }
-        }
-        int centerBetweenSlideAndBottom = lastElementOnSlideEndingY + ((getDisplayHeight() - lastElementOnSlideEndingY) / 10);
-        radioContainer.getAllStyles().setMarginUnit(UNIT_TYPE_PIXELS);
-        radioContainer.getAllStyles().setMarginTop(centerBetweenSlideAndBottom);
+        radioContainer.getAllStyles().setMarginUnit(UNIT_TYPE_SCREEN_PERCENTAGE);
+        radioContainer.getAllStyles().setMarginTop(66);
 
+    }
+
+    public static void setWalkthruShowed() {
+        Preferences.set("isWalkthruShowed1", true);
+    }
+
+    public static boolean isWalkthruShowed() {
+        return Preferences.get("isWalkthruShowed1", false);
     }
 
 
     public TabPage getFirstTab() {
         return buildTab("walkthru1.png",
                 "Locate charging station",
-                "Find stations around you, see available powerbanks " +
-                        "and get directions in Google Maps.",
+//                "Find stations around you, see available powerbanks " +
+//                        "and get directions in Google Maps.",
                 "WalkthruTab1",
                 false);
     }
@@ -121,35 +122,36 @@ public class WalkthruForm extends Form {
     public TabPage getSecondTab() {
         return buildTab("walkthru2.png",
                 "Pick up a powerbank",
-                "Use app to scan QR code and get your powerbank. Track you rent progress and balance.",
+//                "Use app to scan QR code and get your powerbank. Track you rent progress and balance.",
                 "WalkthruTab2",
-                false);
+                true);
     }
 
     public TabPage getThirdTab() {
         return buildTab("walkthru3.png",
                 "Let others to power up",
-                "Charge you gadget as long as you want and return back in any charging station.",
+//                "Charge you gadget as long as you want and return back in any charging station.",
                 "WalkthruTab3",
                 true);
     }
 
-    public TabPage buildTab(String imageName, String text, String subText, String tabId, boolean isSkipButton) {
-        ScaleImageLabel imageLabel = new ScaleImageLabel(Resources.getGlobalResources().getImage(imageName));
+    public TabPage buildTab(String imageName, String text, String tabId, boolean isSkipButton) {
+        Label imageLabel = new Label(Resources.getGlobalResources().getImage(imageName));
         imageLabel.setUIID("WalkthruPic");
 
-        SpanLabel walkthruSubText = new SpanLabel(subText, "WalkthruSubText");
+//        SpanLabel walkthruSubText = new SpanLabel(subText, "WalkthruSubText");
+        final Label walkthruText = new Label(text, "WalkthruText");
         Container container = BorderLayout.centerAbsolute(BoxLayout.encloseY(
                 imageLabel,
-                new Label(text, "WalkthruWhiteText"),
-                walkthruSubText
+                walkthruText
+//                walkthruSubText
         ));
         container.setUIID(tabId);
         if (isSkipButton) {
             container = LayeredLayout.encloseIn(container, BorderLayout.south(skipButton));
         }
 
-        return new TabPage(container, walkthruSubText);
+        return new TabPage(container, walkthruText);
     }
 
     private static class TabPage {

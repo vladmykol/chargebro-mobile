@@ -56,9 +56,9 @@ import static com.mykovol.takeandcharge.service.GlobalConst.*;
  */
 public class UserService {
     private static final String TOKEN_PROP_NAME = "token1";
-    private static User me = new User();
+    private static UserCreationRequest me = new UserCreationRequest();
 
-    public static User getUser() {
+    public static UserCreationRequest getUser() {
         PreferencesObject.create(me).bind();
         return me;
     }
@@ -72,19 +72,20 @@ public class UserService {
     }
 
     public static void loadUser() {
-        me = new User();
+        me = new UserCreationRequest();
         if (Display.getInstance().isSimulator()) {
             Log.p("User details: " + me.getPropertyIndex().toString());
         }
     }
 
-    public static void logout() {
+    public static void onUserLogout() {
         Preferences.set(TOKEN_PROP_NAME, null);
 
         callSerially(() -> {
             CommonCode.refreshMenuItems();
             MainForm.get().removeAllRentRows();
             MainForm.get().refreshScanButton();
+            WebSocketClient.disconnect();
         });
     }
 
@@ -92,47 +93,6 @@ public class UserService {
         return getToken() != null;
     }
 
-    public static void validateUserPhone(String phoneNumber, final Callback<RegisterInitResponse> callback) {
-        Rest.post(GlobalConst.getServerUrl() + API_REGISTER_INIT)
-//                .bearer(UserService.getToken())
-                .queryParam("phone", phoneNumber)
-                .timeout(10000)
-                .acceptJson()
-                .onErrorCode(errorData -> {
-                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
-                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
-                }, ErrorResponse.class)
-                .fetchAsProperties(resp -> {
-                    callback.onSucess((RegisterInitResponse) resp.getResponseData());
-                }, RegisterInitResponse.class);
-    }
-
-    public static void registerUser(User request, final Callback<String> callback) {
-        Rest.post(GlobalConst.getServerUrl() + API_REGISTER)
-//                .bearer(UserService.getToken())
-                .acceptJson()
-                .timeout(10000)
-                .jsonContent()
-                .body(request)
-                .onErrorCode(errorData -> {
-                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
-                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
-                }, ErrorResponse.class)
-                .fetchAsJsonMap(resp -> {
-                    Preferences.set("phoneNumber", PhoneFieldContainer.formattedPhoneNumber(request.name.get()));
-                    String token = resp.getResponseData().get("token").toString();
-                    setToken(token);
-                    MainForm.get().refreshScanButton();
-                    CommonCode.refreshMenuItems();
-
-                    callback.onSucess(null);
-                });
-    }
-
-    public static boolean validateSMSActivationCode(String code) {
-        String val = Preferences.get("phoneVerification", null);
-        return code.contains(val) && code.length() < 80;
-    }
 
     public static void checkForNewVersion() {
         Rest.get(GlobalConst.getServerUrl() + API_APP_VERSION)
@@ -185,6 +145,45 @@ public class UserService {
     }
 
 
+    public static void validateUserPhone(String phoneNumber, boolean isReset, final Callback<RegisterInitResponse> callback) {
+        String url;
+        if (isReset) {
+            url = getServerUrl() + API_RESET_PASS;
+        } else {
+            url = getServerUrl() + API_INIT;
+        }
+        Rest.post(url)
+//                .bearer(UserService.getToken())
+                .queryParam("phone", phoneNumber)
+                .timeout(10000)
+                .acceptJson()
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsProperties(resp -> {
+                    callback.onSucess((RegisterInitResponse) resp.getResponseData());
+                }, RegisterInitResponse.class);
+    }
+
+
+    public static void registerUser(UserCreationRequest request, final LoginCallback callback) {
+        Rest.post(getServerUrl() + API_REGISTER)
+//                .bearer(UserService.getToken())
+                .acceptJson()
+                .timeout(10000)
+                .jsonContent()
+                .body(request)
+                .onErrorCode(errorData -> {
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    callback.loginFailed(responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsProperties(resp -> {
+                    onUserLogin((UserInfo) resp.getResponseData());
+                    callback.loginSuccessful();
+                }, UserInfo.class);
+    }
+
     public static void login(PhoneFieldContainer phoneFieldContainer, String password, final LoginCallback callback) {
         Rest.post(GlobalConst.getServerUrl() + API_LOGIN)
                 .jsonContent()
@@ -195,16 +194,21 @@ public class UserService {
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
                     callback.loginFailed(responseData.message.get());
                 }, ErrorResponse.class)
-                .fetchAsJsonMap(resp -> {
-                    Preferences.set("phoneNumber", phoneFieldContainer.getFormattedPhoneNumber());
-                    String token = resp.getResponseData().get("token").toString();
-                    setToken(token);
-                    MainForm.get().refreshScanButton();
-                    MainForm.get().refreshRentContent();
-                    CommonCode.refreshMenuItems();
+                .fetchAsProperties(resp -> {
+                    onUserLogin((UserInfo) resp.getResponseData());
                     callback.loginSuccessful();
-                })
+                }, UserInfo.class)
                 .setDisposeOnCompletion(InfinityProgressBlocking.get());
+    }
+
+
+    public static void onUserLogin(UserInfo userInfo) {
+        setToken(userInfo.token.get());
+        Preferences.set("noPaymentMethod", (userInfo.isHasCard.get().equals(0) ? "true" : "false"));
+        Preferences.set("phoneNumber", PhoneFieldContainer.formattedPhoneNumber(userInfo.phone.get()));
+        MainForm.get().refreshScanButton();
+        MainForm.get().refreshRentContent();
+        CommonCode.refreshMenuItems();
     }
 
     public static void fetchAvatar(long id, SuccessCallback<Image> callback) {

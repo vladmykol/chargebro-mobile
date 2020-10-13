@@ -43,6 +43,7 @@ public class RentFullScreenLoader extends Form {
     private static RentFullScreenLoader instance;
     final SpanLabel loadText;
     private UITimer timer;
+    private UITimer refreshRentTimer;
     private Form backRoundForm;
 
     private RentFullScreenLoader(Image i) {
@@ -55,6 +56,15 @@ public class RentFullScreenLoader extends Form {
         loadText.setEnabled(true);
         add(BorderLayout.centerAbsolute(imageLabel));
         add(loadText);
+
+        addShowListener(evt -> {
+            if (refreshRentTimer != null) {
+                refreshRentTimer.cancel();
+            }
+            refreshRentTimer = UITimer.timer(5000, true, this, () -> {
+                MainForm.get().refreshRentContent();
+            });
+        });
     }
 
     public static RentFullScreenLoader get() {
@@ -71,31 +81,30 @@ public class RentFullScreenLoader extends Form {
             timer.cancel();
         }
         loadText.setText("checking available powebanks");
-        timer = UITimer.timer(4000, false, getComponentForm(), () -> {
+        timer = UITimer.timer(4000, false, this, () -> {
             callSerially(() -> {
-                loadText.setText("holding a deposit");
+                loadText.setText("contacting a bank");
                 loadText.getParent().revalidate();
             });
-            timer = UITimer.timer(4000, false, getComponentForm(), () -> {
+            timer = UITimer.timer(4000, false, this, () -> {
                 callSerially(() -> {
                     loadText.setText("unlocking a powerbank");
                     loadText.getParent().revalidate();
                 });
-                timer = UITimer.timer(7000, false, getComponentForm(), () -> {
+                timer = UITimer.timer(10000, false, this, () -> {
                     callSerially(() -> {
-                        loadText.setText("resolving connection issue");
+                        loadText.setText("resolving a connection issue");
                         loadText.getParent().revalidate();
                     });
-                    timer = UITimer.timer(10000, false, getComponentForm(), () -> {
+                    timer = UITimer.timer(10000, false, this, () -> {
                         callSerially(() -> {
-                            loadText.setText("it takes longer than usual but we do our best ro resolve this request");
+                            loadText.setText("it takes longer than usual, few seconds remaining");
                             loadText.getParent().revalidate();
-
                         });
-                        timer = UITimer.timer(40000, false, getComponentForm(), () -> {
+                        timer = UITimer.timer(30000, false, this, () -> {
                             callSerially(() -> {
-                                MainForm.get().showIfNotVisible();
-                                MainForm.get().refreshRentContent();
+                                refreshRentTimer.cancel();
+                                MainForm.get().show();
                             });
                         });
                     });
@@ -104,6 +113,7 @@ public class RentFullScreenLoader extends Form {
         });
         show();
     }
+
 
     public void setBackgroundForm(Form backRoundForm) {
         if (this.backRoundForm == null) {

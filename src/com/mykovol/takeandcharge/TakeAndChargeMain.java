@@ -14,6 +14,7 @@ import com.codename1.ui.util.Resources;
 import com.codename1.util.StringUtil;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
+import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 import org.littlemonkey.connectivity.Connectivity;
@@ -31,19 +32,30 @@ import static com.codename1.ui.CN.*;
 public class TakeAndChargeMain {
 
     private Form current;
-    private Resources baseTheme;
 
+    public static void loadLocalization() {
+        final String userLang = Preferences.get("userLang", "default");
+        String local;
+        if (!userLang.equals("default")) {
+            local = userLang;
+        } else {
+            local = L10NManager.getInstance().getLanguage();
+        }
+
+        try {
+            Resources baseTheme = Resources.openLayered("/baseTheme");
+            Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local.toLowerCase());
+            UIManager.getInstance().setBundle(localizationBundle);
+        } catch (IOException e) {
+            Log.e(e);
+        }
+    }
 
     public void init(Object context) {
         // use two network threads instead of one
         updateNetworkThreadCount(2);
 
         UIManager.initFirstTheme("/theme");
-        try {
-            baseTheme = Resources.openLayered("/baseTheme");
-        } catch (IOException e) {
-            Log.e(e);
-        }
 
         Toolbar.setGlobalToolbar(false);
 //        Toolbar.setOnTopSideMenu(false);
@@ -76,7 +88,10 @@ public class TakeAndChargeMain {
                 errorMsg = "No Internet connection";
             } else {
                 if (err.getResponseCode() == 0) {
-                    errorMsg = "No connection with server. Please try again latter";
+                    errorMsg = "Connection issue. Please try again latter";
+                    Log.p("Network error:" + errorMsg);
+                    WebSocketClient.ensureConnection();
+                    return;
                 } else if (err.getError() != null) {
                     errorMsg = err.getResponseCode() + err.getError().toString() + " while connecting to " + err.getConnectionRequest().getUrl();
                 } else {
@@ -97,31 +112,22 @@ public class TakeAndChargeMain {
         });
     }
 
-    private void loadLocalization() {
-        final String userLang = Preferences.get("userLang", "default");
-        String local;
-        if (!userLang.equals("default")) {
-            local = userLang;
-        } else {
-            local = L10NManager.getInstance().getLanguage();
-        }
-
-//        String local = "ru";
-        Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local.toLowerCase());
-        UIManager.getInstance().setBundle(localizationBundle);
-    }
-
     public void start() {
-        String arg = getProperty("AppArg", null);
-        if (arg != null) {
-            if (arg.contains("//")) {
-                List<String> strs = StringUtil.tokenize(arg, "/");
-                arg = strs.get(strs.size() - 1);
-                while (arg.startsWith("/")) {
-                    arg = arg.substring(1);
+        try {
+            String arg = getProperty("AppArg", null);
+            if (arg != null) {
+                Dialog.show("AppArgs", arg, "OK", null);
+                if (arg.contains("//")) {
+                    List<String> strs = StringUtil.tokenize(arg, "/");
+                    arg = strs.get(strs.size() - 1);
+                    while (arg.startsWith("/")) {
+                        arg = arg.substring(1);
+                    }
                 }
+                Dialog.show("AppArgs substr", arg, "OK", null);
             }
-            Log.p("App arg - " + arg);
+        } catch (Exception e) {
+            Log.e(e);
         }
 
         if (current != null) {

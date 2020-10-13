@@ -27,14 +27,14 @@ import com.codename1.properties.Property;
 import com.codename1.properties.PropertyBusinessObject;
 import com.codename1.properties.PropertyIndex;
 
-public class User implements PropertyBusinessObject {
-    public final Property<String, User> token = new Property<>("token");
-    public final Property<String, User> smsCode = new Property<>("smsCode");
+public class UserCreationRequest implements PropertyBusinessObject {
+    public final Property<String, UserCreationRequest> token = new Property<>("token");
+    public final Property<String, UserCreationRequest> smsCode = new Property<>("smsCode");
 
-    public final Property<String, User> name = new Property<>("name");
-    public final Property<String, User> password = new Property<>("password");
+    public final Property<String, UserCreationRequest> name = new Property<>("name");
+    public final Property<String, UserCreationRequest> password = new Property<>("password");
 
-    private final PropertyIndex idx = new PropertyIndex(this, "User", token, smsCode, name, password);
+    private final PropertyIndex idx = new PropertyIndex(this, "UserCreationRequest", token, smsCode, name, password);
 
     @Override
     public PropertyIndex getPropertyIndex() {

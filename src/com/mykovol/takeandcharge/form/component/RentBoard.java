@@ -18,6 +18,7 @@ public class RentBoard extends Container {
     private final SpanLabel errorMessageText = new SpanLabel("", "RentBorderErrorText");
     private long startTime;
     private long lastRenderedTime = 0;
+    private final SpanLabel errorMessageHeader = new SpanLabel("Error", "RentBorderErrorHeader");
 
     public RentBoard(RentHistory rentHistory) {
         super(BorderLayout.center());
@@ -42,7 +43,7 @@ public class RentBoard extends Container {
         panelDelimiterLabel.setShowEvenIfBlank(true);
 
         errorMessageText.setEnabled(false);
-        Label errorMessageHeader = new Label("Error", "RentBorderErrorHeader");
+        errorMessageHeader.setEnabled(false);
         errorMessageContainer = BoxLayout.encloseY(panelDelimiterLabel, errorMessageHeader, errorMessageText);
         errorMessageContainer.getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         errorMessageContainer.getAllStyles().setMargin(0, 2, 2f, 2f);
@@ -61,6 +62,7 @@ public class RentBoard extends Container {
         if (rentHistory.errorCode.get() > 0) {
             setUIID("RentBorderError");
             errorMessageText.setText(rentHistory.errorMessage.get());
+            errorMessageHeader.setText(MessagePopUp.getErrorType(rentHistory.errorCode.getInt()));
             if (getParent() != null) {
                 getParent().revalidate();
             }

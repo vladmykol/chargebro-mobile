@@ -20,6 +20,7 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
+import com.codename1.io.Preferences;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -89,14 +90,15 @@ public class LoginForm extends Form {
 
         errorLabel.setHidden(true);
         loginButton.addActionListener(evt -> {
-
+            setEditOnShow(null);
+            InfinityProgressBlocking.start();
             errorLabel.setHidden(true);
+
             if (!isValid()) {
+                InfinityProgressBlocking.stop();
                 return;
             }
 
-            setEditOnShow(null);
-            InfinityProgressBlocking.start();
             UserService.login(phoneFieldContainer, passwordFieldContainer.getValue(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
@@ -115,13 +117,14 @@ public class LoginForm extends Form {
 
         Button forgotPassButton = new Button("Forgot password?", "LoginForgotLabel");
         forgotPassButton.addActionListener(evt -> {
-            final SingUpForm resetPasswordForm = new SingUpForm();
+            final RegistrationForm resetPasswordForm = new RegistrationForm();
             resetPasswordForm.setHeader("Reset password");
+            resetPasswordForm.setResetPassMode();
             resetPasswordForm.show();
         });
-        Button singUp = new Button("Sing Up", "LoginForgotLabel");
+        Button singUp = new Button("Sign Up", "LoginForgotLabel");
         singUp.addActionListener(evt -> {
-            new SingUpForm().show();
+            new RegistrationForm().show();
         });
         Label dotLabel = new Label("", "LoginForgotLabel");
         dotLabel.setMaterialIcon(FontImage.MATERIAL_FIBER_MANUAL_RECORD, 1.5f);

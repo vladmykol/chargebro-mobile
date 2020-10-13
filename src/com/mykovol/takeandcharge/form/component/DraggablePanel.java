@@ -79,23 +79,28 @@ public class DraggablePanel extends Container {
     }
 
     public void show() {
-        WebSocketClient.get();
-        contentHolder.setVisible(true);
-        contentHolder.getParent().revalidate();
-        contentHolder.setY(getDisplayHeight());
-        bottomScreenBlocking.setVisible(true);
-        MainForm.get().hideScanButton();
-        animateLayoutFadeAndWait(300, 100);
+        if (!contentHolder.isVisible()) {
+            WebSocketClient.ensureConnection();
+            contentHolder.setVisible(true);
+            contentHolder.getParent().revalidate();
+            contentHolder.setY(getDisplayHeight());
+            bottomScreenBlocking.setVisible(true);
+            MainForm.get().hideScanButton();
+            animateLayoutFadeAndWait(300, 100);
+        }
     }
 
     public void hide() {
         MainForm.get().showScanButton();
-        contentHolder.setY(getDisplayHeight());
-        bottomScreenBlocking.setVisible(false);
-        animateUnlayout(300, 100, () -> {
-            contentHolder.setVisible(false);
-            revalidate();
-        });
+        if (contentHolder.isVisible()) {
+            contentHolder.setY(getDisplayHeight());
+            bottomScreenBlocking.setVisible(false);
+            WebSocketClient.disconnect();
+            animateUnlayout(300, 100, () -> {
+                contentHolder.setVisible(false);
+                revalidate();
+            });
+        }
     }
 
     public void enableDrag() {
@@ -111,28 +116,27 @@ public class DraggablePanel extends Container {
     }
 
     public void refreshRentContent() {
-        if (UserService.isLoggedIn()) {
-            RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    if (errorCode == 404) {
-                        removeAllRentRows();
-                    } else {
-                        MainForm.get().showError(errorMessage, errorCode);
-                    }
+        RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
+            @Override
+            public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                if (errorCode == 404) {
+                    removeAllRentRows();
+                } else if (errorCode == 403 || errorCode == 401) {
+                    UserService.onUserLogout();
+                } else {
+                    MainForm.get().showError(errorMessage, errorCode);
                 }
+            }
 
-                @Override
-                public void onSucess(List<RentHistory> rentHistoryList) {
-                    syncWithRentBoard(rentHistoryList);
-                }
-            });
-        } else {
-            MainForm.get().showScanButton();
-        }
+            @Override
+            public void onSucess(List<RentHistory> rentHistoryList) {
+                syncWithRentBoard(rentHistoryList);
+            }
+        });
     }
 
-    public void syncWithRentBoard(List<RentHistory> rentHistoryList) {
+    public synchronized void syncWithRentBoard(List<RentHistory> rentHistoryList) {
+        MainForm.get().showNoUpdate();
         Map<String, RentBoard> showedRents = rentContent.getShowedRents();
         for (RentHistory rentHistory : rentHistoryList) {
             String serialNumber = rentHistory.powerBankId.get();
@@ -155,6 +159,17 @@ public class DraggablePanel extends Container {
         } else {
             deregisterAnimationForTimeCounter(rentBoard);
         }
+    }
+
+    public void addRentRowOffline(String powerBankId) {
+        final RentHistory rentHistory = new RentHistory();
+        rentHistory.powerBankId.set(powerBankId);
+        rentHistory.rentPeriodMs.set(0L);
+        rentHistory.isReturned.set(0);
+        rentHistory.errorCode.set(0);
+
+        MainForm.get().showNoUpdate();
+        addRentRow(rentHistory);
     }
 
     public void addRentRow(RentHistory rentHistory) {

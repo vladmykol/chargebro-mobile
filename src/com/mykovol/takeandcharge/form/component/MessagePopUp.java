@@ -6,6 +6,7 @@ import com.codename1.ui.*;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.UITimer;
+import com.mykovol.takeandcharge.form.MainForm;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.CN.getDisplayWidth;
@@ -41,12 +42,8 @@ public class MessagePopUp extends Container {
 
         SpanLabel errorMessageText = new SpanLabel(text, "ErrorMessageText");
         errorMessageText.setEnabled(false);
-        Label errorMessageHeader = new Label("Error", "ErrorMessageHeader");
-        if (type == MESSAGE_CODE_PAYMENT_ERROR) {
-            errorMessageHeader.setText("Payment issue");
-        } else if (type == MESSAGE_CODE_GENERAL_ERROR) {
-            errorMessageHeader.setText("Unexpected error");
-        }
+        SpanLabel errorMessageHeader = new SpanLabel(getErrorType(type), "ErrorMessageHeader");
+        errorMessageHeader.setEnabled(false);
         final Container errorMessageContainer = BoxLayout.encloseY(errorMessageHeader, errorMessageText);
         container.addAll(errorDotImage, errorMessageContainer);
         Container animatedContainer = BoxLayout.encloseY(container);
@@ -60,12 +57,12 @@ public class MessagePopUp extends Container {
             animateLayoutAndWait(500);
         });
 
-        UITimer.timer(7000, false, getComponentForm(), () -> {
+        UITimer.timer(7000, false, MainForm.get(), () -> {
             callSerially(() -> {
+                lastErrorTest = null;
                 container.setX(getDisplayWidth());
                 animatedContainer.animateUnlayout(700, 50, () -> {
                     animatedContainer.remove();
-                    lastErrorTest = null;
                     animateLayoutAndWait(100);
                 });
             });
@@ -79,6 +76,16 @@ public class MessagePopUp extends Container {
             Container layers = f.getLayeredPane(getClass(), true);
             layers.setLayout(BoxLayout.y());
             layers.add(this);
+        }
+    }
+
+    public static String getErrorType(int errorCode) {
+        if (errorCode == MESSAGE_CODE_PAYMENT_ERROR) {
+            return "Payment issue";
+        } else if (errorCode == MESSAGE_CODE_GENERAL_ERROR) {
+            return "Oops... something went wrong";
+        } else {
+            return "Error";
         }
     }
 
