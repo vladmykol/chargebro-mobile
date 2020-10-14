@@ -28,6 +28,7 @@ public class SplashScreen extends Form {
             new Label(logoImage1.getIcon(), "TextAlignCenter"),
             new Label(logoImage2.getIcon(), "TextAlignCenter"));
     private final Container mainContainer = BoxLayout.encloseY(logoImageContainer);
+    private String stationId = null;
 
     public SplashScreen() {
         super(new LayeredLayout());
@@ -48,6 +49,9 @@ public class SplashScreen extends Form {
         Component.setSameWidth(logoTitle, logoSubTitle, mainContainer);
     }
 
+    public void setStationId(String stationId) {
+        this.stationId = stationId;
+    }
 
     @Override
     public void show() {
@@ -69,6 +73,9 @@ public class SplashScreen extends Form {
                         } else {
 //                            UserService.checkForNewVersion();
                             MainForm.get().show();
+                            if (stationId != null) {
+                                MainForm.get().initWithStartingArg(stationId);
+                            }
                         }
                     });
 

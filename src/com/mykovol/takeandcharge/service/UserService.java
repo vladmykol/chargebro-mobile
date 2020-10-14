@@ -207,7 +207,7 @@ public class UserService {
         Preferences.set("noPaymentMethod", (userInfo.isHasCard.get().equals(0) ? "true" : "false"));
         Preferences.set("phoneNumber", PhoneFieldContainer.formattedPhoneNumber(userInfo.phone.get()));
         MainForm.get().refreshScanButton();
-        MainForm.get().refreshRentContent();
+        MainForm.get().refreshRentContent(true);
         CommonCode.refreshMenuItems();
     }
 

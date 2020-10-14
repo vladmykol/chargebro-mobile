@@ -126,7 +126,7 @@ public class WebSocketClient extends WebSocket {
                     returnPowerBankAction(message);
                     break;
                 case MESSAGE_TYPE_ERROR:
-                    MainForm.get().showError(message, messageCode);
+                    MainForm.showError(message, messageCode);
                     break;
                 default:
                     Log.p("not defined message type from webSocket server " + messageCode + " " + message);
@@ -152,7 +152,7 @@ public class WebSocketClient extends WebSocket {
             disconnect();
         } else {
             Log.p("authenticated in websocket server " + responseMessage);
-            MainForm.get().refreshRentContent();
+            MainForm.get().refreshRentContent(false);
         }
     }
 

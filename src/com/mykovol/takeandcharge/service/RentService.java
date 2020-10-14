@@ -23,7 +23,6 @@
 
 package com.mykovol.takeandcharge.service;
 
-import com.codename1.components.ToastBar;
 import com.codename1.ext.codescan.CodeScanner;
 import com.codename1.ext.codescan.ScanResult;
 import com.codename1.io.Log;
@@ -148,7 +147,7 @@ public class RentService {
                 });
     }
 
-    public static void prepareForRent(final Callback<BeforeRentInfo> callback) {
+    public static void prepareForRent(String stationId, final Callback<BeforeRentInfo> callback) {
         if (!UserService.isLoggedIn()) {
             new LoginForm().show();
             return;
@@ -159,8 +158,16 @@ public class RentService {
             return;
         }
 
-        if (CodeScanner.getInstance() == null) {
-            ToastBar.showErrorMessage("CodeScanner is not supported on this platform");
+        if (stationId != null) {
+            getBeforeRentInfo(stationId, callback);
+            return;
+        } else if (Display.getInstance().isSimulator()) {
+            getBeforeRentInfo("STWA062001000013", callback);
+            return;
+        }
+
+        if (!CodeScanner.isSupported()) {
+            callback.onError(null, null, 0, "CodeScanner is not supported on this platform");
         } else {
             boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutCameraUse", false);
             boolean isUserAgreeToGiveCameraAccess = true;
@@ -169,33 +176,28 @@ public class RentService {
             }
 
             if (isUserAgreeToGiveCameraAccess) {
-                if (Display.getInstance().isSimulator()) {
-                    getBeforeRentInfo("STWA062001000013", callback);
-                    Preferences.set("isUserNotifiedAboutCameraUse", true);
-                } else {
-                    // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option
+                // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option
 //                Dialog.show("QR code scanning", "Please point the camera at the QR code", "OK", null);
 //                ToastBar.showInfoMessage("Please point the camera at the QR code");
-                    QRScanner.scanQRCode(new ScanResult() {
-                        @Override
-                        public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
-                            Preferences.set("isUserNotifiedAboutCameraUse", true);
-                            getBeforeRentInfo(contents, callback);
-                        }
+                QRScanner.scanQRCode(new ScanResult() {
+                    @Override
+                    public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
+                        Preferences.set("isUserNotifiedAboutCameraUse", true);
+                        getBeforeRentInfo(contents, callback);
+                    }
 
-                        @Override
-                        public void scanCanceled() {
-                            Preferences.set("isUserNotifiedAboutCameraUse", true);
-                            callback.onError(null, null, 0, "Scan is cancelled");
-                        }
+                    @Override
+                    public void scanCanceled() {
+                        Preferences.set("isUserNotifiedAboutCameraUse", true);
+                        callback.onError(null, null, 0, "Scan is cancelled");
+                    }
 
-                        @Override
-                        public void scanError(int errorCode, String message) {
-                            callback.onError(null, null, errorCode, "Error when scanning a QR code");
-                            Log.e(new RuntimeException("QR scanning error -" + errorCode + message));
-                        }
-                    });
-                }
+                    @Override
+                    public void scanError(int errorCode, String message) {
+                        callback.onError(null, null, errorCode, "Error when scanning a QR code");
+                        Log.e(new RuntimeException("QR scanning error -" + errorCode + message));
+                    }
+                });
             } else {
                 callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
             }

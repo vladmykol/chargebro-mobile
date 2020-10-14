@@ -115,7 +115,7 @@ public class DraggablePanel extends Container {
         bottomScreenBlocking.setEnabled(isDragEnable);
     }
 
-    public void refreshRentContent() {
+    public void refreshRentContent(boolean isShowImmediately) {
         RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -124,19 +124,21 @@ public class DraggablePanel extends Container {
                 } else if (errorCode == 403 || errorCode == 401) {
                     UserService.onUserLogout();
                 } else {
-                    MainForm.get().showError(errorMessage, errorCode);
+                    MainForm.showError(errorMessage, errorCode);
                 }
             }
 
             @Override
             public void onSucess(List<RentHistory> rentHistoryList) {
-                syncWithRentBoard(rentHistoryList);
+                updateRentBoard(rentHistoryList, isShowImmediately);
             }
         });
     }
 
-    public synchronized void syncWithRentBoard(List<RentHistory> rentHistoryList) {
-        MainForm.get().showNoUpdate();
+    public synchronized void updateRentBoard(List<RentHistory> rentHistoryList, boolean isShowImmediately) {
+        if (isShowImmediately) {
+            if (!(Display.getInstance().getCurrent() instanceof MainForm)) MainForm.get().show();
+        }
         Map<String, RentBoard> showedRents = rentContent.getShowedRents();
         for (RentHistory rentHistory : rentHistoryList) {
             String serialNumber = rentHistory.powerBankId.get();
@@ -168,7 +170,7 @@ public class DraggablePanel extends Container {
         rentHistory.isReturned.set(0);
         rentHistory.errorCode.set(0);
 
-        MainForm.get().showNoUpdate();
+        MainForm.get().show();
         addRentRow(rentHistory);
     }
 
@@ -249,7 +251,7 @@ public class DraggablePanel extends Container {
         screenBlocking.setVisible(false);
         animateLayoutAndWait(100);
         addSwipeListeners();
-        refreshRentContent();
+        refreshRentContent(false);
         isInMove = false;
     }
 

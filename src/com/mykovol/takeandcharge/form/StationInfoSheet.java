@@ -3,12 +3,9 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.SpanLabel;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
-import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.FlowLayout;
-import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.util.Effects;
 import com.codename1.ui.util.Resources;
@@ -16,10 +13,9 @@ import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.service.RentService;
 
-import static com.codename1.ui.CN.convertToPixels;
-
 public class StationInfoSheet extends Sheet {
 
+    private static final String BOTTOM_PANEL_START_Y = "bottomPanelStartY";
     private final Label availablePowerBanksNumber = new Label("0", "StationsSheetNumberAvailable");
     private final Label cabBeReturnedPowerBanksNumber = new Label("0", "StationsSheetNumberCanBeReturned");
     private final SpanLabel addressLabel = new SpanLabel("", "StationsSheetText");
@@ -28,7 +24,7 @@ public class StationInfoSheet extends Sheet {
     private final Label placeLogoImageLabel;
     private final Container availableContainer;
     private final Button screenBlocker;
-    private static final String BOTTOM_PANEL_START_Y = "bottomPanelStartY";
+    private final SpanLabel workingHoursLabel = new SpanLabel("8:30 - 21:00", "StationsSheetText");
     private String directionUrl;
     private volatile boolean isShown = false;
 
@@ -55,26 +51,26 @@ public class StationInfoSheet extends Sheet {
         FontImage.setMaterialIcon(addressLabel, FontImage.MATERIAL_PLACE);
 //        addressLabel.getIcon().s(convertToPixels(2));
 //        addressLabel.getAllStyles().setFgColor(0xFF000000);
-
-        Label accessTimeLabel = new Label("8:30 - 21:00", "StationsSheetText");
-        accessTimeLabel.setGap(convertToPixels(1.3f));
-        FontImage.setMaterialIcon(accessTimeLabel, FontImage.MATERIAL_ACCESS_TIME);
+        workingHoursLabel.setEnabled(false);
+//        workingHoursLabel.setGap(convertToPixels(1.3f));
+        workingHoursLabel.setIconUIID("StationsSheetTextIcon");
+        FontImage.setMaterialIcon(workingHoursLabel, FontImage.MATERIAL_ACCESS_TIME);
 
         Label availablePowerBanks = new Label("Available:", "StationsSheetAvailableText");
-        FontImage.setIcon(availablePowerBanks,FontImage.MATERIAL_ARROW_UPWARD,3);
+        FontImage.setIcon(availablePowerBanks, FontImage.MATERIAL_ARROW_UPWARD, 3);
         Label cabBeReturnedPowerBanks = new Label("Can be returned:", "StationsSheetAvailableText");
-        FontImage.setIcon(cabBeReturnedPowerBanks,FontImage.MATERIAL_ARROW_DOWNWARD,3);
+        FontImage.setIcon(cabBeReturnedPowerBanks, FontImage.MATERIAL_ARROW_DOWNWARD, 3);
         Container availableText = BoxLayout.encloseY(availablePowerBanks, cabBeReturnedPowerBanks);
         Container availableNumbers = BoxLayout.encloseY(availablePowerBanksNumber, cabBeReturnedPowerBanksNumber);
         availableContainer = BoxLayout.encloseX(availableText, availableNumbers);
 
-        Container infoContainer = BoxLayout.encloseY(addressLabel, accessTimeLabel);
+        Container infoContainer = BoxLayout.encloseY(addressLabel, workingHoursLabel);
 
-        Button getDirectionButton = new Button("");
-        getDirectionButton.setUIID("GetDirectionButton");
+        Button showDirectionButton = new Button("");
+        showDirectionButton.setUIID("GetDirectionButton");
 
-        FontImage.setMaterialIcon(getDirectionButton, FontImage.MATERIAL_DIRECTIONS);
-        getDirectionButton.getAllStyles().setBorder(
+        FontImage.setMaterialIcon(showDirectionButton, FontImage.MATERIAL_DIRECTIONS);
+        showDirectionButton.getAllStyles().setBorder(
                 RoundBorder.create().color(0x0479f5).shadowOpacity(60)
         );
 
@@ -84,7 +80,7 @@ public class StationInfoSheet extends Sheet {
 //        cnt.addAll(
 //                BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
 //                FlowLayout.encloseLeftMiddle(errorLabel),
-//                FlowLayout.encloseRightBottom(getDirectionButton)
+//                FlowLayout.encloseRightBottom(showDirectionButton)
 //        );
 
 
@@ -92,14 +88,14 @@ public class StationInfoSheet extends Sheet {
         add(BorderLayout.CENTER, BoxLayout.encloseY(
                 BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
 //                FlowLayout.encloseLeftMiddle(errorLabel),
-                LayeredLayout.encloseIn(availableContainer, FlowLayout.encloseRight(getDirectionButton))
+                BorderLayout.centerEastWest(availableContainer, showDirectionButton, null)
                 )
         );
 //        add(BorderLayout.NORTH, title);
 //        cnt.addPointerPressedListener(this::getDirectionButtonAction);
 //        infoContainer.addPointerPressedListener(this::getDirectionButtonAction);
 //        scaleImageLabel.addPointerPressedListener(this::getDirectionButtonAction);
-        getDirectionButton.addActionListener(this::getDirectionButtonAction);
+        showDirectionButton.addActionListener(this::getDirectionButtonAction);
 
         addCloseListener(evt -> {
             screenBlocker.setVisible(false);
@@ -134,6 +130,8 @@ public class StationInfoSheet extends Sheet {
         directionUrl = stationInfo.mapUrl.get();
         title.setText(stationInfo.placeName.get());
         addressLabel.setText(stationInfo.address.get());
+        addressLabel.setText(stationInfo.address.get());
+        workingHoursLabel.setText(stationInfo.workingHours.get());
         errorLabel.setHidden(true);
         revalidate();
         super.show();

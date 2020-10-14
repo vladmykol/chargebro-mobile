@@ -116,7 +116,7 @@ public class RentConfirmation extends Form {
 
         Button cancelButton = new Button("Cancel", "RentConfirmationCancel");
         cancelButton.addActionListener(evt -> {
-            MainForm.get().showNoUpdate();
+            MainForm.get().show();
         });
 
 //        addShowListener(evt -> {
@@ -132,7 +132,8 @@ public class RentConfirmation extends Form {
             RentService.sendRentRequest(beforeRentInfo.stationId.get(), new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().showError(errorMessage, errorCode);
+                    MainForm.get().show();
+                    MainForm.showError(errorMessage, errorCode);
                 }
 
                 @Override

@@ -77,7 +77,7 @@ public class BrowserPopUp extends Form {
         browser.setURL(url);
         browser.addBrowserNavigationCallback(currentUrl -> {
             if (currentUrl.contains("chargebro")) {
-                MainForm.get().showNoUpdate();
+                MainForm.get().show();
                 Preferences.set("noPaymentMethod", "false");
                 return false;
             } else {

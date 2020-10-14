@@ -586,7 +586,8 @@ StationsSheetText {
 
 StationsSheetTextIcon {
     cn1-derive: StationsSheetText;
-    padding: 0mm 0mm 0mm 1.3mm;
+    margin: 0mm 1mm 1mm 1mm;
+    padding: 0.3mm;
 }
 
 StationsSheetAvailableText {
@@ -622,8 +623,10 @@ GetDirectionButton.pressed {
 }
 
 SheetErrorText {
-    cn1-derive: ErrorText;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3.3mm;
     margin: 2mm 0mm 0mm 0mm;
+    padding: 1mm 2mm;
     background: lightgray;
 }
 
@@ -809,10 +812,18 @@ WalletFormCardRemoveLabel {
     padding: 0mm;
 }
 
-WalletFormHint {
+WalletFormWarning {
     cn1-derive: RentConfirmationHint;
+    color: indianred;
     font-size: 2.7mm;
 }
+
+WalletFormHint {
+    cn1-derive: RentConfirmationHint;
+    color: indianred;
+    font-size: 2.7mm;
+}
+
 
 /*====================== SettingsForm ==========================*/
 

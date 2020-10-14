@@ -392,13 +392,13 @@ public class CommonCode {
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().showError(errorMessage, errorCode);
+                    MainForm.showError(errorMessage, errorCode);
                 }
 
                 @Override
                 public void onSucess(String checkoutUrl) {
                     Display.getInstance().execute(checkoutUrl, evt -> {
-                        MainForm.get().showError("All good! Error is just for test", 0);
+                        MainForm.showError("All good! Error is just for test", 0);
                     });
                 }
             });

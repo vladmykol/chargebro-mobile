@@ -52,6 +52,6 @@ public final class GlobalConst {
 
     public static String getServerUrl() {
         if (LOCAL) return "http://192.168.0.124:10381";
-        else return "https://server.your-domain.example.com";
+        else return "https://api.chargebro.com";
     }
 }

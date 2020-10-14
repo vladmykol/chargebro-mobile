@@ -24,13 +24,13 @@
 package com.mykovol.takeandcharge.form;
 
 
+import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Preferences;
 import com.codename1.io.Util;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -153,6 +153,14 @@ public class MainForm extends Form {
 
         CommonCode.constructSideMenu(getToolbar(), this);
         initMap();
+
+        addShowListener(evt -> {
+            MainNoBlockingLoader.get().stop();
+//            UITimer.timer(2000, false, getComponentForm(), () -> {
+                showMeOnMap();
+                refreshRentContent(true);
+//            });
+        });
     }
 
     public static MainForm get() {
@@ -168,21 +176,17 @@ public class MainForm extends Form {
         }
     }
 
-    @Override
-    public void show() {
-        MainNoBlockingLoader.get().stop();
-        super.show();
-        UITimer.timer(2000, false, getComponentForm(), () -> {
-            showMeOnMap();
-            refreshRentContent();
-        });
-//        refreshMarkersOnMap(kievCoord);
-//        });
+    public static void showError(String text, int type) {
+//        showNoUpdate();
+        if (Display.getInstance().getCurrent().equals(MainForm.get())) {
+            instance.messagePopUp.showError(text, type);
+        } else {
+            ToastBar.showErrorMessage(text);
+        }
     }
 
-    public void showNoUpdate() {
-        MainNoBlockingLoader.get().stop();
-        super.show();
+    public void initWithStartingArg(String stationId) {
+        scanButton.action(stationId);
     }
 
     private void initMap() {
@@ -229,8 +233,8 @@ public class MainForm extends Form {
         }
     }
 
-    public void refreshRentContent() {
-        draggablePanel.refreshRentContent();
+    public void refreshRentContent(boolean isShowImmediately) {
+        draggablePanel.refreshRentContent(isShowImmediately);
     }
 
     public void addRentRowOffline(String powerBankId) {
@@ -258,11 +262,6 @@ public class MainForm extends Form {
     public void removeAllRentRows() {
         callSerially(draggablePanel::removeAllRentRows);
         showScanButton();
-    }
-
-    public void showError(String text, int type) {
-        showNoUpdate();
-        messagePopUp.showError(text, type);
     }
 
     private void addMapListenerToDrawStationsOnMap() {
@@ -323,6 +322,7 @@ public class MainForm extends Form {
         scanButton.refresh();
     }
 
+
     public class ScanButton extends Button {
         private Font fnt = Font.createTrueTypeFont("icomoon", "icomoon.ttf");
 
@@ -337,7 +337,7 @@ public class MainForm extends Form {
             setTactileTouch(true);
             setGap(convertToPixels(1));
             refresh();
-            addActionListener(this::scanButtonAction);
+            addActionListener(evt -> action());
             updateBorder();
         }
 
@@ -348,12 +348,16 @@ public class MainForm extends Form {
                     .rectangle(true));
         }
 
-        private void scanButtonAction(ActionEvent evt) {
+        private void action() {
+            action(null);
+        }
+
+        public void action(String stationId) {
             if (MainNoBlockingLoader.get().isVisible()) return;
 
             if (UserService.isLoggedIn()) {
                 MainNoBlockingLoader.get().start();
-                RentService.prepareForRent(new Callback<BeforeRentInfo>() {
+                RentService.prepareForRent(stationId, new Callback<BeforeRentInfo>() {
                     @Override
                     public void onSucess(BeforeRentInfo value) {
                         final RentConfirmation rentConfirmation = new RentConfirmation(value);

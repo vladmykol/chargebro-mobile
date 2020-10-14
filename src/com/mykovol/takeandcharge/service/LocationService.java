@@ -58,6 +58,7 @@ public class LocationService {
                 if (Display.getInstance().isSimulator()) return;
                 Coord crd = new Coord(location.getLatitude(), location.getLongitude());
                 mapContainer.setCameraPosition(crd);
+                mapContainer.zoom(crd, mapContainer.getMinZoom() + 12);
                 MainForm.get().refreshMarkersOnMap(crd);
                 LocationManager.getLocationManager().setLocationListener(null);
             }

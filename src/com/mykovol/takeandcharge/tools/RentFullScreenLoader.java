@@ -62,7 +62,7 @@ public class RentFullScreenLoader extends Form {
                 refreshRentTimer.cancel();
             }
             refreshRentTimer = UITimer.timer(5000, true, this, () -> {
-                MainForm.get().refreshRentContent();
+                MainForm.get().refreshRentContent(true);
             });
         });
     }
@@ -88,7 +88,7 @@ public class RentFullScreenLoader extends Form {
             });
             timer = UITimer.timer(4000, false, this, () -> {
                 callSerially(() -> {
-                    loadText.setText("unlocking a powerbank");
+                    loadText.setText("contacting charging station");
                     loadText.getParent().revalidate();
                 });
                 timer = UITimer.timer(10000, false, this, () -> {
@@ -105,6 +105,7 @@ public class RentFullScreenLoader extends Form {
                             callSerially(() -> {
                                 refreshRentTimer.cancel();
                                 MainForm.get().show();
+                                MainForm.showError("No response from server. Please try again latter", 500);
                             });
                         });
                     });

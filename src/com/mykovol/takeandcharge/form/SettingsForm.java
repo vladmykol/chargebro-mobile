@@ -25,6 +25,7 @@ package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SwitchList;
 import com.codename1.io.Preferences;
+import com.codename1.l10n.L10NManager;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
@@ -69,18 +70,15 @@ public class SettingsForm extends Form {
         landPicket.setType(Display.PICKER_TYPE_STRINGS);
 
         landPicket.setStrings("ua", "ru", "en", "default");
-        landPicket.setSelectedString(">");
+        landPicket.setSelectedString(getLandPrefTranslated());
 
         landPicket.addActionListener(evt -> {
-//            UITimer.timer(1000, false, this, () -> {
-            if (landPicket.getSelectedString().equals("ua")) {
-                Preferences.set("userLang", "uk");
-            } else {
-                Preferences.set("userLang", landPicket.getSelectedString());
-            }
-            TakeAndChargeMain.loadLocalization();
-            Dialog.show("Warning", "In order to language changes take effect, you need to restart the application", "OK", null);
+            if (!getLandPrefTranslated().equals(landPicket.getSelectedString())) {
+                setLandPref(landPicket.getSelectedString());
+                TakeAndChargeMain.loadLocalization();
+                Dialog.show("Warning", "In order to language changes take effect, you need to restart the application", "OK", null);
 //            });
+            }
         });
 
         SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
@@ -100,5 +98,31 @@ public class SettingsForm extends Form {
                 BorderLayout.centerEastWest(landPicket, null, new Label("Language", "SettingsFormText")),
                 delimiter2
         );
+    }
+
+    public static String getLandPref() {
+        final String userLang = Preferences.get("userLang", "default");
+        if (userLang.equals("default")) {
+            return L10NManager.getInstance().getLanguage();
+        } else {
+            return userLang;
+        }
+    }
+
+    public static void setLandPref(String lang) {
+        if (lang.equals("ua")) {
+            Preferences.set("userLang", "uk");
+        } else {
+            Preferences.set("userLang", lang);
+        }
+    }
+
+    public static String getLandPrefTranslated() {
+        final String userLang = Preferences.get("userLang", "default");
+        if (userLang.equals("uk")) {
+            return "ua";
+        } else {
+            return userLang;
+        }
     }
 }

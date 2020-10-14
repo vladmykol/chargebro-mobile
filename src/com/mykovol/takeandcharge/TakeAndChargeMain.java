@@ -1,18 +1,16 @@
 package com.mykovol.takeandcharge;
 
-import com.codename1.components.ToastBar;
 import com.codename1.io.Log;
 import com.codename1.io.NetworkManager;
-import com.codename1.io.Preferences;
-import com.codename1.l10n.L10NManager;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
-import com.codename1.util.StringUtil;
+import com.mykovol.takeandcharge.form.LinkInterceptor;
 import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.form.SettingsForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
 import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
@@ -21,7 +19,6 @@ import org.littlemonkey.connectivity.Connectivity;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.List;
 
 import static com.codename1.ui.CN.*;
 
@@ -34,17 +31,9 @@ public class TakeAndChargeMain {
     private Form current;
 
     public static void loadLocalization() {
-        final String userLang = Preferences.get("userLang", "default");
-        String local;
-        if (!userLang.equals("default")) {
-            local = userLang;
-        } else {
-            local = L10NManager.getInstance().getLanguage();
-        }
-
         try {
             Resources baseTheme = Resources.openLayered("/baseTheme");
-            Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", local.toLowerCase());
+            Hashtable<String, String> localizationBundle = baseTheme.getL10N("prime", SettingsForm.getLandPref());
             UIManager.getInstance().setBundle(localizationBundle);
         } catch (IOException e) {
             Log.e(e);
@@ -104,41 +93,26 @@ public class TakeAndChargeMain {
             Log.p("Network error:" + errorMsg);
             InfinityProgressBlocking.stop();
             MainNoBlockingLoader.get().stop();
-            if (Display.getInstance().getCurrent().equals(MainForm.get())) {
-                MainForm.get().showError(errorMsg, 500);
-            } else {
-                ToastBar.showErrorMessage(errorMsg);
-            }
+            MainForm.showError(errorMsg, 500);
         });
     }
 
     public void start() {
-        try {
-            String arg = getProperty("AppArg", null);
-            if (arg != null) {
-                Dialog.show("AppArgs", arg, "OK", null);
-                if (arg.contains("//")) {
-                    List<String> strs = StringUtil.tokenize(arg, "/");
-                    arg = strs.get(strs.size() - 1);
-                    while (arg.startsWith("/")) {
-                        arg = arg.substring(1);
-                    }
-                }
-                Dialog.show("AppArgs substr", arg, "OK", null);
+        String arg = getProperty("AppArg", null);
+        setProperty("AppArg", null);
+        if (arg != null) {
+            LinkInterceptor interceptor = new LinkInterceptor(arg);
+            if (interceptor.isCanHandle()) {
+                interceptor.handle();
+                return;
             }
-        } catch (Exception e) {
-            Log.e(e);
         }
 
         if (current != null) {
-            try {
-                if (current instanceof SplashScreen) {
-                    MainForm.get().show();
-                } else {
-                    current.show();
-                }
-            } catch (Exception e) {
+            if (current instanceof SplashScreen) {
                 MainForm.get().show();
+            } else {
+                current.show();
             }
         } else {
 //            new ImageForm().show();

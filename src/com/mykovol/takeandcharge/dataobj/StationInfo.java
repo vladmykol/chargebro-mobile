@@ -37,10 +37,11 @@ public class StationInfo implements PropertyBusinessObject {
     public final IntProperty<StationInfo> maxCapacity = new IntProperty<>("maxCapacity");
     public final Property<String, StationInfo> placeName = new Property<>("placeName");
     public final Property<String, StationInfo> address = new Property<>("address");
+    public final Property<String, StationInfo> workingHours = new Property<>("workingHours");
     public final Property<String, StationInfo> mapUrl = new Property<>("mapUrl");
 
     private final PropertyIndex idx = new PropertyIndex(this, "StationInfo", id, locationX,
-            locationY, maxCapacity, placeName, address, mapUrl);
+            locationY, maxCapacity, placeName, address, workingHours, mapUrl);
 
     @Override
     public PropertyIndex getPropertyIndex() {
