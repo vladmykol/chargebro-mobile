@@ -93,7 +93,7 @@ public class RentFullScreenLoader extends Form {
 
     public void setStageUnlockingPowerBank() {
         callSerially(() -> {
-            loadText.setText("unlocking powerbank");
+            loadText.setText("unlocking а powerbank");
             loadText.getParent().revalidate();
         });
         timer = UITimer.timer(10000, false, this, () -> {

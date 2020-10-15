@@ -1,5 +1,6 @@
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.components.SpanLabel;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -121,7 +122,7 @@ public class WalkthruForm extends Form {
 
     public TabPage getSecondTab() {
         return buildTab("walkthru2.png",
-                "Pick up a powerbank",
+                "Scan QR and get a powerbank",
 //                "Use app to scan QR code and get your powerbank. Track you rent progress and balance.",
                 "WalkthruTab2",
                 true);
@@ -140,7 +141,8 @@ public class WalkthruForm extends Form {
         imageLabel.setUIID("WalkthruPic");
 
 //        SpanLabel walkthruSubText = new SpanLabel(subText, "WalkthruSubText");
-        final Label walkthruText = new Label(text, "WalkthruText");
+        final SpanLabel walkthruText = new SpanLabel(text, "WalkthruText");
+        walkthruText.setEnabled(false);
         Container container = BorderLayout.centerAbsolute(BoxLayout.encloseY(
                 imageLabel,
                 walkthruText
