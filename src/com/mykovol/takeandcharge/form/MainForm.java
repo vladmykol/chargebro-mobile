@@ -81,6 +81,7 @@ public class MainForm extends Form {
     private final MessagePopUp messagePopUp = new MessagePopUp();
     private Coord previousCoord;
 
+
     private MainForm() {
         super(new LayeredLayout());
         setName("MapForm");
@@ -96,7 +97,7 @@ public class MainForm extends Form {
                 this);
 
         mapContainer.setShowMyLocation(false);
-        add(mapContainer);
+        add(BorderLayout.center(mapContainer));
 
         add(FlowLayout.encloseRightMiddle(toolBox));
 
@@ -157,8 +158,8 @@ public class MainForm extends Form {
         addShowListener(evt -> {
             MainNoBlockingLoader.get().stop();
 //            UITimer.timer(2000, false, getComponentForm(), () -> {
-                showMeOnMap();
-                refreshRentContent(true);
+            showMeOnMap();
+            refreshRentContent(true);
 //            });
         });
     }
@@ -183,6 +184,11 @@ public class MainForm extends Form {
         } else {
             ToastBar.showErrorMessage(text);
         }
+    }
+
+    public void showErrorOnMainScreen(String text, int type) {
+        show();
+        messagePopUp.showError(text, type);
     }
 
     public void initWithStartingArg(String stationId) {
@@ -307,7 +313,6 @@ public class MainForm extends Form {
                                             "and some long text here",
                                             evt -> {
 //                                                new Sheet(null, station.placeName.get()).show();
-
                                                 stationInfoSheet.show(station);
                                             }));
                         });
@@ -360,9 +365,9 @@ public class MainForm extends Form {
                 RentService.prepareForRent(stationId, new Callback<BeforeRentInfo>() {
                     @Override
                     public void onSucess(BeforeRentInfo value) {
-                        final RentConfirmation rentConfirmation = new RentConfirmation(value);
-                        MainNoBlockingLoader.get().stop();
+                        RentConfirmation rentConfirmation = new RentConfirmation(value);
                         WebSocketClient.ensureConnection();
+                        MainNoBlockingLoader.get().stop();
                         rentConfirmation.show();
                     }
 
@@ -372,7 +377,11 @@ public class MainForm extends Form {
                     }
                 });
             } else {
-                new RegistrationForm().show();
+                if (WalletForm.isUserHasCard()) {
+                    new LoginForm().show();
+                } else {
+                    new RegistrationForm().show();
+                }
             }
         }
 
@@ -381,8 +390,14 @@ public class MainForm extends Form {
                 setText("Scan QR code");
                 setFontIcon(fnt, '\ue900', 4);
             } else {
-                setText("Register");
-                setMaterialIcon(FontImage.MATERIAL_PERSON_ADD, 4);
+                if (WalletForm.isUserHasCard()) {
+                    setText("Log in");
+                    setMaterialIcon(FontImage.MATERIAL_PERSON, 4);
+                } else {
+                    setText("Register");
+                    setMaterialIcon(FontImage.MATERIAL_PERSON_ADD, 4);
+                }
+
             }
         }
     }

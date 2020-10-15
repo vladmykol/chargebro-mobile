@@ -13,6 +13,8 @@ import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
 import com.mykovol.takeandcharge.service.RentService;
 
+import static com.codename1.ui.CN.callSerially;
+
 public class StationInfoSheet extends Sheet {
 
     private static final String BOTTOM_PANEL_START_Y = "bottomPanelStartY";
@@ -133,22 +135,21 @@ public class StationInfoSheet extends Sheet {
         addressLabel.setText(stationInfo.address.get());
         workingHoursLabel.setText(stationInfo.workingHours.get());
         errorLabel.setHidden(true);
-        revalidate();
         super.show();
         RentService.getRemainingPowerBanks(stationInfo.id.get(), new Callback<Integer>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-//                callSerially(() -> {
-                if (errorCode == 401) {
-                    errorLabel.setText("You must login first");
-                } else {
-                    errorLabel.setText(errorMessage);
-                }
-                availablePowerBanksNumber.setText("0");
-                cabBeReturnedPowerBanksNumber.setText("0");
-                errorLabel.setHidden(false);
-                errorLabel.getParent().revalidateWithAnimationSafety();
-//                });
+                callSerially(() -> {
+                    if (errorCode == 401) {
+                        errorLabel.setText("You must login first");
+                    } else {
+                        errorLabel.setText(errorMessage);
+                    }
+                    availablePowerBanksNumber.setText("0");
+                    cabBeReturnedPowerBanksNumber.setText("0");
+                    errorLabel.setHidden(false);
+                    errorLabel.getParent().revalidateWithAnimationSafety();
+                });
             }
 
             @Override
@@ -157,11 +158,11 @@ public class StationInfoSheet extends Sheet {
                 String canBeReturnedString = String.valueOf(stationInfo.maxCapacity.getInt() - remainingPowerBanks);
                 if (!availablePowerBanksNumber.getText().equals(remainingPowerBanksString) ||
                         !cabBeReturnedPowerBanksNumber.getText().equals(canBeReturnedString)) {
-//                    callSerially(() -> {
-                    availablePowerBanksNumber.setText(remainingPowerBanksString);
-                    cabBeReturnedPowerBanksNumber.setText(canBeReturnedString);
-                    availableContainer.animateLayoutFadeAndWait(200, 0);
-//                    });
+                    callSerially(() -> {
+                        availablePowerBanksNumber.setText(remainingPowerBanksString);
+                        cabBeReturnedPowerBanksNumber.setText(canBeReturnedString);
+                        availableContainer.animateLayoutFadeAndWait(200, 0);
+                    });
 
                 }
             }

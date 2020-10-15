@@ -90,8 +90,8 @@ public class LoginForm extends Form {
 
         errorLabel.setHidden(true);
         loginButton.addActionListener(evt -> {
-            setEditOnShow(null);
             InfinityProgressBlocking.start();
+            setEditOnShow(null);
             errorLabel.setHidden(true);
 
             if (!isValid()) {

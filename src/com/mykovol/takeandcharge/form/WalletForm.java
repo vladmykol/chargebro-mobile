@@ -153,6 +153,11 @@ public class WalletForm extends Form {
         });
     }
 
+
+    public static boolean isUserHasCard() {
+        return (Preferences.get("noPaymentMethod", "true")).equals("false");
+    }
+
     public Command getEditCommand() {
         return new Command("Remove") {
             private volatile boolean isEdit;
@@ -231,6 +236,7 @@ public class WalletForm extends Form {
             });
 
         }
+
 
         public void showRemoveButton() {
             removeButton.setHidden(false);

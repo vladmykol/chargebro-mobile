@@ -34,7 +34,6 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.BeforeRentInfo;
 import com.mykovol.takeandcharge.service.RentService;
-import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.RentFullScreenLoader;
 
 import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
@@ -132,12 +131,12 @@ public class RentConfirmation extends Form {
             RentService.sendRentRequest(beforeRentInfo.stationId.get(), new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().show();
-                    MainForm.showError(errorMessage, errorCode);
+                    MainForm.get().showErrorOnMainScreen(errorMessage, errorCode);
                 }
 
                 @Override
                 public void onSucess(String value) {
+                    RentFullScreenLoader.get().setStageWaitingBankResponse();
                 }
             });
         });

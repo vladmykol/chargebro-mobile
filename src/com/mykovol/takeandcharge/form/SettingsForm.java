@@ -71,7 +71,6 @@ public class SettingsForm extends Form {
 
         landPicket.setStrings("ua", "ru", "en", "default");
         landPicket.setSelectedString(getLandPrefTranslated());
-
         landPicket.addActionListener(evt -> {
             if (!getLandPrefTranslated().equals(landPicket.getSelectedString())) {
                 setLandPref(landPicket.getSelectedString());
@@ -81,7 +80,7 @@ public class SettingsForm extends Form {
             }
         });
 
-        SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
+//        SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
 //        switchList.addActionListener(e -> {
 //            Dialog.show("Info", "You selected " + Arrays.toString(switchList.getMultiListModel().getSelectedIndices()), "Ok", null);
 //        });

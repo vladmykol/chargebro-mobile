@@ -27,6 +27,7 @@ import com.codename1.io.Log;
 import com.codename1.io.websocket.WebSocket;
 import com.codename1.util.EasyThread;
 import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.tools.RentFullScreenLoader;
 
 import java.io.*;
 
@@ -42,6 +43,7 @@ public class WebSocketClient extends WebSocket {
     private static final short MESSAGE_TYPE_RENT_START = 2;
     private static final short MESSAGE_TYPE_RENT_END = 3;
     private static final short MESSAGE_TYPE_ERROR = 4;
+    private static final short MESSAGE_TYPE_RENT_MONEY_HOLD_CONFIRM = 5;
     private static final short MESSAGE_CODE_OK = 200;
     private static final short MESSAGE_CODE_PAYMENT_ERROR = 402;
     private static final short MESSAGE_CODE_UNAUTHORIZED = 401;
@@ -119,6 +121,9 @@ public class WebSocketClient extends WebSocket {
                 case MESSAGE_TYPE_AUTH:
                     authAction(messageCode, message);
                     break;
+                case MESSAGE_TYPE_RENT_MONEY_HOLD_CONFIRM:
+                    moneyHoldConfirmation();
+                    break;
                 case MESSAGE_TYPE_RENT_START:
                     takePowerBankAction(message);
                     break;
@@ -126,7 +131,7 @@ public class WebSocketClient extends WebSocket {
                     returnPowerBankAction(message);
                     break;
                 case MESSAGE_TYPE_ERROR:
-                    MainForm.showError(message, messageCode);
+                    MainForm.get().showErrorOnMainScreen(message, messageCode);
                     break;
                 default:
                     Log.p("not defined message type from webSocket server " + messageCode + " " + message);
@@ -140,6 +145,10 @@ public class WebSocketClient extends WebSocket {
 
     private void returnPowerBankAction(String serialNumber) {
         MainForm.get().removeRentRow(serialNumber);
+    }
+
+    private void moneyHoldConfirmation() {
+        RentFullScreenLoader.get().setStageUnlockingPowerBank();
     }
 
     private void takePowerBankAction(String serialNumber) {

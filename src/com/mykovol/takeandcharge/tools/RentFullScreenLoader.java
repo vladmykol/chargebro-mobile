@@ -58,9 +58,6 @@ public class RentFullScreenLoader extends Form {
         add(loadText);
 
         addShowListener(evt -> {
-            if (refreshRentTimer != null) {
-                refreshRentTimer.cancel();
-            }
             refreshRentTimer = UITimer.timer(5000, true, this, () -> {
                 MainForm.get().refreshRentContent(true);
             });
@@ -80,39 +77,43 @@ public class RentFullScreenLoader extends Form {
         if (timer != null) {
             timer.cancel();
         }
+        if (refreshRentTimer != null) {
+            refreshRentTimer.cancel();
+        }
         loadText.setText("checking available powebanks");
-        timer = UITimer.timer(4000, false, this, () -> {
+        show();
+    }
+
+    public void setStageWaitingBankResponse() {
+        callSerially(() -> {
+            loadText.setText("contacting a bank");
+            loadText.getParent().revalidate();
+        });
+    }
+
+    public void setStageUnlockingPowerBank() {
+        callSerially(() -> {
+            loadText.setText("unlocking powerbank");
+            loadText.getParent().revalidate();
+        });
+        timer = UITimer.timer(10000, false, this, () -> {
             callSerially(() -> {
-                loadText.setText("contacting a bank");
+                loadText.setText("resolving a connection issue");
                 loadText.getParent().revalidate();
             });
-            timer = UITimer.timer(4000, false, this, () -> {
+            timer = UITimer.timer(10000, false, this, () -> {
                 callSerially(() -> {
-                    loadText.setText("contacting charging station");
+                    loadText.setText("it takes longer than usual, few seconds remaining");
                     loadText.getParent().revalidate();
                 });
-                timer = UITimer.timer(10000, false, this, () -> {
+                timer = UITimer.timer(30000, false, this, () -> {
                     callSerially(() -> {
-                        loadText.setText("resolving a connection issue");
-                        loadText.getParent().revalidate();
-                    });
-                    timer = UITimer.timer(10000, false, this, () -> {
-                        callSerially(() -> {
-                            loadText.setText("it takes longer than usual, few seconds remaining");
-                            loadText.getParent().revalidate();
-                        });
-                        timer = UITimer.timer(30000, false, this, () -> {
-                            callSerially(() -> {
-                                refreshRentTimer.cancel();
-                                MainForm.get().show();
-                                MainForm.showError("No response from server. Please try again latter", 500);
-                            });
-                        });
+                        refreshRentTimer.cancel();
+                        MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);
                     });
                 });
             });
         });
-        show();
     }
 
 
