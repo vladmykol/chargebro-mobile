@@ -74,7 +74,7 @@ public class FormCommand {
     public static void showBackWithAnimation(Form destForm, Form current) {
         final Transition curOutAnimation = current.getTransitionOutAnimator();
         final Transition destInAnimation = destForm.getTransitionInAnimator();
-        current.setTransitionOutAnimator(CommonTransitions.createSlide(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
+        current.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, false, 200));
         destForm.setTransitionInAnimator(CommonTransitions.createEmpty());
         destForm.show();
         current.setTransitionOutAnimator(curOutAnimation);

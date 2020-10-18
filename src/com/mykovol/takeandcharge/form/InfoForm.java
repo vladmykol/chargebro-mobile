@@ -32,6 +32,7 @@ import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FormCommand;
 
 import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
+import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 
 /**
  * @author Vlad Mykol
@@ -70,16 +71,19 @@ public class InfoForm extends Form {
         final Button termsLinkButton = new Button("Terms&Conditions", "InfoFormLink");
         final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
         termsForm.setCloseAction(this);
+        termsForm.serUrlNoReload(POLICY_URL);
         termsLinkButton.addActionListener(evt -> {
             CommonCode.removeTransitionsTemporarily(this);
             termsForm.show();
-            termsForm.serUrlNoReload(POLICY_URL);
         });
 
-        final Button ourSiteButton = new Button("What is ChargeBro?", "InfoFormLink");
-        ourSiteButton.addActionListener(evt -> {
-            Display.getInstance().execute("https://chargebro.com/");
-            MainForm.get().show();
+        final Button priceLinkButton = new Button("Price", "InfoFormLink");
+        final BrowserPopUp priceForm = new BrowserPopUp("Price");
+        priceForm.setCloseAction(this);
+        priceForm.serUrlNoReload(PRICE_URL);
+        priceLinkButton.addActionListener(evt -> {
+            CommonCode.removeTransitionsTemporarily(this);
+            priceForm.show();
         });
 
         final Label versionLabelText = new Label("Version", "InfoFormText");
@@ -90,6 +94,11 @@ public class InfoForm extends Form {
 //            Dialog.show("Info", "You selected " + Arrays.toString(switchList.getMultiListModel().getSelectedIndices()), "Ok", null);
 //        });
 //        switchList.setScrollableY(true);
+
+        final Button ourSiteButton = new Button("What is ChargeBro?", "InfoFormLink");
+        ourSiteButton.addActionListener(evt -> {
+            Display.getInstance().execute("https://chargebro.com/");
+        });
 
         final Label delimiter = new Label("", "SettingsFormDelimiter");
         delimiter.setShowEvenIfBlank(true);
@@ -104,8 +113,9 @@ public class InfoForm extends Form {
                 delimiter,
                 ourSiteButton,
                 delimiter1,
-                termsLinkButton,
-                delimiter2
+                priceLinkButton,
+                delimiter2,
+                termsLinkButton
         );
     }
 }

@@ -26,6 +26,7 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.io.Preferences;
 import com.codename1.l10n.L10NManager;
 import com.codename1.ui.*;
+import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
@@ -47,7 +48,7 @@ public class SettingsForm extends Form {
 
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
-//        setTransitionInAnimator(CommonTransitions.createEmpty());
+//        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 200));
 //        setTransitionOutAnimator(CommonTransitions.createSlide(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
 
         FormCommand.setBackAction(MainForm.get(),this);

@@ -49,7 +49,6 @@ import com.mykovol.takeandcharge.service.LocationService;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.service.WebSocketClient;
-import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
 import java.util.HashMap;
@@ -73,7 +72,11 @@ public class MainForm extends Form {
     private final ToolBox toolBox = new ToolBox(mapContainer);
     private final ScanButton scanButton = new ScanButton("TakePowerBankButton");
     private final Button sheetInfoScreenBlocker = new Button();
-    private final DraggablePanel draggablePanel;
+    private final Button draggablePanelScreenBottomBlocker = new Button();
+    private final Button draggablePanelScreenBlocker = new Button();
+    private final DraggablePanel draggablePanel = new DraggablePanel(draggablePanelScreenBlocker,
+            draggablePanelScreenBottomBlocker,
+            this);
     private final StationInfoSheet stationInfoSheet = new StationInfoSheet(sheetInfoScreenBlocker, this);
     private final Image stationPointImage = Resources.getGlobalResources().getImage("map-point.png");
     private final Map<String, MapContainer.MapObject> mapMarkers = new HashMap<>();
@@ -99,7 +102,6 @@ public class MainForm extends Form {
 
         add(FlowLayout.encloseRightMiddle(toolBox));
 
-        Button draggablePanelScreenBottomBlocker = new Button();
         $(draggablePanelScreenBottomBlocker)
                 .setUIID("Container")
                 .setBackgroundType(BACKGROUND_IMAGE_SCALED)
@@ -109,7 +111,6 @@ public class MainForm extends Form {
                 .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight));
         add(BorderLayout.south(draggablePanelScreenBottomBlocker));
 
-        Button draggablePanelScreenBlocker = new Button();
         $(draggablePanelScreenBlocker)
                 .setUIID("Container")
                 .setVisible(false)
@@ -122,17 +123,13 @@ public class MainForm extends Form {
                 .stripMarginAndPadding();
         add(sheetInfoScreenBlocker);
 
-        draggablePanel = new DraggablePanel(draggablePanelScreenBlocker,
-                draggablePanelScreenBottomBlocker,
-                this);
-
         add(draggablePanel);
 
         add(MainNoBlockingLoader.get());
 
 //        add(messagePopUp);
         messagePopUp.bindToComponent(this);
-
+//
         initMap();
 
         addPointerDraggedListener(evt -> {
@@ -215,18 +212,18 @@ public class MainForm extends Form {
             locationService.moveToCurrentLocation(mapContainer);
         } else {
             UITimer.timer(5000, false, getComponentForm(), () -> {
-                boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutLocationUse", false);
-                boolean isUserAgreeToGiveLocationAccess = true;
-                if (!isUserNotifiedAboutLocationUse) {
-                    isUserAgreeToGiveLocationAccess = Dialog.show("Permission required", "Please allow using of geolocation to show nearest stations", "OK", "Cancel");
+//                boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutLocationUse", false);
+//                boolean isUserAgreeToGiveLocationAccess = true;
+//                if (!isUserNotifiedAboutLocationUse) {
+//                    isUserAgreeToGiveLocationAccess = Dialog.show("Permission required", "Please allow using of geolocation to show nearest stations", "OK", "Cancel");
+//                }
+//                if (isUserAgreeToGiveLocationAccess) {
+                LocationService locationService = new LocationService();
+//                    Preferences.set("isUserNotifiedAboutLocationUse", true);
+                if (locationService.checkGpsEnabled()) {
+                    locationService.moveToCurrentLocation(mapContainer);
                 }
-                if (isUserAgreeToGiveLocationAccess) {
-                    LocationService locationService = new LocationService();
-                    Preferences.set("isUserNotifiedAboutLocationUse", true);
-                    if (locationService.checkGpsEnabled()) {
-                        locationService.moveToCurrentLocation(mapContainer);
-                    }
-                }
+//                }
                 mapContainer.setShowMyLocation(true);
 
                 Preferences.set("showMyLocation", mapContainer.isShowMyLocation());
@@ -235,7 +232,11 @@ public class MainForm extends Form {
     }
 
     public void refreshRentContent(boolean isShowImmediately) {
-        draggablePanel.refreshRentContent(isShowImmediately);
+        if (UserService.isLoggedIn()) {
+            draggablePanel.refreshRentContent(isShowImmediately);
+        } else {
+            showScanButton();
+        }
     }
 
     public void addRentRowOffline(String powerBankId) {
@@ -392,7 +393,6 @@ public class MainForm extends Form {
                     setText("Register");
                     setMaterialIcon(FontImage.MATERIAL_PERSON_ADD, 4);
                 }
-
             }
         }
     }

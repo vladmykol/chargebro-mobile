@@ -39,7 +39,7 @@ public class ToolBox extends Container {
             new ComingSoonForm("Nearest stations", MainForm.get()).show();
         });
 
-        FontImage.setMaterialIcon(showNearestStationsButton, FontImage.MATERIAL_STOREFRONT);
+        FontImage.setMaterialIcon(showNearestStationsButton, FontImage.MATERIAL_SUBJECT);
 
         addAll(reportErrorButton, refreshButton, showNearestStationsButton);
     }

@@ -90,8 +90,8 @@ public class BrowserPopUp extends Form {
     }
 
     public void setCloseAction(Form form) {
-        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 200));
+        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 200));
         final Command closeToPrevFormCommand = FormCommand.getCloseCommand(form);
         getToolbar().addCommandToRightBar(closeToPrevFormCommand);
     }

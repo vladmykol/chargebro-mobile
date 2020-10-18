@@ -1,6 +1,5 @@
 #Constants {
     includeNativeBool: true;
-    /*sideMenuImage: "menu.png";*/
     sideMenuTensileDragBool: false;
     sideMenuTensileDragBool: false;
     sideMenuSizePortraitInt: 30;
@@ -508,14 +507,15 @@ AvatarSubText {
 SideMenuButton {
     color: var(--grafit-color);
     background: white;
-    padding: 1.5mm;
-    margin: 1mm;
+    padding: 2.5mm 2mm;
+    margin: 0mm;
     border: none;
     /*text-shadow: none;*/
     font-family: var(--font-ProximaNova-Regular);
     /*font-family: "native:MainLight";*/
     border-radius: 2mm;
     font-size: 2.7mm;
+    /*background: grey;*/
 }
 
 /*SideMenuButton.pressed {*/
@@ -578,7 +578,7 @@ StationsSheetTitle {
 }
 
 StationsSheetImage {
-    margin: 0mm 2mm 1mm;
+    margin: 0mm 2mm 2mm;
 }
 
 StationsSheetText {
@@ -886,7 +886,7 @@ PermissionAccessFormText {
 
 InfoFormText {
     margin: 0mm;
-    padding: 0mm;
+    padding: 1.5mm 0mm;
     font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm;
     color: grey;
@@ -898,5 +898,5 @@ InfoFormLink {
 }
 
 InfoFormLink.pressed {
-    color: #186a71;
+   font-weight: bold;
 }

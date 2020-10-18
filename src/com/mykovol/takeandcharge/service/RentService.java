@@ -167,15 +167,15 @@ public class RentService {
         }
 
         if (!CodeScanner.isSupported()) {
-            callback.onError(null, null, 0, "CodeScanner is not supported on this platform");
+            callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
         } else {
-            boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutCameraUse", false);
-            boolean isUserAgreeToGiveCameraAccess = true;
-            if (!isUserNotifiedAboutLocationUse) {
-                isUserAgreeToGiveCameraAccess = Dialog.show("Permission required", "Please allow using of your camera to scan QR code", "OK", "Cancel");
-            }
+//            boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutCameraUse", false);
+//            boolean isUserAgreeToGiveCameraAccess = true;
+//            if (!isUserNotifiedAboutLocationUse) {
+//                isUserAgreeToGiveCameraAccess = Dialog.show("Permission required", "Please allow using of your camera to scan QR code", "OK", "Cancel");
+//            }
 
-            if (isUserAgreeToGiveCameraAccess) {
+//            if (isUserAgreeToGiveCameraAccess) {
                 // TODO: 5/27/2020 replace by custom dialog with QR code or enter number option and remember choice option
 //                Dialog.show("QR code scanning", "Please point the camera at the QR code", "OK", null);
 //                ToastBar.showInfoMessage("Please point the camera at the QR code");
@@ -198,9 +198,9 @@ public class RentService {
                         Log.e(new RuntimeException("QR scanning error -" + errorCode + message));
                     }
                 });
-            } else {
-                callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
-            }
+//            } else {
+//                callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
+//            }
         }
     }
 

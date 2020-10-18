@@ -41,22 +41,18 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.util.ImageIO;
 import com.codename1.ui.util.Resources;
-import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.form.*;
 import com.mykovol.takeandcharge.service.GlobalConst;
-import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.codename1.ui.CN.convertToPixels;
-import static com.codename1.ui.CN.getCurrentForm;
 import static com.codename1.ui.CN1Constants.GALLERY_IMAGE;
 import static com.codename1.ui.ComponentSelector.$;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED_FILL;
-import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
@@ -71,18 +67,18 @@ public class CommonCode {
     private final static Label avatarText = new Label("ChargeBro", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
+    private final static Button signOutButton = getSignOutButton();
+    private final static Button supportButton = getSupportButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
     private final static Button registerButton = getRegisterButton();
     private final static Button historyButton = getHistoryButton();
     private final static Button promoCodeButton = getPromoCodeButton();
     private final static Button creditCardButton = getCreditCards();
-    private final static Button signOutButton = getSignOutButton();
-    private final static Button PayForPbButton = getPayForPbButton();
-    private final static Button priceButton = getPriceButton();
-    private final static Button supportButton = getSupportButton();
+    private final static Button stationsAround = getStationsAround();
     private final static Button settingsButton = getSettingsButton();
     private final static Button infoButton = getInfoButton();
+    private static Container menuItemsContainer;
 
 
     private static Label avatarPenImage;
@@ -157,7 +153,6 @@ public class CommonCode {
     public static void constructSideMenu(Toolbar tb, Form parentForm) {
         avatarButton.setUIID("AvatarButton");
 
-
         avatarButton.addActionListener(e -> {
 //            new EditAccountForm().show();
             if (UserService.isLoggedIn()) {
@@ -201,11 +196,11 @@ public class CommonCode {
 //            menuTopPartHolder.getParent().setScrollableY(false);
 //        }
 
-        Container menuItemsContainer = BorderLayout.west(BoxLayout.encloseY(
+        menuItemsContainer = BorderLayout.west(BoxLayout.encloseY(
                 loginButton,
                 registerButton,
+                stationsAround,
                 creditCardButton,
-                priceButton,
                 historyButton,
                 promoCodeButton,
                 supportButton,
@@ -296,7 +291,7 @@ public class CommonCode {
                 if (ee != null && ee.getSource() != null) {
                     saveAndSetAvatar((String) ee.getSource());
                 } else {
-                    MainForm.showError("Not possible to open a gallery. Please check application permissions", 500);
+                    MainForm.get().showErrorOnMainScreen("Not possible to open a gallery. Please check application permissions", 500);
                 }
             }, GALLERY_IMAGE);
         }
@@ -320,6 +315,7 @@ public class CommonCode {
             creditCardButton.setHidden(true);
             signOutButton.setHidden(true);
         }
+        historyButton.getParent().revalidate();
     }
 
     public static void removeTransitionsTemporarily(final Form f) {
@@ -338,20 +334,12 @@ public class CommonCode {
     }
 
     private static Button getLoginButton() {
-        return constructSideMenuButton("Login", FontImage.MATERIAL_PERSON, evt -> {
-            final LoginForm loginForm = new LoginForm();
-            loginForm.setTransitionInAnimator(CommonTransitions.createFade(200));
-            loginForm.show();
-        });
+        return constructSideMenuButton("Login", FontImage.MATERIAL_PERSON, new LoginForm());
     }
 
-    private static Button getPriceButton() {
-        final BrowserPopUp price = new BrowserPopUp("Price");
-        price.setBackAction(MainForm.get());
-        return constructSideMenuButton("Price", FontImage.MATERIAL_BAR_CHART, evt -> {
-            price.show();
-            price.serUrlNoReload(PRICE_URL);
-        });
+    private static Button getStationsAround() {
+        final BrowserPopUp price = new BrowserPopUp("Nearest stations");
+        return constructSideMenuButton("Nearest stations", FontImage.MATERIAL_EV_STATION, new ComingSoonForm("Nearest stations", MainForm.get()));
     }
 
 
@@ -375,53 +363,51 @@ public class CommonCode {
 //    }
 
     private static Button getCreditCards() {
-        return constructSideMenuButton("Payment", FontImage.MATERIAL_CREDIT_CARD, e -> {
-            new WalletForm().show();
-        });
+        return constructSideMenuButton("Payment", FontImage.MATERIAL_CREDIT_CARD, new WalletForm());
     }
 
     private static Button getHistoryButton() {
-        return constructSideMenuButton("History", FontImage.MATERIAL_HISTORY, e -> {
-            new ComingSoonForm("Rent history", MainForm.get()).show();
-        });
+        return constructSideMenuButton("History", FontImage.MATERIAL_HISTORY, new ComingSoonForm("Rent history", MainForm.get()));
     }
 
     private static Button getPromoCodeButton() {
-        return constructSideMenuButton("Promocode", FontImage.MATERIAL_LOCAL_OFFER, e -> {
-            new ComingSoonForm("Promocode", MainForm.get()).show();
-        });
+        return constructSideMenuButton("Promocode", FontImage.MATERIAL_LOCAL_OFFER, new ComingSoonForm("Promocode", MainForm.get()));
     }
 
-    private static Button getPayForPbButton() {
-        return constructSideMenuButton("Pay for rent", FontImage.MATERIAL_CREDIT_CARD, e -> {
-            RentService.prepareCheckout(new Callback<String>() {
-                @Override
-                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.showError(errorMessage, errorCode);
-                }
-
-                @Override
-                public void onSucess(String checkoutUrl) {
-                    Display.getInstance().execute(checkoutUrl, evt -> {
-                        MainForm.showError("All good! Error is just for test", 0);
-                    });
-                }
-            });
-        });
-    }
+//    private static Button getPayForPbButton() {
+//        return constructSideMenuButton("Pay for rent", FontImage.MATERIAL_CREDIT_CARD, e -> {
+//            RentService.prepareCheckout(new Callback<String>() {
+//                @Override
+//                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+//                    MainForm.showError(errorMessage, errorCode);
+//                }
+//
+//                @Override
+//                public void onSucess(String checkoutUrl) {
+//                    Display.getInstance().execute(checkoutUrl, evt -> {
+//                        MainForm.showError("All good! Error is just for test", 0);
+//                    });
+//                }
+//            });
+//        });
+//    }
 
 
     private static Button getSupportButton() {
-        return constructSideMenuButton("Contact us", FontImage.MATERIAL_EMAIL, evt -> {
+        Button sideMenuButton = new Button("Contact us", "SideMenuButton");
+        sideMenuButton.addActionListener(evt -> {
+            MainForm.get().getToolbar().closeLeftSideMenu();
             sendSupportEmail();
         });
+        sideMenuButton.setIconUIID("SideMenuButtonIcon");
+        sideMenuButton.setMaterialIcon(FontImage.MATERIAL_EMAIL);
+        sideMenuButton.setGap(convertToPixels(2));
+        return sideMenuButton;
     }
 
 
     private static Button getRegisterButton() {
-        return constructSideMenuButton("Register", FontImage.MATERIAL_PERSON_ADD, evt -> {
-            new RegistrationForm().show();
-        });
+        return constructSideMenuButton("Register", FontImage.MATERIAL_PERSON_ADD, new RegistrationForm());
     }
 
 
@@ -434,27 +420,26 @@ public class CommonCode {
     }
 
     private static Button getSettingsButton() {
-        return constructSideMenuButton("Settings", FontImage.MATERIAL_SETTINGS, evt -> {
-            new SettingsForm().show();
-        });
+        return constructSideMenuButton("Settings", FontImage.MATERIAL_SETTINGS, new SettingsForm());
     }
 
     private static Button getInfoButton() {
-        return constructSideMenuButton("About", FontImage.MATERIAL_INFO, evt -> {
-            new InfoForm().show();
-        });
+        return constructSideMenuButton("About", FontImage.MATERIAL_INFO, new InfoForm());
     }
 
-    private static Button constructSideMenuButton(String name, char materialIcon, final ActionListener<?> evt) {
+    private static Button constructSideMenuButton(String name, char materialIcon, Form form) {
         Button sideMenuButton = new Button(name, "SideMenuButton");
         sideMenuButton.setIconUIID("SideMenuButtonIcon");
         sideMenuButton.setMaterialIcon(materialIcon);
         sideMenuButton.setGap(convertToPixels(2));
-        sideMenuButton.addActionListener(evt);
-        sideMenuButton.addActionListener(evt1 -> {
+        form.addShowListener(evt1 -> {
             sideMenu.setAnimateShow(false);
             MainForm.get().getToolbar().closeLeftSideMenu();
         });
+        sideMenuButton.addActionListener(evt -> {
+            form.show();
+        });
+
         return sideMenuButton;
     }
 

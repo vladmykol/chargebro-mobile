@@ -51,8 +51,6 @@ public class TakeAndChargeMain {
         Toolbar.setOnTopSideMenu(true);
 
         Dialog.setDefaultBlurBackgroundRadius(13);
-        Display.getInstance().setProperty("BrowserComponent.useWKWebView", "true");
-        Display.getInstance().setProperty("syncNativeCookies", "false");
 
 //        Label.setDefaultGap(convertToPixels(2));
         // only portrait mode

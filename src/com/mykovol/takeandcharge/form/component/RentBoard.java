@@ -62,7 +62,7 @@ public class RentBoard extends Container {
         if (rentHistory.errorCode.get() > 0) {
             setUIID("RentBorderError");
             errorMessageText.setText(rentHistory.errorMessage.get());
-            errorMessageHeader.setText(MessagePopUp.getErrorType(rentHistory.errorCode.getInt()));
+            errorMessageHeader.setText(MessagePopUp.errorCodeToString(rentHistory.errorCode.getInt()));
             if (getParent() != null) {
                 getParent().revalidate();
             }

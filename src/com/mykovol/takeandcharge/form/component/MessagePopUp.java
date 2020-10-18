@@ -1,9 +1,10 @@
 package com.mykovol.takeandcharge.form.component;
 
 
-import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
+import com.codename1.ui.geom.Rectangle;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.UITimer;
 import com.mykovol.takeandcharge.form.MainForm;
@@ -20,12 +21,27 @@ public class MessagePopUp extends Container {
 
     public MessagePopUp() {
         super(BoxLayout.y());
-        Container topPlaceHolder = new Container();
-        topPlaceHolder.stripMarginAndPadding();
-        topPlaceHolder.setSafeArea(true);
-        topPlaceHolder.getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
-        topPlaceHolder.getAllStyles().setMarginTop(2);
+        Container topPlaceHolder = new Container(new FlowLayout());
+        Rectangle rectOfSafeArea = Display.getInstance().getDisplaySafeArea(new Rectangle());
+        int topMargin = rectOfSafeArea.getY();
+        if (topMargin == 0) {
+            topPlaceHolder.getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
+            topMargin = 3;
+        } else {
+            topPlaceHolder.getAllStyles().setMarginUnit(Style.UNIT_TYPE_PIXELS);
+        }
+        topPlaceHolder.getAllStyles().setMarginTop(topMargin);
         add(topPlaceHolder);
+    }
+
+    public static String errorCodeToString(int errorCode) {
+        if (errorCode == MESSAGE_CODE_PAYMENT_ERROR) {
+            return "Payment issue";
+        } else if (errorCode == MESSAGE_CODE_GENERAL_ERROR) {
+            return "Oops... something went wrong";
+        } else {
+            return "Error";
+        }
     }
 
     public void showError(String text) {
@@ -42,9 +58,9 @@ public class MessagePopUp extends Container {
         Label errorDotImage = new Label("", "ErrorMessageIcon");
         FontImage.setMaterialIcon(errorDotImage, FontImage.MATERIAL_ERROR_OUTLINE);
 
-        SpanLabel errorMessageText = new SpanLabel(text, "ErrorMessageText");
+        Label errorMessageText = new Label(text, "ErrorMessageText");
         errorMessageText.setEnabled(false);
-        SpanLabel errorMessageHeader = new SpanLabel(getErrorType(type), "ErrorMessageHeader");
+        Label errorMessageHeader = new Label(errorCodeToString(type), "ErrorMessageHeader");
         errorMessageHeader.setEnabled(false);
         final Container errorMessageContainer = BoxLayout.encloseY(errorMessageHeader, errorMessageText);
         container.addAll(errorDotImage, errorMessageContainer);
@@ -55,8 +71,8 @@ public class MessagePopUp extends Container {
 //            errorMessageContainer.revalidate();
             animatedContainer.revalidate();
 
-            animatedContainer.setY(0);
-            animateLayoutAndWait(500);
+            animatedContainer.setY(-100);
+            animateLayoutAndWait(300);
         });
 
         UITimer.timer(7000, false, MainForm.get(), () -> {
@@ -79,16 +95,6 @@ public class MessagePopUp extends Container {
             Container layers = f.getLayeredPane(getClass(), true);
             layers.setLayout(BoxLayout.y());
             layers.add(this);
-        }
-    }
-
-    public static String getErrorType(int errorCode) {
-        if (errorCode == MESSAGE_CODE_PAYMENT_ERROR) {
-            return "Payment issue";
-        } else if (errorCode == MESSAGE_CODE_GENERAL_ERROR) {
-            return "Oops... something went wrong";
-        } else {
-            return "Error";
         }
     }
 

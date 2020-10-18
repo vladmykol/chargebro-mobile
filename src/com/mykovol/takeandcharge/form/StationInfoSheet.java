@@ -65,7 +65,6 @@ public class StationInfoSheet extends Sheet {
         Container availableText = BoxLayout.encloseY(availablePowerBanks, cabBeReturnedPowerBanks);
         Container availableNumbers = BoxLayout.encloseY(availablePowerBanksNumber, cabBeReturnedPowerBanksNumber);
         availableContainer = BoxLayout.encloseX(availableText, availableNumbers);
-
         Container infoContainer = BoxLayout.encloseY(addressLabel, workingHoursLabel);
 
         Button showDirectionButton = new Button("");
@@ -85,12 +84,19 @@ public class StationInfoSheet extends Sheet {
 //                FlowLayout.encloseRightBottom(showDirectionButton)
 //        );
 
+        final Container availableAndDirection;
+        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
+            availableAndDirection = BoxLayout.encloseY(availableContainer, BorderLayout.east(showDirectionButton));
+        } else {
+            availableAndDirection = BorderLayout.centerEastWest(availableContainer, showDirectionButton, null);
+        }
+
 
         add(BorderLayout.NORTH, BoxLayout.encloseY(errorLabel, title));
         add(BorderLayout.CENTER, BoxLayout.encloseY(
                 BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
 //                FlowLayout.encloseLeftMiddle(errorLabel),
-                BorderLayout.centerEastWest(availableContainer, showDirectionButton, null)
+                availableAndDirection
                 )
         );
 //        add(BorderLayout.NORTH, title);
