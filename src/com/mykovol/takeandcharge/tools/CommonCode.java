@@ -71,17 +71,20 @@ public class CommonCode {
     private final static Label avatarText = new Label("ChargeBro", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
-    private final static Button signOutButton = getSignOutButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
     private final static Button registerButton = getRegisterButton();
     private final static Button historyButton = getHistoryButton();
     private final static Button promoCodeButton = getPromoCodeButton();
     private final static Button creditCardButton = getCreditCards();
+    private final static Button signOutButton = getSignOutButton();
     private final static Button PayForPbButton = getPayForPbButton();
     private final static Button priceButton = getPriceButton();
     private final static Button supportButton = getSupportButton();
     private final static Button settingsButton = getSettingsButton();
+    private final static Button infoButton = getInfoButton();
+
+
     private static Label avatarPenImage;
 
     public static void refreshUserInfo() {
@@ -206,7 +209,8 @@ public class CommonCode {
                 historyButton,
                 promoCodeButton,
                 supportButton,
-                settingsButton
+                settingsButton,
+                infoButton
         ));
 
         tb.addComponentToSideMenu(menuItemsContainer);
@@ -282,15 +286,17 @@ public class CommonCode {
     }
 
     public static void chooseNewAvatar() {
-        if (Dialog.show("Camera or Gallery", "Would you like to use the camera or the gallery for the picture?", "Camera", "Gallery")) {
+        if (Dialog.show("Confirmation", "Would you like to use the camera or the gallery?", "Camera", "Gallery")) {
             String pic = Capture.capturePhoto();
             if (pic != null) {
                 saveAndSetAvatar(pic);
             }
         } else {
             CN.openGallery(ee -> {
-                if (ee.getSource() != null) {
+                if (ee != null && ee.getSource() != null) {
                     saveAndSetAvatar((String) ee.getSource());
+                } else {
+                    MainForm.showError("Not possible to open a gallery. Please check application permissions", 500);
                 }
             }, GALLERY_IMAGE);
         }
@@ -340,12 +346,11 @@ public class CommonCode {
     }
 
     private static Button getPriceButton() {
+        final BrowserPopUp price = new BrowserPopUp("Price");
+        price.setBackAction(MainForm.get());
         return constructSideMenuButton("Price", FontImage.MATERIAL_BAR_CHART, evt -> {
-            final BrowserPopUp price = new BrowserPopUp("Price");
-            price.setCloseAction(MainForm.get());
-            price.setTransitionInAnimator(CommonTransitions.createFade(300));
-            price.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-            price.show(PRICE_URL);
+            price.show();
+            price.serUrlNoReload(PRICE_URL);
         });
     }
 
@@ -434,6 +439,12 @@ public class CommonCode {
         });
     }
 
+    private static Button getInfoButton() {
+        return constructSideMenuButton("About", FontImage.MATERIAL_INFO, evt -> {
+            new InfoForm().show();
+        });
+    }
+
     private static Button constructSideMenuButton(String name, char materialIcon, final ActionListener<?> evt) {
         Button sideMenuButton = new Button(name, "SideMenuButton");
         sideMenuButton.setIconUIID("SideMenuButtonIcon");
@@ -449,6 +460,8 @@ public class CommonCode {
 
 
     public static void sendSupportEmail() {
+        MainNoBlockingLoader.get().start();
+
         final String email = "info@chargebro.com";
         String logText = "";
         try {
@@ -467,21 +480,7 @@ public class CommonCode {
                 "Log: " + logText + "\n";
         Message message = new Message(content);
 
+        MainNoBlockingLoader.get().stop();
         Display.getInstance().sendMessage(new String[]{email}, "Support request", message);
     }
-
-    public static Command getCloseCommand(Form destForm) {
-        final float menuImageSize = Float.parseFloat(destForm.getUIManager().getThemeConstant("menuImageSize", "4.5"));
-        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "", menuImageSize);
-        return Command.create("", mat, e -> {
-
-            Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
-            if (currEditing != null) {
-                currEditing.stopEditing(() -> destForm.show());
-            } else {
-                destForm.show();
-            }
-        });
-    }
-
 }

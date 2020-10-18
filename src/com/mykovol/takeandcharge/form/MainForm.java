@@ -71,7 +71,6 @@ public class MainForm extends Form {
     private static MainForm instance;
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
     private final ToolBox toolBox = new ToolBox(mapContainer);
-    //    private final InfiniteProgress infiniteProgress = new InfiniteProgress(draggablePanelScreenBlocker);
     private final ScanButton scanButton = new ScanButton("TakePowerBankButton");
     private final Button sheetInfoScreenBlocker = new Button();
     private final DraggablePanel draggablePanel;
@@ -90,21 +89,51 @@ public class MainForm extends Form {
         setTransitionOutAnimator(CommonTransitions.createEmpty());
         setTransitionInAnimator(CommonTransitions.createEmpty());
 
-        Button draggablePanelScreenBlocker = new Button();
-        Button draggablePanelScreenBottomBlocker = new Button();
-        draggablePanel = new DraggablePanel(draggablePanelScreenBlocker,
-                draggablePanelScreenBottomBlocker,
-                this);
-
         mapContainer.setShowMyLocation(false);
         add(BorderLayout.center(mapContainer));
-
-        add(FlowLayout.encloseRightMiddle(toolBox));
 
         scanButton.setVisible(false);
         add(BorderLayout.south(
                 BoxLayout.encloseXCenter(scanButton)
         ));
+
+        add(FlowLayout.encloseRightMiddle(toolBox));
+
+        Button draggablePanelScreenBottomBlocker = new Button();
+        $(draggablePanelScreenBottomBlocker)
+                .setUIID("Container")
+                .setBackgroundType(BACKGROUND_IMAGE_SCALED)
+                .setBgImage(Resources.getGlobalResources().getImage("gradient-overlay.png"))
+                .stripMarginAndPadding()
+                .setVisible(false)
+                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight));
+        add(BorderLayout.south(draggablePanelScreenBottomBlocker));
+
+        Button draggablePanelScreenBlocker = new Button();
+        $(draggablePanelScreenBlocker)
+                .setUIID("Container")
+                .setVisible(false)
+                .stripMarginAndPadding();
+        add(draggablePanelScreenBlocker);
+
+        $(sheetInfoScreenBlocker)
+                .setUIID("Container")
+                .setVisible(false)
+                .stripMarginAndPadding();
+        add(sheetInfoScreenBlocker);
+
+        draggablePanel = new DraggablePanel(draggablePanelScreenBlocker,
+                draggablePanelScreenBottomBlocker,
+                this);
+
+        add(draggablePanel);
+
+        add(MainNoBlockingLoader.get());
+
+//        add(messagePopUp);
+        messagePopUp.bindToComponent(this);
+
+        initMap();
 
         addPointerDraggedListener(evt -> {
             Component draggedCmp = getComponentAt(evt.getX(), evt.getY());
@@ -121,39 +150,6 @@ public class MainForm extends Form {
                 draggablePanel.enableDrag();
             }
         });
-
-
-        $(draggablePanelScreenBottomBlocker)
-                .setUIID("Container")
-                .setBackgroundType(BACKGROUND_IMAGE_SCALED)
-                .setBgImage(Resources.getGlobalResources().getImage("gradient-overlay.png"))
-                .stripMarginAndPadding()
-                .setVisible(false)
-                .setPreferredSize(new Dimension(getDisplayWidth(), DraggablePanel.minPanelHeight));
-        add(BorderLayout.south(draggablePanelScreenBottomBlocker));
-
-
-        $(draggablePanelScreenBlocker)
-                .setUIID("Container")
-                .setVisible(false)
-                .stripMarginAndPadding();
-        add(draggablePanelScreenBlocker);
-
-        $(sheetInfoScreenBlocker)
-                .setUIID("Container")
-                .setVisible(false)
-                .stripMarginAndPadding();
-        add(sheetInfoScreenBlocker);
-
-        add(draggablePanel);
-
-        add(MainNoBlockingLoader.get());
-
-//        add(messagePopUp);
-        messagePopUp.bindToComponent(this);
-
-        CommonCode.constructSideMenu(getToolbar(), this);
-        initMap();
 
         addShowListener(evt -> {
             MainNoBlockingLoader.get().stop();
@@ -178,7 +174,6 @@ public class MainForm extends Form {
     }
 
     public static void showError(String text, int type) {
-//        showNoUpdate();
         if (Display.getInstance().getCurrent().equals(MainForm.get())) {
             instance.messagePopUp.showError(text, type);
         } else {

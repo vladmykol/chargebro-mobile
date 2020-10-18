@@ -34,6 +34,7 @@ import com.codename1.util.FailureCallback;
 import com.mykovol.takeandcharge.dataobj.UserCardResponse;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.FormCommand;
 
 import java.util.List;
 
@@ -56,6 +57,8 @@ public class WalletForm extends Form {
         setFormBottomPaddingEditingMode(true);
         setTransitionInAnimator(CommonTransitions.createEmpty());
         setTransitionOutAnimator(CommonTransitions.createEmpty());
+        FormCommand.setBackAction(MainForm.get(), this);
+
         noCardsHint.setMaterialIcon(FontImage.MATERIAL_ERROR_OUTLINE);
         noCardsHint.setEnabled(false);
         noCardsHint.setHidden(true);
@@ -70,12 +73,6 @@ public class WalletForm extends Form {
 //            spaceLabel.setHidden(true);
 //        }
 
-        getToolbar().setBackCommand(new Command("") {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                MainForm.get().show();
-            }
-        }, Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
@@ -99,17 +96,16 @@ public class WalletForm extends Form {
             addCardForm.setBackAction(Display.getInstance().getCurrent());
             addCardForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
             addCardForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
-            addCardForm.show();
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    MainForm.get().showError(errorMessage, errorCode);
+                    MainForm.get().showErrorOnMainScreen(errorMessage, errorCode);
                 }
 
                 @Override
                 public void onSucess(String checkoutUrl) {
-                    addCardForm.showPaymentPage(checkoutUrl);
-
+                    addCardForm.show();
+                    addCardForm.setUrlForPayment(checkoutUrl);
                 }
             });
         });
@@ -220,7 +216,7 @@ public class WalletForm extends Form {
                     UserService.removeUserCard(getName(), new FailureCallback<String>() {
                         @Override
                         public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                            ToastBar.showErrorMessage(errorMessage);
+                            MainForm.get().showErrorOnMainScreen(errorMessage, errorCode);
                         }
                     });
 

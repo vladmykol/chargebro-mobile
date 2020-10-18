@@ -31,6 +31,7 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
+import com.mykovol.takeandcharge.tools.FormCommand;
 
 /**
  * @author Vlad Mykol
@@ -52,8 +53,7 @@ public class ComingSoonForm extends Form {
 //        } else {
         headerText.setText(title);
 //        }
-
-        getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
+        FormCommand.setBackAction(previousForm,this);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 5, 3.5f, 3.5f);

@@ -21,7 +21,6 @@ package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
-import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
@@ -32,6 +31,7 @@ import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.tools.FormCommand;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
 import static com.codename1.ui.CN.SOUTH;
@@ -65,7 +65,8 @@ public class RegistrationForm extends Form {
             spaceLabel.setHidden(true);
         }
 
-        getToolbar().addCommandToRightBar(CommonCode.getCloseCommand(MainForm.get()));
+        FormCommand.setBackAction(MainForm.get(),this);
+
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
 //        Image LogoImage = Resources.getGlobalResources().getImage("main-logo.png");
@@ -152,12 +153,11 @@ public class RegistrationForm extends Form {
         final Label termsLabel3Space = new Label(" ", "LoginTermsText");
         final Button termsLinkButton = new Button("Terms", "LoginTermsLink");
         final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
-        termsForm.setBackAction(this);
-        termsForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-        termsForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+        termsForm.setCloseAction(this);
         termsLinkButton.addActionListener(evt -> {
             CommonCode.removeTransitionsTemporarily(this);
-            termsForm.show(POLICY_URL);
+            termsForm.show();
+            termsForm.serUrlNoReload(POLICY_URL);
         });
 //        final Label termsLinkButtonSpace = new Label(" ", "LoginTermsText");
 //        final Label andLabel = new Label("and", "LoginTermsText");

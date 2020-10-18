@@ -23,18 +23,15 @@
 
 package com.mykovol.takeandcharge.form;
 
-import com.codename1.components.SwitchList;
 import com.codename1.io.Preferences;
 import com.codename1.l10n.L10NManager;
 import com.codename1.ui.*;
-import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.spinner.Picker;
 import com.mykovol.takeandcharge.TakeAndChargeMain;
-import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.tools.FormCommand;
 
 /**
  * @author Vlad Mykol
@@ -50,10 +47,10 @@ public class SettingsForm extends Form {
 
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
-        setTransitionInAnimator(CommonTransitions.createEmpty());
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
+//        setTransitionInAnimator(CommonTransitions.createEmpty());
+//        setTransitionOutAnimator(CommonTransitions.createSlide(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
 
-        getToolbar().addCommandToRightBar(CommonCode.getCloseCommand(MainForm.get()));
+        FormCommand.setBackAction(MainForm.get(),this);
 
         Label spaceLabel = new Label(" ");
         if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {

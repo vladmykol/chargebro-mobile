@@ -81,6 +81,12 @@ public class RentFullScreenLoader extends Form {
             refreshRentTimer.cancel();
         }
         loadText.setText("checking available powebanks");
+        timer = UITimer.timer(60000, false, this, () -> {
+            callSerially(() -> {
+                refreshRentTimer.cancel();
+                MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);
+            });
+        });
         show();
     }
 
@@ -89,9 +95,18 @@ public class RentFullScreenLoader extends Form {
             loadText.setText("contacting a bank");
             loadText.getParent().revalidate();
         });
+        timer = UITimer.timer(60000, false, this, () -> {
+            callSerially(() -> {
+                refreshRentTimer.cancel();
+                MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);
+            });
+        });
     }
 
     public void setStageUnlockingPowerBank() {
+        if (timer != null) {
+            timer.cancel();
+        }
         callSerially(() -> {
             loadText.setText("unlocking а powerbank");
             loadText.getParent().revalidate();

@@ -28,7 +28,6 @@
     walkthru2Image: "walkthru2.png";
     defaultAvatarImage: "defaultAvatar.png";
     avatarPenImage: "avatarPen.png";
-    menuBgrImage: "menuBgr.png";
     visaLogoImage: "visa-logo.png";
     masterCardLogoImage: "mastercard-logo.png";
     /*multi size images end*/
@@ -94,8 +93,14 @@ TitleCommand {
     margin: 2.5mm 0mm 0mm 0mm;
     color: #555454;
     background: white;
-    border-radius: 3.5mm;
+    border-radius: 3.8mm;
     border: lightgrey solid 0.1mm;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3mm;
+}
+
+Button{
+    font-family: var(--font-ProximaNova-Regular);
 }
 
 TitleCommand.pressed {
@@ -875,4 +880,23 @@ PermissionAccessFormText {
     padding: 0mm;
     font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm;
+}
+
+/*====================== InfoForm ==========================*/
+
+InfoFormText {
+    margin: 0mm;
+    padding: 0mm;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 3mm;
+    color: grey;
+}
+
+InfoFormLink {
+    cn1-derive:InfoFormText;
+    color: #0095A0;
+}
+
+InfoFormLink.pressed {
+    color: #186a71;
 }

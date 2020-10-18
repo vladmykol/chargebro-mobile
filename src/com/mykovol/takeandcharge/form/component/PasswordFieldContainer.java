@@ -16,7 +16,6 @@ public class PasswordFieldContainer extends Container {
 
     public PasswordFieldContainer() {
         super(BoxLayout.y());
-        textField.setMaxSize(10);
         textField.setUIID("LoginText");
         textField.getAllStyles().setMarginRight(0);
         showHidePassButton.getAllStyles().setMarginLeft(0);

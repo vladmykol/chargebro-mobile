@@ -37,6 +37,7 @@ import com.mykovol.takeandcharge.form.component.PasswordFieldContainer;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.form.component.SmsFieldContainer;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.FormCommand;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
 /**
@@ -59,7 +60,8 @@ public class RegisterFormConfirmation extends Form {
         super(BoxLayout.y());
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
-        getToolbar().setBackCommand(constructBackCommand(previousForm), Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
+
+        FormCommand.setBackAction(previousForm,this);
 
         Label spaceLabel = new Label(" ");
         Label headerText = new Label("Confirmation", "LoginHeader");

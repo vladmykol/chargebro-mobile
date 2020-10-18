@@ -29,11 +29,8 @@ import com.codename1.ui.Command;
 import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
-import com.mykovol.takeandcharge.tools.CommonCode;
-
-import static com.codename1.ui.CN.callSerially;
+import com.mykovol.takeandcharge.tools.FormCommand;
 
 /**
  * Authorization of a credit card
@@ -52,54 +49,50 @@ public class BrowserPopUp extends Form {
         add(BorderLayout.CENTER, browser);
     }
 
-    public void show(String url) {
-        browser.setURL(url);
-        super.show();
+    public void serUrlNoReload(String url) {
+        if (!url.equals(browser.getURL())) {
+            browser.setURL(url);
+        }
     }
 
-    public void show(String url, String closeUrl, Form closeToForm) {
-        browser.setURL(url);
-        browser.addBrowserNavigationCallback(currentUrl -> {
-            if (closeUrl != null) {
-                if (currentUrl.contains(closeUrl)) {
-                    callSerially(closeToForm::show);
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-            return true;
-        });
-        super.show();
-    }
+//    public void show(String url, String closeUrl, Form closeToForm) {
+//        browser.setURL(url);
+//        browser.addBrowserNavigationCallback(currentUrl -> {
+//            if (closeUrl != null) {
+//                if (currentUrl.contains(closeUrl)) {
+//                    callSerially(closeToForm::show);
+//                    return false;
+//                } else {
+//                    return true;
+//                }
+//            }
+//            return true;
+//        });
+//    }
 
-    public void showPaymentPage(String url) {
-        browser.setURL(url);
+    public void setUrlForPayment(String url) {
+        serUrlNoReload(url);
         browser.addBrowserNavigationCallback(currentUrl -> {
-            if (currentUrl.contains("chargebro")) {
-                MainForm.get().show();
+            if (currentUrl.contains("success_payment")) {
                 Preferences.set("noPaymentMethod", "false");
+                MainForm.get().show();
                 return false;
             } else {
                 return true;
             }
         });
-        super.show();
     }
 
     public void setBackAction(Form form) {
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
-        getToolbar().setBackCommand(new Command("") {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                form.showBack();
-            }
-        }, Toolbar.BackCommandPolicy.AS_ARROW, 4.5f);
+        setTransitionInAnimator(CommonTransitions.createEmpty());
+        setTransitionOutAnimator(CommonTransitions.createEmpty());
+        FormCommand.setBackAction(form,this);
     }
 
     public void setCloseAction(Form form) {
+        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
         setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-        final Command closeToPrevFormCommand = CommonCode.getCloseCommand(form);
+        final Command closeToPrevFormCommand = FormCommand.getCloseCommand(form);
         getToolbar().addCommandToRightBar(closeToPrevFormCommand);
     }
 

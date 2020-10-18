@@ -83,8 +83,8 @@ public class UserService {
 
         callSerially(() -> {
             CommonCode.refreshMenuItems();
-            MainForm.get().removeAllRentRows();
             MainForm.get().refreshScanButton();
+            MainForm.get().removeAllRentRows();
             WebSocketClient.disconnect();
         });
     }

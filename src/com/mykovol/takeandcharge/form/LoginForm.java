@@ -20,7 +20,6 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
-import com.codename1.io.Preferences;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -31,7 +30,7 @@ import com.codename1.ui.validation.Validator;
 import com.mykovol.takeandcharge.form.component.PasswordFieldContainer;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.service.UserService;
-import com.mykovol.takeandcharge.tools.CommonCode;
+import com.mykovol.takeandcharge.tools.FormCommand;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
 
@@ -65,8 +64,7 @@ public class LoginForm extends Form {
             spaceLabel.setHidden(true);
         }
 
-
-        getToolbar().addCommandToRightBar(CommonCode.getCloseCommand(MainForm.get()));
+        FormCommand.setBackAction(MainForm.get(),this);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);

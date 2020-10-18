@@ -8,6 +8,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.mykovol.takeandcharge.tools.CommonCode;
 
 import static com.codename1.ui.CN.callSerially;
 import static com.codename1.ui.layouts.BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE;
@@ -66,6 +67,7 @@ public class SplashScreen extends Form {
                 callSerially(() -> {
 //                    animateSubTitle();
                     MainForm.get();
+                    CommonCode.constructSideMenu(MainForm.get().getToolbar(), MainForm.get());
 
                     callSerially(() -> {
                         if (!isWalkthruShowed()) {

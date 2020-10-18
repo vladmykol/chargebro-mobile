@@ -82,6 +82,7 @@ public class DraggablePanel extends Container {
         if (!contentHolder.isVisible()) {
             WebSocketClient.ensureConnection();
             contentHolder.setVisible(true);
+            topToolbarPanel.setVisible(true);
             contentHolder.getParent().revalidate();
             contentHolder.setY(getDisplayHeight());
             bottomScreenBlocking.setVisible(true);
@@ -98,6 +99,7 @@ public class DraggablePanel extends Container {
             WebSocketClient.disconnect();
             animateUnlayout(300, 100, () -> {
                 contentHolder.setVisible(false);
+                topToolbarPanel.setVisible(false);
                 revalidate();
             });
         }
@@ -197,7 +199,7 @@ public class DraggablePanel extends Container {
 
     public void removeRentRow(RentBoard rentBoard) {
         callSerially(() -> {
-            deregisterAnimationForTimeCounter(rentBoard);
+//            deregisterAnimationForTimeCounter(rentBoard);
             rentBoard.remove();
 
             if (rentContent.getRentRows() == 0) {

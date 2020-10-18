@@ -160,7 +160,6 @@ public class WebSocketClient extends WebSocket {
             Log.p("websocket authentication issue - " + responseMessage);
             disconnect();
         } else {
-            Log.p("authenticated in websocket server " + responseMessage);
             MainForm.get().refreshRentContent(false);
         }
     }

@@ -104,11 +104,10 @@ public class RentConfirmation extends Form {
         final Label priceHintLabel6 = new Label(" ", "RentConfirmationHintNoCenter");
         final Button priceHintLinkButton = new Button("rent price", "RentConfirmationLink");
         final BrowserPopUp priceForm = new BrowserPopUp("Price");
-        priceForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 300));
-        priceForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-        priceForm.setBackAction(this);
+        priceForm.setCloseAction(this);
         priceHintLinkButton.addActionListener(evt -> {
-            priceForm.show(PRICE_URL);
+            priceForm.show();
+            priceForm.serUrlNoReload(PRICE_URL);
         });
 
         Button unlockPowerBankButton = new Button("Unlock a powerbank", "LoginButton");

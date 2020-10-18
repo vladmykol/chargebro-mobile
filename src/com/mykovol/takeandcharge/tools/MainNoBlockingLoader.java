@@ -43,7 +43,7 @@ import static com.codename1.ui.CN.callSerially;
  */
 public class MainNoBlockingLoader extends Container {
     private static MainNoBlockingLoader instance;
-    private GifImage gifImage;
+    private final GifImage gifImage;
     private UITimer timer;
 
     private MainNoBlockingLoader(GifImage gifImage) {
@@ -77,19 +77,21 @@ public class MainNoBlockingLoader extends Container {
             timer.cancel();
         }
         callSerially(() -> {
-            setVisible(true);
-            revalidate();
+            if (getParent() != null) {
+                setVisible(true);
+                revalidate();
+            }
         });
 
-        timer = UITimer.timer(5000, false, getComponentForm(), () -> {
-            callSerially(this::stop);
-        });
+        timer = UITimer.timer(5000, false, getComponentForm(), this::stop);
     }
 
     public void stop() {
         callSerially(() -> {
-            setVisible(false);
-            revalidate();
+            if (getParent() != null) {
+                setVisible(false);
+                revalidate();
+            }
         });
     }
 }
