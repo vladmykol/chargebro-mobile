@@ -58,6 +58,9 @@ public class RentFullScreenLoader extends Form {
         add(loadText);
 
         addShowListener(evt -> {
+            if (refreshRentTimer != null) {
+                refreshRentTimer.cancel();
+            }
             refreshRentTimer = UITimer.timer(5000, true, this, () -> {
                 MainForm.get().refreshRentContent(true);
             });
@@ -81,7 +84,7 @@ public class RentFullScreenLoader extends Form {
             refreshRentTimer.cancel();
         }
         loadText.setText("checking available powebanks");
-        timer = UITimer.timer(60000, false, this, () -> {
+        timer = UITimer.timer(70000, false, this, () -> {
             callSerially(() -> {
                 refreshRentTimer.cancel();
                 MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);
@@ -91,6 +94,9 @@ public class RentFullScreenLoader extends Form {
     }
 
     public void setStageWaitingBankResponse() {
+        if (timer != null) {
+            timer.cancel();
+        }
         callSerially(() -> {
             loadText.setText("contacting a bank");
             loadText.getParent().revalidate();
@@ -121,7 +127,7 @@ public class RentFullScreenLoader extends Form {
                     loadText.setText("it takes longer than usual, few seconds remaining");
                     loadText.getParent().revalidate();
                 });
-                timer = UITimer.timer(30000, false, this, () -> {
+                timer = UITimer.timer(40000, false, this, () -> {
                     callSerially(() -> {
                         refreshRentTimer.cancel();
                         MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);

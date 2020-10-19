@@ -82,14 +82,14 @@ public class RegistrationForm extends Form {
         Validator.setValidateOnEveryKey(true);
         //    private final SpanLabel infoLabel = new SpanLabel("Your phone number will be used to send varification SMS and won’t be forwarded to third parties"
         //            , "LoginInfo");
-        Button sendSmsButton = new Button("SendSMS", "LoginButton");
-        phoneValidator.addSubmitButtons(sendSmsButton);
+        Button submitButton = new Button("OK", "LoginButton");
+        phoneValidator.addSubmitButtons(submitButton);
         phoneValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
         phoneFieldContainer.setValidator(phoneValidator);
 
         errorLabel.setEnabled(false);
         errorLabel.setHidden(true);
-        sendSmsButton.addActionListener(evt -> {
+        submitButton.addActionListener(evt -> {
 
             errorLabel.setHidden(true);
             if (!phoneValidator.isValid()) {
@@ -137,7 +137,7 @@ public class RegistrationForm extends Form {
                 spaceLabel,
                 phoneFieldContainer,
                 errorLabel,
-                sendSmsButton,
+                submitButton,
                 FlowLayout.encloseCenter(loginLabel, logInButton)
         );
         mainContainer.setScrollableY(true);
@@ -185,7 +185,7 @@ public class RegistrationForm extends Form {
         termsContainer.setScrollableY(false);
 
         setEditOnShow(phoneFieldContainer.getField());
-        phoneFieldContainer.getField().setNextFocusDown(sendSmsButton);
+        phoneFieldContainer.getField().setNextFocusDown(submitButton);
     }
 
     public void setHeader(String text) {

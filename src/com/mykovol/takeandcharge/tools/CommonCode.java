@@ -36,9 +36,12 @@ import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.animations.Transition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
+import com.codename1.ui.geom.Rectangle;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
+import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.ImageIO;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.form.*;
@@ -67,7 +70,6 @@ public class CommonCode {
     private final static Label avatarText = new Label("ChargeBro", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
-    private final static Button signOutButton = getSignOutButton();
     private final static Button supportButton = getSupportButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
@@ -75,11 +77,10 @@ public class CommonCode {
     private final static Button historyButton = getHistoryButton();
     private final static Button promoCodeButton = getPromoCodeButton();
     private final static Button creditCardButton = getCreditCards();
+    private final static Button signOutButton = getSignOutButton();
     private final static Button stationsAround = getStationsAround();
     private final static Button settingsButton = getSettingsButton();
     private final static Button infoButton = getInfoButton();
-    private static Container menuItemsContainer;
-
 
     private static Label avatarPenImage;
 
@@ -178,11 +179,18 @@ public class CommonCode {
         spaceHolder.setShowEvenIfBlank(true);
         spaceHolder.getAllStyles().setMarginBottom(100);
 
-        final Container avatarAndPen = LayeredLayout.encloseIn(avatarButton, avatarPenImage);
+        final Container avatarAndPen = LayeredLayout.encloseIn(avatarButton, FlowLayout.encloseIn(avatarPenImage));
         Container avatarContainer = BoxLayout.encloseY(avatarAndPen,
                 avatarText, avatarSubText, spaceHolder);
-        avatarContainer.setSafeAreaRoot(false);
-        avatarContainer.setSafeArea(true);
+        Rectangle rectOfSafeArea = Display.getInstance().getDisplaySafeArea(new Rectangle());
+        int topMargin = rectOfSafeArea.getY();
+        if (topMargin == 0) {
+            avatarContainer.getAllStyles().setMarginUnit(Style.UNIT_TYPE_SCREEN_PERCENTAGE);
+            topMargin = 3;
+        } else {
+            avatarContainer.getAllStyles().setMarginUnit(Style.UNIT_TYPE_PIXELS);
+        }
+        avatarContainer.getAllStyles().setMarginTop(topMargin);
 
         loadAndSetAvatar();
 
@@ -191,33 +199,43 @@ public class CommonCode {
                 BorderLayout.south(waveMask));
         tb.addComponentToSideMenu(menuTopPartHolder);
 
+        menuTopPartHolder.getParent().setScrollableY(true);
         menuTopPartHolder.getParent().setTensileDragEnabled(false);
+        menuTopPartHolder.getParent().setScrollVisible(false);
 //        if (Display.getInstance().getDeviceDensity() >= Display.DENSITY_HD) {
 //            menuTopPartHolder.getParent().setScrollableY(false);
 //        }
 
-        menuItemsContainer = BorderLayout.west(BoxLayout.encloseY(
+        Container menuItemsContainer = BorderLayout.west(BoxLayout.encloseY(
                 loginButton,
                 registerButton,
-                stationsAround,
                 creditCardButton,
                 historyButton,
                 promoCodeButton,
-                supportButton,
-                settingsButton,
-                infoButton
-        ));
+                stationsAround,
+                supportButton
+                ));
 
         tb.addComponentToSideMenu(menuItemsContainer);
-        menuItemsContainer.setScrollableY(true);
-        menuItemsContainer.setTensileDragEnabled(true);
+
+        final Label sideMenuDelimiter = new Label("", "SideMenuDelimiter");
+        sideMenuDelimiter.setShowEvenIfBlank(true);
+        tb.addComponentToSideMenu(sideMenuDelimiter);
+        final Container additionalMenuContainer = BorderLayout.west(BoxLayout.encloseY(
+                settingsButton,
+                infoButton,
+                signOutButton));
+        tb.addComponentToSideMenu(additionalMenuContainer);
+
+        menuItemsContainer.setScrollableY(false);
+        menuItemsContainer.setTensileDragEnabled(false);
         menuItemsContainer.setScrollVisible(false);
 
-        Container bottomContainer = BorderLayout.centerAbsolute(signOutButton);
-        bottomContainer.setUIID("SideNavigationPanel");
-        tb.setComponentToSideMenuSouth(bottomContainer);
+//        Container bottomContainer = BorderLayout.centerAbsolute(signOutButton);
+//        bottomContainer.setUIID("SideNavigationPanel");
+//        tb.setComponentToSideMenuSouth(bottomContainer);
 
-        sideMenu = (InteractionDialog) bottomContainer.getParent().getParent();
+        sideMenu = (InteractionDialog) menuItemsContainer.getParent().getParent().getParent();
 
         refreshMenuItems();
 
@@ -412,19 +430,20 @@ public class CommonCode {
 
 
     private static Button getSignOutButton() {
-        Button sideMenuButton = new Button("Sign out", "SideMenuButtonSignOut");
+        Button sideMenuButton = new Button("Sign out", "SideMenuButtonNoIcon");
         sideMenuButton.addActionListener(evt -> {
             UserService.onUserLogout();
         });
+
         return sideMenuButton;
     }
 
     private static Button getSettingsButton() {
-        return constructSideMenuButton("Settings", FontImage.MATERIAL_SETTINGS, new SettingsForm());
+        return constructSideMenuButtonNoIcon("Settings", new SettingsForm());
     }
 
     private static Button getInfoButton() {
-        return constructSideMenuButton("About", FontImage.MATERIAL_INFO, new InfoForm());
+        return constructSideMenuButtonNoIcon("About", new InfoForm());
     }
 
     private static Button constructSideMenuButton(String name, char materialIcon, Form form) {
@@ -443,6 +462,18 @@ public class CommonCode {
         return sideMenuButton;
     }
 
+    private static Button constructSideMenuButtonNoIcon(String name, Form form) {
+        Button sideMenuButton = new Button(name, "SideMenuButtonNoIcon");
+        form.addShowListener(evt1 -> {
+            sideMenu.setAnimateShow(false);
+            MainForm.get().getToolbar().closeLeftSideMenu();
+        });
+        sideMenuButton.addActionListener(evt -> {
+            form.show();
+        });
+
+        return sideMenuButton;
+    }
 
     public static void sendSupportEmail() {
         MainNoBlockingLoader.get().start();

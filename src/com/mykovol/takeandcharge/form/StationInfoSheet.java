@@ -23,7 +23,7 @@ public class StationInfoSheet extends Sheet {
     private final SpanLabel addressLabel = new SpanLabel("", "StationsSheetText");
     private final SpanLabel title = new SpanLabel("", "StationsSheetTitle");
     private final SpanLabel errorLabel = new SpanLabel("something went wrong", "SheetErrorText");
-    private final Label placeLogoImageLabel;
+    private final Button placeLogoImageButton;
     private final Container availableContainer;
     private final Button screenBlocker;
     private final SpanLabel workingHoursLabel = new SpanLabel("8:30 - 21:00", "StationsSheetText");
@@ -45,8 +45,8 @@ public class StationInfoSheet extends Sheet {
 
         int size = Display.getInstance().convertToPixels(1f);
         Image placeImage = Effects.dropshadow(Resources.getGlobalResources().getImage("no-logo.png"), 10, 120, size, size);
-        placeLogoImageLabel = new Label(placeImage);
-        placeLogoImageLabel.setUIID("StationsSheetImage");
+        placeLogoImageButton = new Button(placeImage);
+        placeLogoImageButton.setUIID("StationsSheetImage");
 
         addressLabel.setEnabled(false);
         addressLabel.setIconUIID("StationsSheetTextIcon");
@@ -94,7 +94,7 @@ public class StationInfoSheet extends Sheet {
 
         add(BorderLayout.NORTH, BoxLayout.encloseY(errorLabel, title));
         add(BorderLayout.CENTER, BoxLayout.encloseY(
-                BoxLayout.encloseX(placeLogoImageLabel, infoContainer),
+                BoxLayout.encloseX(placeLogoImageButton, infoContainer),
 //                FlowLayout.encloseLeftMiddle(errorLabel),
                 availableAndDirection
                 )
@@ -104,6 +104,7 @@ public class StationInfoSheet extends Sheet {
 //        infoContainer.addPointerPressedListener(this::getDirectionButtonAction);
 //        scaleImageLabel.addPointerPressedListener(this::getDirectionButtonAction);
         showDirectionButton.addActionListener(this::getDirectionButtonAction);
+        placeLogoImageButton.addActionListener(this::getDirectionButtonAction);
 
         addCloseListener(evt -> {
             screenBlocker.setVisible(false);

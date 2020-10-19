@@ -369,7 +369,8 @@ public class MainForm extends Form {
 
                     @Override
                     public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                        showError(errorMessage, errorCode);
+                        MainNoBlockingLoader.get().stop();
+                        showErrorOnMainScreen(errorMessage, errorCode);
                     }
                 });
             } else {

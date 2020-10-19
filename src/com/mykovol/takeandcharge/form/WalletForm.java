@@ -91,11 +91,12 @@ public class WalletForm extends Form {
 
         final Button addCardButton = new Button("Add Card", "WalletFromNewCardButton");
         addCardButton.setMaterialIcon(FontImage.MATERIAL_ADD);
+        BrowserPopUp addCardForm = new BrowserPopUp("Card authorization");
+        addCardForm.setBackAction(this);
+        addCardForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
+        addCardForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
         addCardButton.addActionListener(evt -> {
-            BrowserPopUp addCardForm = new BrowserPopUp("Card authorization");
-            addCardForm.setBackAction(Display.getInstance().getCurrent());
-            addCardForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
-            addCardForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
+            addCardForm.show();
             RentService.prepareCheckout(new Callback<String>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -104,7 +105,6 @@ public class WalletForm extends Form {
 
                 @Override
                 public void onSucess(String checkoutUrl) {
-                    addCardForm.show();
                     addCardForm.setUrlForPayment(checkoutUrl);
                 }
             });

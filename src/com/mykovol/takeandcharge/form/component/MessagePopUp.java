@@ -1,6 +1,7 @@
 package com.mykovol.takeandcharge.form.component;
 
 
+import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.geom.Rectangle;
 import com.codename1.ui.layouts.BoxLayout;
@@ -44,10 +45,6 @@ public class MessagePopUp extends Container {
         }
     }
 
-    public void showError(String text) {
-        showError(text, 500);
-    }
-
     public void showError(String text, int type) {
         if (text == null) return;
         if (text.equals(lastErrorTest)) return;
@@ -58,9 +55,9 @@ public class MessagePopUp extends Container {
         Label errorDotImage = new Label("", "ErrorMessageIcon");
         FontImage.setMaterialIcon(errorDotImage, FontImage.MATERIAL_ERROR_OUTLINE);
 
-        Label errorMessageText = new Label(text, "ErrorMessageText");
+        SpanLabel errorMessageText = new SpanLabel(text, "ErrorMessageText");
         errorMessageText.setEnabled(false);
-        Label errorMessageHeader = new Label(errorCodeToString(type), "ErrorMessageHeader");
+        SpanLabel errorMessageHeader = new SpanLabel(errorCodeToString(type), "ErrorMessageHeader");
         errorMessageHeader.setEnabled(false);
         final Container errorMessageContainer = BoxLayout.encloseY(errorMessageHeader, errorMessageText);
         container.addAll(errorDotImage, errorMessageContainer);

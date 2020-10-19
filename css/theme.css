@@ -151,7 +151,7 @@ DialogTitle {
 
 Picker {
     margin: 0mm 0mm;
-    padding: 2mm 3mm;
+    padding: 2mm 1mm;
     border: none;
     font-family: var(--font-ProximaNova-Bold);
     font-size: 3mm;
@@ -480,11 +480,11 @@ AvatarImage {
 }
 
 AvatarButton {
-    margin: 7mm 2mm 0mm 5mm;
+    margin: 0mm 2mm 0mm 5mm;
 }
 
 AvatarPen {
-    margin: 0mm 2mm 0mm 15.5mm;
+    margin: 1mm 2mm 0mm 15.5mm;
     padding: 0mm;
 }
 
@@ -507,15 +507,27 @@ AvatarSubText {
 SideMenuButton {
     color: var(--grafit-color);
     background: white;
-    padding: 2.5mm 2mm;
+    padding: 2mm 2mm;
     margin: 0mm;
     border: none;
     /*text-shadow: none;*/
     font-family: var(--font-ProximaNova-Regular);
     /*font-family: "native:MainLight";*/
     border-radius: 2mm;
-    font-size: 2.7mm;
+    font-size: 3mm;
     /*background: grey;*/
+}
+
+SideMenuButtonNoIcon {
+    cn1-derive: SideMenuButton;
+    padding: 1.5mm 2mm;
+    font-size: 2.5mm;
+}
+
+SideMenuDelimiter {
+    border-bottom: 0.2mm solid rgba(180, 180, 180, 0.5);
+    margin: 0mm 0mm 1mm 0mm;
+    padding: 0.5mm 0mm;
 }
 
 /*SideMenuButton.pressed {*/
@@ -795,6 +807,10 @@ WalletFromHeader {
 WalletFromNewCardButton {
     font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm;
+}
+
+WalletFromNewCardButton.pressed{
+    font-weight: bold;
 }
 
 WalletFormCardBoard {

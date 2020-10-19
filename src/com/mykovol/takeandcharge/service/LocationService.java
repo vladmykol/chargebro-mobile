@@ -63,6 +63,7 @@ public class LocationService {
                 LocationManager.getLocationManager().setLocationListener(null);
             }
 
+
             @Override
             public void providerStateChanged(int newState) {
             }
