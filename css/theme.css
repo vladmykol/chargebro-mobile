@@ -1,5 +1,8 @@
 #Constants {
     includeNativeBool: true;
+    sideMenuAnimSpeedInt: 200;
+    transitionSpeedInt: 200;
+    interactionDialogSpeedInt: 200;
     sideMenuTensileDragBool: false;
     sideMenuTensileDragBool: false;
     sideMenuSizePortraitInt: 30;
@@ -98,7 +101,7 @@ TitleCommand {
     font-size: 3mm;
 }
 
-Button{
+Button {
     font-family: var(--font-ProximaNova-Regular);
 }
 
@@ -138,16 +141,6 @@ PanelDelimiter {
     padding: 0.2mm 0mm;
 }
 
-
-DialogBody {
-    font-family: var(--font-ProximaNova-Regular);
-    font-size: 3mm;
-}
-
-DialogTitle {
-    font-family: var(--font-ProximaNova-Semibold);
-    font-size: 3mm;
-}
 
 Picker {
     margin: 0mm 0mm;
@@ -507,7 +500,7 @@ AvatarSubText {
 SideMenuButton {
     color: var(--grafit-color);
     background: white;
-    padding: 2mm 2mm;
+    padding: 2mm 3mm;
     margin: 0mm;
     border: none;
     /*text-shadow: none;*/
@@ -520,14 +513,14 @@ SideMenuButton {
 
 SideMenuButtonNoIcon {
     cn1-derive: SideMenuButton;
-    padding: 1.5mm 2mm;
+    padding: 1.5mm 3mm;
     font-size: 2.5mm;
 }
 
 SideMenuDelimiter {
-    border-bottom: 0.2mm solid rgba(180, 180, 180, 0.5);
+    border-bottom: 0.15mm solid rgba(180, 180, 180, 0.5);
     margin: 0mm 0mm 1mm 0mm;
-    padding: 0.5mm 0mm;
+    padding: 1mm 0mm;
 }
 
 /*SideMenuButton.pressed {*/
@@ -540,10 +533,9 @@ SideMenuButtonIcon {
 }
 
 SideMenuButtonSignOut {
-    cn1-derive: SideMenuButton;
+    cn1-derive: SideMenuButtonNoIcon;
     font-family: var(--font-ProximaNova-Light);
     text-decoration: underline;
-    font-size: 2.6mm;
     margin: 0mm;
 }
 
@@ -709,6 +701,11 @@ ErrorMessageIcon {
     margin: 0.5mm 1mm 1mm 1.3mm;
 }
 
+InfoMessageIcon {
+    cn1-derive: ErrorMessageIcon;
+    color: yellowgreen;
+}
+
 ErrorMessageText {
     color: var(--grafit-color);
     font-size: 2.5mm;
@@ -759,11 +756,6 @@ RentConfirmationText {
     color: #424347;
 }
 
-RentConfirmationTextBonus {
-    cn1-derive: RentConfirmationText;
-    color: #3FB771;
-}
-
 RentConfirmationHint {
     margin: 0mm 0mm;
     padding: 0mm;
@@ -776,6 +768,11 @@ RentConfirmationHint {
 RentConfirmationHintNoCenter {
     cn1-derive: RentConfirmationHint;
     text-align: left;
+}
+
+RentConfirmationHintNoCenterGreen {
+    cn1-derive: RentConfirmationHint;
+    color: green;
 }
 
 RentConfirmationLink {
@@ -809,7 +806,7 @@ WalletFromNewCardButton {
     font-size: 3mm;
 }
 
-WalletFromNewCardButton.pressed{
+WalletFromNewCardButton.pressed {
     font-weight: bold;
 }
 
@@ -850,7 +847,7 @@ WalletFormHint {
 
 SettingsFormText {
     margin: 0mm;
-    padding: 0mm;
+    padding: 3mm 0mm;
     font-family: var(--font-ProximaNova-Regular);
     font-size: 3mm;
 }
@@ -904,15 +901,80 @@ InfoFormText {
     margin: 0mm;
     padding: 1.5mm 0mm;
     font-family: var(--font-ProximaNova-Regular);
-    font-size: 3mm;
+    font-size: 2mm;
     color: grey;
 }
 
 InfoFormLink {
-    cn1-derive:InfoFormText;
-    color: #0095A0;
+    cn1-derive: InfoFormText;
+    font-size: 3mm;
+    color: var(--main-bg-color);
 }
 
 InfoFormLink.pressed {
-   font-weight: bold;
+    font-weight: bold;
+}
+
+InfoFormTextVersion {
+    cn1-derive: InfoFormLink;
+    font-size: 2mm;
+    padding: 0mm 0mm 3mm 0mm;
+    color: steelblue;
+}
+
+InfoFormReportIssue {
+    cn1-derive: InfoFormLink;
+    font-size: 2mm;
+}
+
+/*====================== Custom Dialog ==========================*/
+
+
+DialogContentPane {
+    background: lightgrey;
+    margin: 0mm 3.5mm;
+    padding: 3mm 0mm 0mm 0mm;
+    border-radius: 4mm;
+}
+
+CustomDialogTitle {
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 3mm;
+    margin: 0mm 3mm;
+    text-align: center;
+}
+
+CustomDialogBody {
+    cn1-derive: CustomDialogTitle;
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 2.5mm;
+}
+
+CustomDialogButton {
+    cn1-derive: CustomDialogBody;
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 3mm;
+    text-align: center;
+    padding: 2mm 0mm;
+    margin: 0mm;
+    color: steelblue;
+}
+
+CustomDialogButton.pressed {
+    font-weight: bold;
+}
+
+CustomDialogButtonRight {
+    cn1-derive: CustomDialogButton;
+    border-right: 0.1mm solid rgba(128, 128, 128, 0.5);
+}
+
+CustomDialogButtonLeft {
+    cn1-derive: CustomDialogButton;
+    border-left: 0.1mm solid rgba(128, 128, 128, 0.5);
+}
+
+CustomDialogDelimiter {
+    cn1-derive: PanelDelimiter;
+    margin: 1mm 0mm 0mm 0mm;
 }

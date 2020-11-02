@@ -42,6 +42,7 @@ import com.codename1.ui.util.UITimer;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.BeforeRentInfo;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
+import com.mykovol.takeandcharge.form.component.CustomDialog;
 import com.mykovol.takeandcharge.form.component.DraggablePanel;
 import com.mykovol.takeandcharge.form.component.MessagePopUp;
 import com.mykovol.takeandcharge.form.component.ToolBox;
@@ -83,6 +84,9 @@ public class MainForm extends Form {
     private final MessagePopUp messagePopUp = new MessagePopUp();
     private Coord previousCoord;
 
+    {
+
+    }
 
     private MainForm() {
         super(new LayeredLayout());
@@ -148,13 +152,10 @@ public class MainForm extends Form {
             }
         });
 
-        addShowListener(evt -> {
-            MainNoBlockingLoader.get().stop();
-//            UITimer.timer(2000, false, getComponentForm(), () -> {
-            showMeOnMap();
-            refreshRentContent(true);
-//            });
-        });
+//        addShowListener(evt -> {
+//            showMeOnMap();
+//            refreshRentContent(true);
+//        });
     }
 
     public static MainForm get() {
@@ -168,19 +169,31 @@ public class MainForm extends Form {
         if (instance != null) {
             instance.mapContainer.setShowMyLocation(false);
         }
+        WebSocketClient.disconnect();
     }
 
     public static void showError(String text, int type) {
         if (Display.getInstance().getCurrent().equals(MainForm.get())) {
-            instance.messagePopUp.showError(text, type);
+            instance.messagePopUp.showError(type, text);
         } else {
             ToastBar.showErrorMessage(text);
         }
     }
 
+    @Override
+    public void show() {
+        super.show();
+        showMeOnMap();
+        refreshRentContent(true);
+    }
+
+    public void showNoUpdate() {
+        super.show();
+    }
+
     public void showErrorOnMainScreen(String text, int type) {
-        show();
-        messagePopUp.showError(text, type);
+        showNoUpdate();
+        messagePopUp.showError(type, text);
     }
 
     public void initWithStartingArg(String stationId) {
@@ -212,18 +225,17 @@ public class MainForm extends Form {
             locationService.moveToCurrentLocation(mapContainer);
         } else {
             UITimer.timer(5000, false, getComponentForm(), () -> {
-//                boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutLocationUse", false);
-//                boolean isUserAgreeToGiveLocationAccess = true;
-//                if (!isUserNotifiedAboutLocationUse) {
-//                    isUserAgreeToGiveLocationAccess = Dialog.show("Permission required", "Please allow using of geolocation to show nearest stations", "OK", "Cancel");
-//                }
-//                if (isUserAgreeToGiveLocationAccess) {
+                final String userLocationProp = "isUserNotifiedAboutLocationUse";
+                boolean isUserNotifiedAboutLocationUse = Preferences.get(userLocationProp, false);
+                if (!isUserNotifiedAboutLocationUse) {
+                    new CustomDialog("Permission required", "Please allow using of geolocation to show nearest stations").showOk();
+                    Preferences.set(userLocationProp, true);
+                }
+
                 LocationService locationService = new LocationService();
-//                    Preferences.set("isUserNotifiedAboutLocationUse", true);
                 if (locationService.checkGpsEnabled()) {
                     locationService.moveToCurrentLocation(mapContainer);
                 }
-//                }
                 mapContainer.setShowMyLocation(true);
 
                 Preferences.set("showMyLocation", mapContainer.isShowMyLocation());
@@ -259,6 +271,14 @@ public class MainForm extends Form {
 
     public void removeRentRow(String serialNumber) {
         draggablePanel.removeRentRow(serialNumber);
+
+        callSerially(() -> {
+                    final CustomDialog customDialog = new CustomDialog("Rent is over", "How do you rate your ChargerBro experience?");
+                    customDialog.addRatingStarts();
+                    customDialog.showOk();
+                }
+        );
+
     }
 
     public void removeAllRentRows() {
@@ -325,7 +345,7 @@ public class MainForm extends Form {
 
 
     public class ScanButton extends Button {
-        private Font fnt = Font.createTrueTypeFont("icomoon", "icomoon.ttf");
+        private final Font fnt = Font.createTrueTypeFont("icomoon", "icomoon.ttf");
 
         public ScanButton(String uiid) {
             super("", uiid);
@@ -385,7 +405,7 @@ public class MainForm extends Form {
         public void refresh() {
             if (UserService.isLoggedIn()) {
                 setText("Scan QR code");
-                setFontIcon(fnt, '\ue900', 4);
+                setFontIcon(fnt, '\ue901', 4);
             } else {
                 if (WalletForm.isUserHasCard()) {
                     setText("Log in");

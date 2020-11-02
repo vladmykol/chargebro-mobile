@@ -45,7 +45,15 @@ public class MessagePopUp extends Container {
         }
     }
 
-    public void showError(String text, int type) {
+    public void showError(int type, String text) {
+        showMessage(text, type, null);
+    }
+
+    public void showInfo(String title, String text) {
+        showMessage(text, 0, title);
+    }
+
+    public void showMessage(String text, int errorType, String title) {
         if (text == null) return;
         if (text.equals(lastErrorTest)) return;
         lastErrorTest = text;
@@ -53,35 +61,63 @@ public class MessagePopUp extends Container {
         Container container = new Container(BoxLayout.x(), "ErrorMessageHolder");
 
         Label errorDotImage = new Label("", "ErrorMessageIcon");
-        FontImage.setMaterialIcon(errorDotImage, FontImage.MATERIAL_ERROR_OUTLINE);
+        if (errorType == 0) {
+            errorDotImage.setUIID("InfoMessageIcon");
+            FontImage.setMaterialIcon(errorDotImage, FontImage.MATERIAL_CHARGING_STATION);
+        } else {
+            FontImage.setMaterialIcon(errorDotImage, FontImage.MATERIAL_ERROR_OUTLINE);
+        }
 
         SpanLabel errorMessageText = new SpanLabel(text, "ErrorMessageText");
         errorMessageText.setEnabled(false);
-        SpanLabel errorMessageHeader = new SpanLabel(errorCodeToString(type), "ErrorMessageHeader");
+        SpanLabel errorMessageHeader = new SpanLabel("", "ErrorMessageHeader");
+        if (errorType == 0) {
+            errorMessageHeader.setText(title);
+        } else {
+            errorMessageHeader.setText(errorCodeToString(errorType));
+        }
         errorMessageHeader.setEnabled(false);
         final Container errorMessageContainer = BoxLayout.encloseY(errorMessageHeader, errorMessageText);
         container.addAll(errorDotImage, errorMessageContainer);
         Container animatedContainer = BoxLayout.encloseY(container);
 
-        callSerially(() -> {
-            add(animatedContainer);
-//            errorMessageContainer.revalidate();
-            animatedContainer.revalidate();
-
-            animatedContainer.setY(-100);
-            animateLayoutAndWait(300);
-        });
+        Form f = CN.getCurrentForm();
+        if (f.getAnimationManager().isAnimating()) {
+            f.getAnimationManager().flushAnimation(() -> {
+                showMsg(animatedContainer);
+            });
+        } else {
+            showMsg(animatedContainer);
+        }
 
         UITimer.timer(7000, false, MainForm.get(), () -> {
-            callSerially(() -> {
-                lastErrorTest = null;
-                container.setX(getDisplayWidth());
-                animatedContainer.animateUnlayout(700, 50, () -> {
-                    animatedContainer.remove();
-                    animateLayoutAndWait(100);
-                    revalidate();
+            lastErrorTest = null;
+            Form currentForm = CN.getCurrentForm();
+            if (currentForm.getAnimationManager().isAnimating()) {
+                currentForm.getAnimationManager().flushAnimation(() -> {
+                    hideMsg(container, animatedContainer);
                 });
-            });
+            } else {
+                hideMsg(container, animatedContainer);
+            }
+        });
+    }
+
+    public void showMsg(Container animatedContainer) {
+        add(animatedContainer);
+//            errorMessageContainer.revalidate();
+        animatedContainer.revalidate();
+
+        animatedContainer.setY(-100);
+        animateLayoutAndWait(300);
+    }
+
+    public void hideMsg(Container container, Container animatedContainer) {
+        container.setX(getDisplayWidth());
+        animatedContainer.animateUnlayout(700, 50, () -> {
+            animatedContainer.remove();
+            animateLayoutAndWait(100);
+            getParent().revalidate();
         });
     }
 

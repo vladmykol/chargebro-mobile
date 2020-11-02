@@ -55,30 +55,39 @@ public class FormCommand {
         });
     }
 
-
     public static void setBackAction(Form destForm, Form current) {
+        setAction(destForm, current, FontImage.MATERIAL_ARROW_BACK, CommonTransitions.SLIDE_HORIZONTAL);
+    }
+
+
+    public static void setCloseAction(Form destForm, Form current) {
+        setAction(destForm, current, FontImage.MATERIAL_CLOSE, CommonTransitions.SLIDE_VERTICAL);
+    }
+
+    private static void setAction(Form destForm, Form current, char materialIcon, int animation) {
         Style s = UIManager.getInstance().getComponentStyle("TitleCommand");
-        FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, s, menuImageSize);
+        FontImage mat = FontImage.createMaterial(materialIcon, s, menuImageSize);
         final Command command = Command.create("", mat, e -> {
 
             Component currEditing = getCurrentForm().findCurrentlyEditingComponent();
             if (currEditing != null) {
-                currEditing.stopEditing(() -> showBackWithAnimation(destForm, current));
+                currEditing.stopEditing(() -> setOutAnimation(destForm, current, animation));
             } else {
-                showBackWithAnimation(destForm, current);
+                setOutAnimation(destForm, current, animation);
             }
         });
         current.getToolbar().addCommandToLeftBar(command);
     }
 
-    public static void showBackWithAnimation(Form destForm, Form current) {
+    private static void setOutAnimation(Form destForm, Form current, int animation) {
         final Transition curOutAnimation = current.getTransitionOutAnimator();
         final Transition destInAnimation = destForm.getTransitionInAnimator();
-        current.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, false, 200));
+        current.setTransitionOutAnimator(CommonTransitions.createUncover(animation, false, 200));
         destForm.setTransitionInAnimator(CommonTransitions.createEmpty());
         destForm.show();
         current.setTransitionOutAnimator(curOutAnimation);
         destForm.setTransitionInAnimator(destInAnimation);
     }
+
 
 }

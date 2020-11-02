@@ -8,6 +8,8 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.codename1.ui.util.UITimer;
+import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
 
 import static com.codename1.ui.CN.callSerially;
@@ -79,7 +81,9 @@ public class SplashScreen extends Form {
                                 MainForm.get().initWithStartingArg(stationId);
                             }
                         }
+                        UITimer.timer(10000, false, MainForm.get(), UserService::checkForNewVersion);
                     });
+
 
 //                    AnimationManager a = getAnimationManager();
 //                    if (a != null) {

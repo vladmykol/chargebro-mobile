@@ -11,11 +11,12 @@ import com.codename1.ui.util.Effects;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.StationInfo;
+import com.mykovol.takeandcharge.form.component.CustomSheet;
 import com.mykovol.takeandcharge.service.RentService;
 
 import static com.codename1.ui.CN.callSerially;
 
-public class StationInfoSheet extends Sheet {
+public class StationInfoSheet extends CustomSheet {
 
     private static final String BOTTOM_PANEL_START_Y = "bottomPanelStartY";
     private final Label availablePowerBanksNumber = new Label("0", "StationsSheetNumberAvailable");
@@ -135,13 +136,7 @@ public class StationInfoSheet extends Sheet {
     }
 
     public void show(StationInfo stationInfo) {
-        isShown = true;
-        directionUrl = stationInfo.mapUrl.get();
-        title.setText(stationInfo.placeName.get());
-        addressLabel.setText(stationInfo.address.get());
-        addressLabel.setText(stationInfo.address.get());
-        workingHoursLabel.setText(stationInfo.workingHours.get());
-        errorLabel.setHidden(true);
+        setInfo(stationInfo);
         super.show();
         RentService.getRemainingPowerBanks(stationInfo.id.get(), new Callback<Integer>() {
             @Override
@@ -170,9 +165,18 @@ public class StationInfoSheet extends Sheet {
                         cabBeReturnedPowerBanksNumber.setText(canBeReturnedString);
                         availableContainer.animateLayoutFadeAndWait(200, 0);
                     });
-
                 }
             }
         });
+    }
+
+    public void setInfo(StationInfo stationInfo) {
+        isShown = true;
+        directionUrl = stationInfo.mapUrl.get();
+        title.setText(stationInfo.placeName.get());
+        addressLabel.setText(stationInfo.address.get());
+        addressLabel.setText(stationInfo.address.get());
+        workingHoursLabel.setText(stationInfo.workingHours.get());
+        errorLabel.setHidden(true);
     }
 }

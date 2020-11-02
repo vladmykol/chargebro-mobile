@@ -28,16 +28,20 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.mykovol.takeandcharge.service.GlobalConst;
+import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FormCommand;
+import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
+import static com.codename1.ui.CN.convertToPixels;
 import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
-import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
+import static com.mykovol.takeandcharge.tools.CommonCode.sendSupportEmail;
 
 /**
  * @author Vlad Mykol
  */
 public class InfoForm extends Form {
+    final Button ourSiteButton = new Button("What is ChargeBro?", "InfoFormLink");
     private final Label headerText = new Label("About", "WalletFromHeader");
 
     public InfoForm() {
@@ -54,8 +58,23 @@ public class InfoForm extends Form {
 //        setTransitionOutAnimator(CommonTransitions.createEmpty());
 
 //        getToolbar().addCommandToRightBar(CommonCode.getCloseCommand(MainForm.get()));
-        FormCommand.setBackAction(MainForm.get(), this);
+        FormCommand.setCloseAction(MainForm.get(), this);
 
+        //        SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
+//        switchList.addActionListener(e -> {
+//            Dialog.show("Info", "You selected " + Arrays.toString(switchList.getMultiListModel().getSelectedIndices()), "Ok", null);
+//        });
+//        switchList.setScrollableY(true);
+        final Label delimiter = new Label("", "SettingsFormDelimiter");
+        delimiter.setShowEvenIfBlank(true);
+        final Label delimiter1 = new Label("", "SettingsFormDelimiter");
+        delimiter1.setShowEvenIfBlank(true);
+        final Label delimiter2 = new Label("", "SettingsFormDelimiter");
+        delimiter2.setShowEvenIfBlank(true);
+
+        ourSiteButton.addActionListener(evt -> {
+            Display.getInstance().execute("https://chargebro.com/");
+        });
 
         Label spaceLabel = new Label(" ");
         if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
@@ -70,52 +89,36 @@ public class InfoForm extends Form {
 
         final Button termsLinkButton = new Button("Terms&Conditions", "InfoFormLink");
         final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
-        termsForm.setCloseAction(this);
+        termsForm.setFadeBackDownTo(this);
         termsForm.serUrlNoReload(POLICY_URL);
         termsLinkButton.addActionListener(evt -> {
             CommonCode.removeTransitionsTemporarily(this);
             termsForm.show();
         });
 
-        final Button priceLinkButton = new Button("Price", "InfoFormLink");
-        final BrowserPopUp priceForm = new BrowserPopUp("Price");
-        priceForm.setCloseAction(this);
-        priceForm.serUrlNoReload(PRICE_URL);
-        priceLinkButton.addActionListener(evt -> {
-            CommonCode.removeTransitionsTemporarily(this);
-            priceForm.show();
+        final Label versionLabelText = new Label("app version", "InfoFormText");
+        final Button versionNum = new Button(Display.getInstance().getProperty("AppVersion", "unknown") + (GlobalConst.LOCAL ? " (debug mode)" : ""), "InfoFormTextVersion");
+
+        versionNum.addActionListener(evt -> {
+            UserService.checkForNewVersion(true);
         });
 
-        final Label versionLabelText = new Label("Version", "InfoFormText");
-        final Label versionLabelNum = new Label(Display.getInstance().getProperty("AppVersion", "unknown") + (GlobalConst.LOCAL ? " (debug mode)" : ""), "InfoFormText");
-
-//        SwitchList switchList = new SwitchList(new DefaultListModel("Improve", "Show notification"));
-//        switchList.addActionListener(e -> {
-//            Dialog.show("Info", "You selected " + Arrays.toString(switchList.getMultiListModel().getSelectedIndices()), "Ok", null);
-//        });
-//        switchList.setScrollableY(true);
-
-        final Button ourSiteButton = new Button("What is ChargeBro?", "InfoFormLink");
-        ourSiteButton.addActionListener(evt -> {
-            Display.getInstance().execute("https://chargebro.com/");
+        final Button reportABugCommand = new Button("Report a problem", "InfoFormReportIssue");
+        reportABugCommand.setMaterialIcon(FontImage.MATERIAL_MAIL);
+        reportABugCommand.setGap(convertToPixels(2));
+        reportABugCommand.addActionListener(evt -> {
+            sendSupportEmail();
         });
 
-        final Label delimiter = new Label("", "SettingsFormDelimiter");
-        delimiter.setShowEvenIfBlank(true);
-        final Label delimiter1 = new Label("", "SettingsFormDelimiter");
-        delimiter1.setShowEvenIfBlank(true);
-        final Label delimiter2 = new Label("", "SettingsFormDelimiter");
-        delimiter2.setShowEvenIfBlank(true);
 
         addAll(headerText,
                 spaceLabel,
-                BorderLayout.centerEastWest(BoxLayout.encloseXRight(versionLabelNum), null, versionLabelText),
-                delimiter,
+                BorderLayout.centerEastWest(BoxLayout.encloseXRight(versionNum), null, versionLabelText),
                 ourSiteButton,
+                delimiter,
+                termsLinkButton,
                 delimiter1,
-                priceLinkButton,
-                delimiter2,
-                termsLinkButton
+                reportABugCommand
         );
     }
 }

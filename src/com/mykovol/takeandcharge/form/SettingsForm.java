@@ -32,6 +32,8 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.spinner.Picker;
 import com.mykovol.takeandcharge.TakeAndChargeMain;
+import com.mykovol.takeandcharge.form.component.CustomDialog;
+import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.FormCommand;
 
 /**
@@ -51,7 +53,7 @@ public class SettingsForm extends Form {
 //        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 200));
 //        setTransitionOutAnimator(CommonTransitions.createSlide(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
 
-        FormCommand.setBackAction(MainForm.get(),this);
+        FormCommand.setCloseAction(MainForm.get(), this);
 
         Label spaceLabel = new Label(" ");
         if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
@@ -73,7 +75,7 @@ public class SettingsForm extends Form {
             if (!getLandPrefTranslated().equals(landPicket.getSelectedString())) {
                 setLandPref(landPicket.getSelectedString());
                 TakeAndChargeMain.loadLocalization();
-                Dialog.show("Warning", "In order to language changes take effect, you need to restart the application", "OK", null);
+                new CustomDialog("Warning", "In order to language changes take effect, you need to restart the application").showOk();
 //            });
             }
         });
@@ -89,12 +91,33 @@ public class SettingsForm extends Form {
         final Label delimiter2 = new Label("", "SettingsFormDelimiter");
         delimiter2.setShowEvenIfBlank(true);
 
+        Button existButton = new Button("Sign out", "SettingsFormText");
+        existButton.setMaterialIcon(FontImage.MATERIAL_EXIT_TO_APP);
+        existButton.addActionListener(evt -> {
+            final CustomDialog customDialog = new CustomDialog("Are you sure you want to logout?", "");
+            customDialog.addYesCancelButtons(evt1 -> {
+                UserService.onUserLogout();
+                setTransitionOutAnimator(CommonTransitions.createEmpty());
+                MainForm.get().show();
+            });
+            customDialog.show();
+        });
+
+
         addAll(headerText,
                 spaceLabel,
-                delimiter,
                 BorderLayout.centerEastWest(landPicket, null, new Label("Language", "SettingsFormText")),
-                delimiter2
+                delimiter2,
+                existButton
         );
+
+        addShowListener(evt -> {
+            if (UserService.isLoggedIn()) {
+                existButton.setVisible(true);
+            } else {
+                existButton.setVisible(false);
+            }
+        });
     }
 
     public static String getLandPref() {

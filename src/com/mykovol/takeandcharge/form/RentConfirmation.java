@@ -46,6 +46,7 @@ public class RentConfirmation extends Form {
     public RentConfirmation(BeforeRentInfo beforeRentInfo) {
         super(new LayeredLayout());
         final Container mainContent = new Container(new BorderLayout());
+        setScrollableY(false);
 
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(true));
@@ -68,8 +69,6 @@ public class RentConfirmation extends Form {
         headerTextLabel.setEnabled(false);
 
         Label depositAmountLabel = new Label(beforeRentInfo.holdAmount.get(), "RentConfirmationText");
-        Label bonusAmountLabel = new Label(beforeRentInfo.bonusAmount.get(), "RentConfirmationTextBonus");
-
         final Label panelDelimiterLabel = new Label("", "RentConfirmationDelimiter");
         panelDelimiterLabel.setShowEvenIfBlank(true);
         final Label panelDelimiterLabel2 = new Label("", "RentConfirmationDelimiter");
@@ -78,10 +77,8 @@ public class RentConfirmation extends Form {
         final Container summaryAmountHolder = BoxLayout.encloseY(
                 panelDelimiterLabel,
                 BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(depositAmountLabel), new Label("Deposit", "RentConfirmationText")),
-                BorderLayout.centerCenterEastWest(null, BoxLayout.encloseXRight(bonusAmountLabel), new Label("Discount for this rent", "RentConfirmationTextBonus")),
                 panelDelimiterLabel2
         );
-
         SpanLabel amountHintLabel = new SpanLabel("Deposit is an amount of money that we block on your card until the rent finish", "RentConfirmationHint");
         amountHintLabel.setEnabled(false);
 
@@ -96,15 +93,15 @@ public class RentConfirmation extends Form {
         centerHolder.setTensileDragEnabled(false);
         mainContent.add(BorderLayout.CENTER, centerHolder);
 
-        final Label priceHintLabel1 = new Label("By continuing you are", "RentConfirmationHintNoCenter");
-        final Label priceHintLabel2 = new Label(" ", "RentConfirmationHintNoCenter");
-        final Label priceHintLabel3 = new Label("indicating that you are", "RentConfirmationHintNoCenter");
-        final Label priceHintLabel4 = new Label(" ", "RentConfirmationHintNoCenter");
-        final Label priceHintLabel5 = new Label("agree to the", "RentConfirmationHintNoCenter");
+        final Label priceHintLabel1 = new Label("Rent", "RentConfirmationHintNoCenter");
+        final Label priceHintLabel2 = new Label(": ", "RentConfirmationHintNoCenter");
+        final Label priceHintLabel3 = new Label("30 min free", "RentConfirmationHintNoCenterGreen");
+        final Label priceHintLabel4 = new Label(", ", "RentConfirmationHintNoCenter");
+        final Label priceHintLabel5 = new Label("then according to", "RentConfirmationHintNoCenter");
         final Label priceHintLabel6 = new Label(" ", "RentConfirmationHintNoCenter");
-        final Button priceHintLinkButton = new Button("rent price", "RentConfirmationLink");
+        final Button priceHintLinkButton = new Button("the rental price", "RentConfirmationLink");
         final BrowserPopUp priceForm = new BrowserPopUp("Price");
-        priceForm.setCloseAction(this);
+        priceForm.setFadeBackDownTo(this);
         priceHintLinkButton.addActionListener(evt -> {
             priceForm.show();
             priceForm.serUrlNoReload(PRICE_URL);
@@ -114,7 +111,7 @@ public class RentConfirmation extends Form {
 
         Button cancelButton = new Button("Cancel", "RentConfirmationCancel");
         cancelButton.addActionListener(evt -> {
-            MainForm.get().show();
+            MainForm.get().showNoUpdate();
         });
 
 //        addShowListener(evt -> {

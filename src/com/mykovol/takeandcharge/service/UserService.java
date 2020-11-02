@@ -30,7 +30,6 @@ import com.codename1.io.Preferences;
 import com.codename1.io.rest.Rest;
 import com.codename1.properties.PreferencesObject;
 import com.codename1.social.LoginCallback;
-import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.util.Callback;
@@ -38,9 +37,9 @@ import com.codename1.util.FailureCallback;
 import com.codename1.util.SuccessCallback;
 import com.mykovol.takeandcharge.dataobj.*;
 import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.form.component.CustomDialog;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.tools.CommonCode;
-import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 
 import java.io.IOException;
 import java.util.List;
@@ -93,8 +92,11 @@ public class UserService {
         return getToken() != null;
     }
 
-
     public static void checkForNewVersion() {
+        checkForNewVersion(false);
+    }
+
+    public static void checkForNewVersion(boolean isInfoMessage) {
         Rest.get(GlobalConst.getServerUrl() + API_APP_VERSION)
                 .jsonContent()
                 .acceptJson()
@@ -102,13 +104,20 @@ public class UserService {
                 .queryParam("os", Display.getInstance().getPlatformName())
                 .queryParam("currentVersion", Display.getInstance().getProperty("AppVersion", "0.1"))
                 .onErrorCode(errorData -> {
-                    System.out.println("New app version error - " + errorData.getResponseCode());
+                    if (isInfoMessage) {
+                        new CustomDialog("Good news!",
+                                "You are using last stable version").showOk();
+                    } else {
+                        Log.p("App version is app to date " + errorData.getResponseCode());
+                    }
                 }, ErrorResponse.class)
                 .fetchAsString(link -> {
-                    System.out.println("New app version is here");
-                    if (Dialog.show("New version available", "Update to latest version and get new feature and improvements", "Update", "Later")) {
+                    final CustomDialog customDialog = new CustomDialog("New version available",
+                            "Do you want to update to latest version and get new feature and improvements?");
+                    customDialog.addYesCancelButtons(evt -> {
                         Display.getInstance().execute(link.getResponseData());
-                    }
+                    });
+                    customDialog.show();
                 });
     }
 
@@ -197,8 +206,7 @@ public class UserService {
                 .fetchAsProperties(resp -> {
                     onUserLogin((UserInfo) resp.getResponseData());
                     callback.loginSuccessful();
-                }, UserInfo.class)
-                .setDisposeOnCompletion(InfinityProgressBlocking.get());
+                }, UserInfo.class);
     }
 
 
@@ -207,7 +215,6 @@ public class UserService {
         Preferences.set("noPaymentMethod", (userInfo.isHasCard.get().equals(0) ? "true" : "false"));
         Preferences.set("phoneNumber", PhoneFieldContainer.formattedPhoneNumber(userInfo.phone.get()));
         MainForm.get().refreshScanButton();
-        MainForm.get().refreshRentContent(true);
         CommonCode.refreshMenuItems();
     }
 

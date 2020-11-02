@@ -117,7 +117,7 @@ public class DraggablePanel extends Container {
         bottomScreenBlocking.setEnabled(isDragEnable);
     }
 
-    public void refreshRentContent(boolean isShowImmediately) {
+    public synchronized void refreshRentContent(boolean isShowImmediately) {
         RentService.getRentHistory(true, new Callback<List<RentHistory>>() {
             @Override
             public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -132,14 +132,16 @@ public class DraggablePanel extends Container {
 
             @Override
             public void onSucess(List<RentHistory> rentHistoryList) {
-                updateRentBoard(rentHistoryList, isShowImmediately);
+                callSerially(() -> {
+                    updateRentBoard(rentHistoryList, isShowImmediately);
+                });
             }
         });
     }
 
     public synchronized void updateRentBoard(List<RentHistory> rentHistoryList, boolean isShowImmediately) {
         if (isShowImmediately) {
-            if (!(Display.getInstance().getCurrent() instanceof MainForm)) MainForm.get().show();
+            if (!(Display.getInstance().getCurrent() instanceof MainForm)) MainForm.get().showNoUpdate();
         }
         Map<String, RentBoard> showedRents = rentContent.getShowedRents();
         for (RentHistory rentHistory : rentHistoryList) {
@@ -172,7 +174,7 @@ public class DraggablePanel extends Container {
         rentHistory.isReturned.set(0);
         rentHistory.errorCode.set(0);
 
-        MainForm.get().show();
+        MainForm.get().showNoUpdate();
         addRentRow(rentHistory);
     }
 

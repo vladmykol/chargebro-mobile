@@ -64,7 +64,7 @@ public class LoginForm extends Form {
             spaceLabel.setHidden(true);
         }
 
-        FormCommand.setBackAction(MainForm.get(),this);
+        FormCommand.setCloseAction(MainForm.get(),this);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
@@ -88,26 +88,26 @@ public class LoginForm extends Form {
 
         errorLabel.setHidden(true);
         loginButton.addActionListener(evt -> {
-            InfinityProgressBlocking.start();
+            InfinityProgressBlocking.get().start(this);
             setEditOnShow(null);
             errorLabel.setHidden(true);
 
             if (!isValid()) {
-                InfinityProgressBlocking.stop();
+                InfinityProgressBlocking.get().stop();
                 return;
             }
+
 
             UserService.login(phoneFieldContainer, passwordFieldContainer.getValue(), new LoginCallback() {
                 @Override
                 public void loginSuccessful() {
                     setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-                    InfinityProgressBlocking.stop();
                     MainForm.get().show();
                 }
 
                 @Override
                 public void loginFailed(String errorMessage) {
-                    InfinityProgressBlocking.stop();
+                    InfinityProgressBlocking.get().stop();
                     showError(errorMessage);
                 }
             });
@@ -129,7 +129,6 @@ public class LoginForm extends Form {
         dotLabel.getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         dotLabel.getAllStyles().setMarginLeft(2);
         dotLabel.getAllStyles().setMarginRight(2);
-
 
         addAll(
                 headerText,

@@ -45,6 +45,7 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.ImageIO;
 import com.codename1.ui.util.Resources;
 import com.mykovol.takeandcharge.form.*;
+import com.mykovol.takeandcharge.form.component.CustomDialog;
 import com.mykovol.takeandcharge.service.GlobalConst;
 import com.mykovol.takeandcharge.service.UserService;
 
@@ -56,6 +57,7 @@ import static com.codename1.ui.CN1Constants.GALLERY_IMAGE;
 import static com.codename1.ui.ComponentSelector.$;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED_FILL;
+import static com.mykovol.takeandcharge.service.GlobalConst.PRICE_URL;
 
 /**
  * Common code for construction and initialization of various classes e.g. the side menu logic etc.
@@ -70,17 +72,16 @@ public class CommonCode {
     private final static Label avatarText = new Label("ChargeBro", "AvatarText");
     private final static Button avatarButton = new Button("");
     private final static Label avatarSubText = new Label("", "AvatarSubText");
-    private final static Button supportButton = getSupportButton();
     private static InteractionDialog sideMenu;
     private final static Button loginButton = getLoginButton();
     private final static Button registerButton = getRegisterButton();
     private final static Button historyButton = getHistoryButton();
     private final static Button promoCodeButton = getPromoCodeButton();
     private final static Button creditCardButton = getCreditCards();
-    private final static Button signOutButton = getSignOutButton();
-    private final static Button stationsAround = getStationsAround();
     private final static Button settingsButton = getSettingsButton();
     private final static Button infoButton = getInfoButton();
+    private final static Button rentPriceButton = getRentPriceButton();
+
 
     private static Label avatarPenImage;
 
@@ -211,10 +212,9 @@ public class CommonCode {
                 registerButton,
                 creditCardButton,
                 historyButton,
-                promoCodeButton,
-                stationsAround,
-                supportButton
-                ));
+                rentPriceButton,
+                promoCodeButton
+        ));
 
         tb.addComponentToSideMenu(menuItemsContainer);
 
@@ -223,8 +223,7 @@ public class CommonCode {
         tb.addComponentToSideMenu(sideMenuDelimiter);
         final Container additionalMenuContainer = BorderLayout.west(BoxLayout.encloseY(
                 settingsButton,
-                infoButton,
-                signOutButton));
+                infoButton));
         tb.addComponentToSideMenu(additionalMenuContainer);
 
         menuItemsContainer.setScrollableY(false);
@@ -299,12 +298,14 @@ public class CommonCode {
     }
 
     public static void chooseNewAvatar() {
-        if (Dialog.show("Confirmation", "Would you like to use the camera or the gallery?", "Camera", "Gallery")) {
+        final CustomDialog customDialog = new CustomDialog("Would you like to use the camera or the gallery?", "");
+        customDialog.addButton("Camera", evt -> {
             String pic = Capture.capturePhoto();
             if (pic != null) {
                 saveAndSetAvatar(pic);
             }
-        } else {
+        });
+        customDialog.addButton("Gallery", evt -> {
             CN.openGallery(ee -> {
                 if (ee != null && ee.getSource() != null) {
                     saveAndSetAvatar((String) ee.getSource());
@@ -312,7 +313,23 @@ public class CommonCode {
                     MainForm.get().showErrorOnMainScreen("Not possible to open a gallery. Please check application permissions", 500);
                 }
             }, GALLERY_IMAGE);
-        }
+        });
+        customDialog.show();
+
+//        if (Dialog.show("Confirmation", "Would you like to use the camera or the gallery?", "Camera", "Gallery")) {
+//            String pic = Capture.capturePhoto();
+//            if (pic != null) {
+//                saveAndSetAvatar(pic);
+//            }
+//        } else {
+//            CN.openGallery(ee -> {
+//                if (ee != null && ee.getSource() != null) {
+//                    saveAndSetAvatar((String) ee.getSource());
+//                } else {
+//                    MainForm.get().showErrorOnMainScreen("Not possible to open a gallery. Please check application permissions", 500);
+//                }
+//            }, GALLERY_IMAGE);
+//        }
     }
 
     public static void refreshMenuItems() {
@@ -324,14 +341,12 @@ public class CommonCode {
 
             historyButton.setHidden(false);
             creditCardButton.setHidden(false);
-            signOutButton.setHidden(false);
         } else {
             loginButton.setHidden(false);
             registerButton.setHidden(false);
 
             historyButton.setHidden(true);
             creditCardButton.setHidden(true);
-            signOutButton.setHidden(true);
         }
         historyButton.getParent().revalidate();
     }
@@ -354,12 +369,6 @@ public class CommonCode {
     private static Button getLoginButton() {
         return constructSideMenuButton("Login", FontImage.MATERIAL_PERSON, new LoginForm());
     }
-
-    private static Button getStationsAround() {
-        final BrowserPopUp price = new BrowserPopUp("Nearest stations");
-        return constructSideMenuButton("Nearest stations", FontImage.MATERIAL_EV_STATION, new ComingSoonForm("Nearest stations", MainForm.get()));
-    }
-
 
 //    private static Button getCreditCards() {
 //        return constructSideMenuButton("ADD CARD WEB", FontImage.MATERIAL_CREDIT_CARD, e -> {
@@ -411,31 +420,9 @@ public class CommonCode {
 //    }
 
 
-    private static Button getSupportButton() {
-        Button sideMenuButton = new Button("Contact us", "SideMenuButton");
-        sideMenuButton.addActionListener(evt -> {
-            MainForm.get().getToolbar().closeLeftSideMenu();
-            sendSupportEmail();
-        });
-        sideMenuButton.setIconUIID("SideMenuButtonIcon");
-        sideMenuButton.setMaterialIcon(FontImage.MATERIAL_EMAIL);
-        sideMenuButton.setGap(convertToPixels(2));
-        return sideMenuButton;
-    }
-
 
     private static Button getRegisterButton() {
         return constructSideMenuButton("Register", FontImage.MATERIAL_PERSON_ADD, new RegistrationForm());
-    }
-
-
-    private static Button getSignOutButton() {
-        Button sideMenuButton = new Button("Sign out", "SideMenuButtonNoIcon");
-        sideMenuButton.addActionListener(evt -> {
-            UserService.onUserLogout();
-        });
-
-        return sideMenuButton;
     }
 
     private static Button getSettingsButton() {
@@ -446,11 +433,17 @@ public class CommonCode {
         return constructSideMenuButtonNoIcon("About", new InfoForm());
     }
 
+
+    private static Button getRentPriceButton() {
+        final BrowserPopUp priceForm = new BrowserPopUp("Price");
+        priceForm.setCloseAction(MainForm.get());
+        priceForm.serUrlNoReload(PRICE_URL);
+
+        return constructSideMenuButton("Price", FontImage.MATERIAL_EQUALIZER, priceForm);
+    }
+
     private static Button constructSideMenuButton(String name, char materialIcon, Form form) {
-        Button sideMenuButton = new Button(name, "SideMenuButton");
-        sideMenuButton.setIconUIID("SideMenuButtonIcon");
-        sideMenuButton.setMaterialIcon(materialIcon);
-        sideMenuButton.setGap(convertToPixels(2));
+        Button sideMenuButton = getSideButton(name, materialIcon);
         form.addShowListener(evt1 -> {
             sideMenu.setAnimateShow(false);
             MainForm.get().getToolbar().closeLeftSideMenu();
@@ -459,6 +452,14 @@ public class CommonCode {
             form.show();
         });
 
+        return sideMenuButton;
+    }
+
+    private static Button getSideButton(String name, char materialIcon) {
+        Button sideMenuButton = new Button(name, "SideMenuButton");
+        sideMenuButton.setIconUIID("SideMenuButtonIcon");
+        sideMenuButton.setMaterialIcon(materialIcon);
+        sideMenuButton.setGap(convertToPixels(2));
         return sideMenuButton;
     }
 
@@ -476,8 +477,6 @@ public class CommonCode {
     }
 
     public static void sendSupportEmail() {
-        MainNoBlockingLoader.get().start();
-
         final String email = "info@chargebro.com";
         String logText = "";
         try {
@@ -496,7 +495,6 @@ public class CommonCode {
                 "Log: " + logText + "\n";
         Message message = new Message(content);
 
-        MainNoBlockingLoader.get().stop();
         Display.getInstance().sendMessage(new String[]{email}, "Support request", message);
     }
 }

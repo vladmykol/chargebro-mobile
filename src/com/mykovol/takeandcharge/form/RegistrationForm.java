@@ -65,7 +65,7 @@ public class RegistrationForm extends Form {
             spaceLabel.setHidden(true);
         }
 
-        FormCommand.setBackAction(MainForm.get(),this);
+        FormCommand.setCloseAction(MainForm.get(),this);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
@@ -90,14 +90,13 @@ public class RegistrationForm extends Form {
         errorLabel.setEnabled(false);
         errorLabel.setHidden(true);
         submitButton.addActionListener(evt -> {
-
             errorLabel.setHidden(true);
             if (!phoneValidator.isValid()) {
                 showValidatorError();
                 return;
             }
 
-
+            InfinityProgressBlocking.get().start(this);
             UserService.validateUserPhone(phoneFieldContainer.getFullPhoneNumber(), isReset, new Callback<RegisterInitResponse>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -106,9 +105,9 @@ public class RegistrationForm extends Form {
                         loginForm.predefinePhone(phoneFieldContainer.getPhoneNumber());
                         loginForm.show();
                     } else {
+                        InfinityProgressBlocking.get().stop();
                         showError(errorMessage);
                     }
-                    InfinityProgressBlocking.stop();
                 }
 
                 @Override
@@ -119,7 +118,6 @@ public class RegistrationForm extends Form {
                         step2Form.setResetMode();
                     }
                     step2Form.show();
-                    InfinityProgressBlocking.stop();
                 }
             });
         });
@@ -153,7 +151,7 @@ public class RegistrationForm extends Form {
         final Label termsLabel3Space = new Label(" ", "LoginTermsText");
         final Button termsLinkButton = new Button("Terms", "LoginTermsLink");
         final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
-        termsForm.setCloseAction(this);
+        termsForm.setFadeBackDownTo(this);
         termsLinkButton.addActionListener(evt -> {
             CommonCode.removeTransitionsTemporarily(this);
             termsForm.show();

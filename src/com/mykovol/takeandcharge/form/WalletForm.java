@@ -30,15 +30,13 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
-import com.codename1.util.FailureCallback;
 import com.mykovol.takeandcharge.dataobj.UserCardResponse;
+import com.mykovol.takeandcharge.form.component.CustomDialog;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.FormCommand;
 
 import java.util.List;
-
-import static com.codename1.ui.CN.getDisplayWidth;
 
 
 /**
@@ -48,7 +46,6 @@ import static com.codename1.ui.CN.getDisplayWidth;
  */
 public class WalletForm extends Form {
     final SpanLabel noCardsHint = new SpanLabel("You must add payment card before taking a powerbank", "WalletFormHint");
-    private final Label headerText = new Label("Payment cards", "WalletFromHeader");
     private final Container cardContainer = new Container(BoxLayout.y());
 
     public WalletForm() {
@@ -57,7 +54,7 @@ public class WalletForm extends Form {
         setFormBottomPaddingEditingMode(true);
         setTransitionInAnimator(CommonTransitions.createEmpty());
         setTransitionOutAnimator(CommonTransitions.createEmpty());
-        FormCommand.setBackAction(MainForm.get(), this);
+        FormCommand.setCloseAction(MainForm.get(), this);
 
         noCardsHint.setMaterialIcon(FontImage.MATERIAL_ERROR_OUTLINE);
         noCardsHint.setEnabled(false);
@@ -94,7 +91,7 @@ public class WalletForm extends Form {
         BrowserPopUp addCardForm = new BrowserPopUp("Card authorization");
         addCardForm.setBackAction(this);
         addCardForm.setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_HORIZONTAL, false, 300));
-        addCardForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
+//        addCardForm.setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_HORIZONTAL, true, 300));
         addCardButton.addActionListener(evt -> {
             addCardForm.show();
             RentService.prepareCheckout(new Callback<String>() {
@@ -110,6 +107,7 @@ public class WalletForm extends Form {
             });
         });
 
+        Label headerText = new Label("Payment cards", "WalletFromHeader");
         addAll(
                 headerText,
                 spaceLabel,
@@ -184,7 +182,7 @@ public class WalletForm extends Form {
         };
     }
 
-    class CardBoard extends Container {
+    static class CardBoard extends Container {
         private final Button removeButton = new Button("", "WalletFormCardRemoveLabel");
 
         public CardBoard(UserCardResponse card) {
@@ -211,24 +209,25 @@ public class WalletForm extends Form {
             add(BorderLayout.EAST, BorderLayout.centerAbsolute(removeButton));
 
             removeButton.addActionListener(evt -> {
-                if (Dialog.show("Confirmation", "Are you sure you want to delete this card from your account?",
-                        "Ok", "Cancel")) {
-                    UserService.removeUserCard(getName(), new FailureCallback<String>() {
-                        @Override
-                        public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                            MainForm.get().showErrorOnMainScreen(errorMessage, errorCode);
-                        }
-                    });
-
-                    setX(getDisplayWidth());
-                    cardContainer.animateUnlayout(400, 255, () -> {
-                        cardContainer.removeComponent(this);
-                        cardContainer.animateLayout(200);
-                    });
-                    if (cardContainer.getComponentCount() == 0) {
-                        noCardsHint.setHidden(false);
-                    }
-                }
+                final CustomDialog customDialog = new CustomDialog("Are you sure you want to delete this card from your account?", "");
+                customDialog.addYesCancelButtons(evt1 -> {
+//                    UserService.removeUserCard(getName(), new FailureCallback<String>() {
+//                        @Override
+//                        public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+//                            MainForm.get().showErrorOnMainScreen(errorMessage, errorCode);
+//                        }
+//                    });
+//
+//                    setX(getDisplayWidth());
+//                    cardContainer.animateUnlayout(400, 255, () -> {
+//                        cardContainer.removeComponent(this);
+//                        cardContainer.animateLayout(200);
+//                    });
+//                    if (cardContainer.getComponentCount() == 0) {
+//                        noCardsHint.setHidden(false);
+//                    }
+                });
+                customDialog.show();
             });
 
         }
@@ -236,12 +235,12 @@ public class WalletForm extends Form {
 
         public void showRemoveButton() {
             removeButton.setHidden(false);
-            removeButton.getParent().getParent().animateLayout(300);
+            removeButton.getParent().getParent().animateLayout(200);
         }
 
         public void hideRemoveButton() {
             removeButton.setHidden(true);
-            removeButton.getParent().getParent().animateLayout(300);
+            removeButton.getParent().getParent().animateLayout(200);
         }
     }
 

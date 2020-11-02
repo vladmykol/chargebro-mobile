@@ -45,7 +45,7 @@ public class ComingSoonForm extends Form {
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
         setTransitionInAnimator(CommonTransitions.createEmpty());
-        setTransitionOutAnimator(new FlipTransition(-1, 300));
+        setTransitionOutAnimator(new FlipTransition(-1, 200));
 
 //        if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
 //            setTitle(title);
@@ -53,7 +53,7 @@ public class ComingSoonForm extends Form {
 //        } else {
         headerText.setText(title);
 //        }
-        FormCommand.setBackAction(previousForm,this);
+        FormCommand.setCloseAction(previousForm,this);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 5, 3.5f, 3.5f);

@@ -29,7 +29,7 @@ package com.mykovol.takeandcharge.service;
  * @author Vlad Mykol
  */
 public final class GlobalConst {
-    public static final boolean LOCAL = true;
+    public static final boolean LOCAL = false;
 
     public static final String RENT_URL = "/rent";
     public static final String PAY_URL = "/pay/checkout";
@@ -38,7 +38,7 @@ public final class GlobalConst {
     public static final String STATIONS_NEARBY_URL = STATIONS_URL + "/nearby";
     public static final String STATIONS_CAPACITY_URL = STATIONS_URL + "/{id}/capacity";
     public static final String SERVER_SOCKET_URL = "/socket/rent";
-    public static final String API_APP_VERSION = "/app/version";
+    public static final String API_APP_VERSION = "/a/version";
     public static final String API_APP_USER = "/user";
     public static final String API_APP_USER_CARD = API_APP_USER + "/card";
     public static final String POLICY_URL = "https://chargebro.com/policy";
@@ -51,7 +51,7 @@ public final class GlobalConst {
     public static final String API_LOGOUT = API_AUTH + "/logout";
 
     public static String getServerUrl() {
-        if (LOCAL) return "http://192.168.0.124:10381";
+        if (LOCAL) return "http://192.168.88.124:10381";
         else return "https://api.chargebro.com";
     }
 }

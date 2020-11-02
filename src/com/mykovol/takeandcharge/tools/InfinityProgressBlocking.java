@@ -23,37 +23,84 @@
 
 package com.mykovol.takeandcharge.tools;
 
-import com.codename1.components.InfiniteProgress;
-import com.codename1.ui.Dialog;
-import com.codename1.ui.Stroke;
-import com.codename1.ui.animations.Motion;
+import com.codename1.components.SpanLabel;
+import com.codename1.ui.*;
+import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.animations.Transition;
 import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.plaf.RoundBorder;
+import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.UITimer;
+import com.mykovol.takeandcharge.form.MainForm;
 
-import static com.codename1.ui.CN.getCurrentForm;
+public class InfinityProgressBlocking extends Form {
+    private static InfinityProgressBlocking instance;
+    final SpanLabel loadText;
+    private UITimer timer;
+    private Form backgroundForm;
+    private Transition transitionInAnimator;
+    private Transition transitionOutAnimator;
 
-public class InfinityProgressBlocking {
-    private static Dialog dialog;
+    private InfinityProgressBlocking(Image i) {
+        super(BoxLayout.yCenter());
+        setToolbar(new Toolbar(true));
+        setTransitionOutAnimator(CommonTransitions.createEmpty());
+        setTransitionInAnimator(CommonTransitions.createEmpty());
+        Label imageLabel = new Label(i);
+        loadText = new SpanLabel(" ", "LoadImageText");
+        loadText.setEnabled(true);
+        add(BorderLayout.centerAbsolute(imageLabel));
+        add(loadText);
 
-    public static void start() {
-        if (dialog==null) {
-            dialog = new InfiniteProgress().showInfiniteBlocking();
-            dialog.revalidateWithAnimationSafety();
-        } else {
-            dialog.putClientProperty("isInfiniteProgress", true);
-            dialog.showPacked(BorderLayout.CENTER, false);
+        addShowListener(evt -> {
+            if (timer != null) {
+                timer.cancel();
+            }
+            timer = UITimer.timer(2000, true, this, () -> {
+                MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);
+            });
+        });
+    }
+
+    public static InfinityProgressBlocking get() {
+        if (instance == null) {
+            instance = new InfinityProgressBlocking(MainNoBlockingLoader.get().getGifImage());
+            instance.setUIID("LoadImage");
+            instance.setVisible(true);
+        }
+        return instance;
+    }
+
+    public void setBackgroundForm(Form backRoundForm) {
+        if (this.backgroundForm == null) {
+            this.backgroundForm = backRoundForm;
+            if (getBlurBackgroundRadius() > 0 && Display.getInstance().isGaussianBlurSupported()) {
+                Image img = Image.createImage(backRoundForm.getWidth(), backRoundForm.getHeight());
+                Graphics g = img.getGraphics();
+                backRoundForm.paintComponent(g, true);
+                img = Display.getInstance().gaussianBlurImage(img, getBlurBackgroundRadius());
+                getUnselectedStyle().setBgImage(img);
+                getUnselectedStyle().setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
+            }
         }
     }
 
-    public static void stop() {
-        if (dialog != null) {
-            dialog.dispose();
-        }
+    public float getBlurBackgroundRadius() {
+        return 20;
     }
 
-    public static Dialog get() {
-        return dialog;
+    public void start(Form backgroundForm) {
+        transitionInAnimator = backgroundForm.getTransitionInAnimator();
+        transitionOutAnimator = backgroundForm.getTransitionOutAnimator();
+        backgroundForm.setTransitionInAnimator(CommonTransitions.createEmpty());
+        backgroundForm.setTransitionOutAnimator(CommonTransitions.createEmpty());
+        setBackgroundForm(backgroundForm);
+        show();
+    }
+
+    public void stop() {
+        backgroundForm.show();
+        backgroundForm.setTransitionInAnimator(transitionInAnimator);
+        backgroundForm.setTransitionOutAnimator(transitionOutAnimator);
     }
 }

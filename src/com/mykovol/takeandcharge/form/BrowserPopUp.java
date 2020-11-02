@@ -83,17 +83,19 @@ public class BrowserPopUp extends Form {
         });
     }
 
-    public void setBackAction(Form form) {
-        setTransitionInAnimator(CommonTransitions.createEmpty());
-        setTransitionOutAnimator(CommonTransitions.createEmpty());
-        FormCommand.setBackAction(form,this);
+    public void setBackAction(Form previousForm) {
+        FormCommand.setBackAction(previousForm,this);
     }
 
-    public void setCloseAction(Form form) {
-        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 200));
-        setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, false, 200));
-        final Command closeToPrevFormCommand = FormCommand.getCloseCommand(form);
-        getToolbar().addCommandToRightBar(closeToPrevFormCommand);
+    public void setCloseAction(Form previousForm) {
+        FormCommand.setCloseAction(previousForm,this);
     }
+
+
+    public void setFadeBackDownTo(Form previousForm) {
+        setTransitionInAnimator(CommonTransitions.createCover(CommonTransitions.SLIDE_VERTICAL, false, 200));
+        FormCommand.setCloseAction(previousForm,this);
+    }
+
 
 }

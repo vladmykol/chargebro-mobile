@@ -61,7 +61,7 @@ public class RegisterFormConfirmation extends Form {
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
 
-        FormCommand.setBackAction(previousForm,this);
+        FormCommand.setBackAction(previousForm, this);
 
         Label spaceLabel = new Label(" ");
         Label headerText = new Label("Confirmation", "LoginHeader");
@@ -96,9 +96,8 @@ public class RegisterFormConfirmation extends Form {
             if (!isValid()) {
                 return;
             }
-
+            InfinityProgressBlocking.get().start(this);
             setEditOnShow(null);
-            InfinityProgressBlocking.start();
 
             userCreationRequest.password.set(passwordField.getValue());
             userCreationRequest.smsCode.set(smsCodeField.getValue());
@@ -106,7 +105,7 @@ public class RegisterFormConfirmation extends Form {
             UserService.registerUser(userCreationRequest, new LoginCallback() {
                 @Override
                 public void loginFailed(String errorMessage) {
-                    InfinityProgressBlocking.stop();
+                    InfinityProgressBlocking.get().stop();
                     showError(errorMessage);
                 }
 

@@ -73,17 +73,21 @@ public class MainNoBlockingLoader extends Container {
     }
 
     public void start() {
+        startTimeout(3000);
+    }
+
+    public void startTimeout(int ms) {
         if (timer != null) {
             timer.cancel();
         }
         callSerially(() -> {
             if (getParent() != null) {
                 setVisible(true);
-                revalidate();
+//                revalidate();
             }
         });
 
-        timer = UITimer.timer(5000, false, getComponentForm(), this::stop);
+        timer = UITimer.timer(ms, false, getComponentForm(), this::stop);
     }
 
     public void stop() {

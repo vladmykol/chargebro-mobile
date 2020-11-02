@@ -31,6 +31,7 @@ import com.codename1.maps.Coord;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.form.component.CustomDialog;
 
 /**
  * A generic service class that handles login/creation etc.
@@ -43,7 +44,7 @@ public class LocationService {
     public boolean checkGpsEnabled() {
         if (lm.isGPSDetectionSupported()) {
             if (!lm.isGPSEnabled()) {
-                Dialog.show("", "Please enable GPS in your settings", "OK", null);
+                new CustomDialog("", "Please enable GPS in your settings").showOk();
                 return false;
             }
         }

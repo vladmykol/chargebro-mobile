@@ -13,7 +13,6 @@ import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.SettingsForm;
 import com.mykovol.takeandcharge.form.SplashScreen;
 import com.mykovol.takeandcharge.service.WebSocketClient;
-import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 import org.littlemonkey.connectivity.Connectivity;
 
@@ -50,8 +49,6 @@ public class TakeAndChargeMain {
 //        Toolbar.setOnTopSideMenu(false);
         Toolbar.setOnTopSideMenu(true);
 
-        Dialog.setDefaultBlurBackgroundRadius(13);
-
 //        Label.setDefaultGap(convertToPixels(2));
         // only portrait mode
         Display.getInstance().lockOrientation(true);
@@ -59,8 +56,8 @@ public class TakeAndChargeMain {
 
         // Pro only feature
 //        Log.bindCrashProtection(false);
-
         loadLocalization();
+        Dialog.setDefaultBlurBackgroundRadius(13);
 
         NetworkManager.getInstance().setTimeout(5000);
         addNetworkErrorListener(err -> {
@@ -75,10 +72,10 @@ public class TakeAndChargeMain {
                 errorMsg = "No Internet connection";
             } else {
                 if (err.getResponseCode() == 0) {
-                    errorMsg = "Connection issue. Please try again latter";
-                    Log.p("Network error:" + errorMsg);
-                    WebSocketClient.ensureConnection();
-                    return;
+                        errorMsg = "Connection issue. Please try again latter";
+                        Log.p("Network error:" + errorMsg);
+                        WebSocketClient.ensureConnection();
+                        return;
                 } else if (err.getError() != null) {
                     errorMsg = err.getResponseCode() + err.getError().toString() + " while connecting to " + err.getConnectionRequest().getUrl();
                 } else {
@@ -89,7 +86,6 @@ public class TakeAndChargeMain {
 //                            "OK", null);
             }
             Log.p("Network error:" + errorMsg);
-            InfinityProgressBlocking.stop();
             MainNoBlockingLoader.get().stop();
             MainForm.showError(errorMsg, 500);
         });
