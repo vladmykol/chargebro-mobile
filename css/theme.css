@@ -777,6 +777,7 @@ RentConfirmationHintNoCenterGreen {
 
 RentConfirmationLink {
     cn1-derive: RentConfirmationHint;
+    padding: 0.5mm 0mm;
     color: #0095A0;
 }
 
@@ -790,6 +791,11 @@ RentConfirmationCancel {
 RentConfirmationDelimiter {
     cn1-derive: PanelDelimiter;
     margin: 2mm 0mm;
+}
+
+RentConfirmationUnlockButton {
+    cn1-derive: LoginButton;
+    margin: 3mm 0mm 2mm 0mm;
 }
 
 /*====================== WalletFrom ==========================*/

@@ -107,7 +107,7 @@ public class RentConfirmation extends Form {
             priceForm.serUrlNoReload(PRICE_URL);
         });
 
-        Button unlockPowerBankButton = new Button("Unlock a powerbank", "LoginButton");
+        Button unlockPowerBankButton = new Button("Unlock a powerbank", "RentConfirmationUnlockButton");
 
         Button cancelButton = new Button("Cancel", "RentConfirmationCancel");
         cancelButton.addActionListener(evt -> {

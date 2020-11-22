@@ -72,15 +72,16 @@ public class SplashScreen extends Form {
                     CommonCode.constructSideMenu(MainForm.get().getToolbar(), MainForm.get());
 
                     callSerially(() -> {
-                        if (!isWalkthruShowed()) {
-                            new WalkthruForm().show();
+                        if (stationId != null) {
+                            showMain(stationId);
                         } else {
-//                            UserService.checkForNewVersion();
-                            MainForm.get().show();
-                            if (stationId != null) {
-                                MainForm.get().initWithStartingArg(stationId);
+                            if (!isWalkthruShowed()) {
+                                new WalkthruForm().show();
+                            } else {
+                                showMain(stationId);
                             }
                         }
+
                         UITimer.timer(10000, false, MainForm.get(), UserService::checkForNewVersion);
                     });
 
@@ -104,6 +105,13 @@ public class SplashScreen extends Form {
 //                    mainForm.show();
 //                });
         });
+    }
+
+    private void showMain(String stationId) {
+        MainForm.get().show();
+        if (stationId != null) {
+            MainForm.get().initWithStartingArg(stationId);
+        }
     }
 
     private void animateSubTitle() {

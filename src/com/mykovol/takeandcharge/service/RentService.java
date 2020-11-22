@@ -29,7 +29,6 @@ import com.codename1.io.Log;
 import com.codename1.io.Preferences;
 import com.codename1.io.rest.Rest;
 import com.codename1.maps.Coord;
-import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.BeforeRentInfo;
@@ -147,7 +146,7 @@ public class RentService {
                 });
     }
 
-    public static void prepareForRent(String stationId, final Callback<BeforeRentInfo> callback) {
+    public static void prepareForRent(String predefinedStationId, final Callback<BeforeRentInfo> callback) {
         if (!UserService.isLoggedIn()) {
             new LoginForm().show();
             return;
@@ -158,17 +157,14 @@ public class RentService {
             return;
         }
 
-        if (stationId != null) {
-            getBeforeRentInfo(stationId, callback);
-            return;
+        if (predefinedStationId != null) {
+            getBeforeRentInfo(predefinedStationId, callback);
         } else if (Display.getInstance().isSimulator()) {
-            getBeforeRentInfo("STWA062001000013", callback);
-            return;
-        }
-
-        if (!CodeScanner.isSupported()) {
-            callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
+            getBeforeRentInfo("https://api.chargebro.com/a/k13", callback);
         } else {
+            if (!CodeScanner.isSupported()) {
+                callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
+            } else {
 //            boolean isUserNotifiedAboutLocationUse = Preferences.get("isUserNotifiedAboutCameraUse", false);
 //            boolean isUserAgreeToGiveCameraAccess = true;
 //            if (!isUserNotifiedAboutLocationUse) {
@@ -201,7 +197,9 @@ public class RentService {
 //            } else {
 //                callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
 //            }
+            }
         }
+
     }
 
     public static void prepareCheckout(final Callback<String> callback) {

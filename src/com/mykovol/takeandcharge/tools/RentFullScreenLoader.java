@@ -118,7 +118,7 @@ public class RentFullScreenLoader extends Form {
                 loadText.setText("it takes longer than usual, few seconds remaining");
                 loadText.getParent().revalidate();
             });
-            timer = UITimer.timer(90000, false, this, () -> {
+            timer = UITimer.timer(40000, false, this, () -> {
                 callSerially(() -> {
                     refreshRentTimer.cancel();
                     MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);

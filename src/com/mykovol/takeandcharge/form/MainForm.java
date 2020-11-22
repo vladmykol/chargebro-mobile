@@ -169,7 +169,6 @@ public class MainForm extends Form {
         if (instance != null) {
             instance.mapContainer.setShowMyLocation(false);
         }
-        WebSocketClient.disconnect();
     }
 
     public static void showError(String text, int type) {
@@ -192,8 +191,11 @@ public class MainForm extends Form {
     }
 
     public void showErrorOnMainScreen(String text, int type) {
-        showNoUpdate();
-        messagePopUp.showError(type, text);
+        callSerially(() -> {
+                    showNoUpdate();
+                    messagePopUp.showError(type, text);
+                }
+        );
     }
 
     public void initWithStartingArg(String stationId) {
@@ -373,12 +375,12 @@ public class MainForm extends Form {
             action(null);
         }
 
-        public void action(String stationId) {
+        public void action(String predefinedStationId) {
             if (MainNoBlockingLoader.get().isVisible()) return;
 
             if (UserService.isLoggedIn()) {
                 MainNoBlockingLoader.get().start();
-                RentService.prepareForRent(stationId, new Callback<BeforeRentInfo>() {
+                RentService.prepareForRent(predefinedStationId, new Callback<BeforeRentInfo>() {
                     @Override
                     public void onSucess(BeforeRentInfo value) {
                         RentConfirmation rentConfirmation = new RentConfirmation(value);
