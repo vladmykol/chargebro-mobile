@@ -29,7 +29,7 @@ package com.mykovol.takeandcharge.service;
  * @author Vlad Mykol
  */
 public final class GlobalConst {
-    public static final boolean LOCAL = true;
+    public static final boolean LOCAL = false;
 
     public static final String RENT_URL = "/rent";
     public static final String PAY_URL = "/pay/checkout";

@@ -34,7 +34,6 @@ import com.mykovol.takeandcharge.tools.FormCommand;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.codename1.ui.CN.convertToPixels;
 
@@ -81,7 +80,7 @@ public class RentHistoryForm extends Form {
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
 
 
-        Label headerText = new Label("Rent History", "WalletFromHeader");
+        Label headerText = new Label("Rent history", "WalletFromHeader");
         addAll(
                 headerText,
                 spaceLabel,
@@ -141,7 +140,6 @@ public class RentHistoryForm extends Form {
             final Container headerContainer = BorderLayout.centerCenterEastWest(null, costLabel, timeLogo);
 
             add(headerContainer);
-//            add(delimiter);
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
             simpleDateFormat.applyPattern("dd.MM.yyyy - HH:mm");
@@ -157,35 +155,30 @@ public class RentHistoryForm extends Form {
          * @return A string of the form "X Days Y Hours Z Minutes A Seconds".
          */
         public String getDurationBreakdown(long millis) {
-            if (millis < 0) {
-                throw new IllegalArgumentException("Duration must be greater than zero!");
+            int SECOND = 1000;
+            int MINUTE = 60 * SECOND;
+            int HOUR = 60 * MINUTE;
+            int DAY = 24 * HOUR;
+
+            StringBuffer text = new StringBuffer("");
+            if (millis > DAY) {
+                text.append(millis / DAY).append(DAYS_STRING);
+                millis %= DAY;
+            }
+            if (millis > HOUR) {
+                text.append(millis / HOUR).append(HOUR_STRING);
+                millis %= HOUR;
+            }
+            if (millis > MINUTE) {
+                text.append(millis / MINUTE).append(MIN_STRING);
+                millis %= MINUTE;
+            }
+            if (millis > SECOND) {
+                text.append(millis / SECOND).append(SEC_STRING);
+                millis %= SECOND;
             }
 
-            long days = TimeUnit.MILLISECONDS.toDays(millis);
-            millis -= TimeUnit.DAYS.toMillis(days);
-            long hours = TimeUnit.MILLISECONDS.toHours(millis);
-            millis -= TimeUnit.HOURS.toMillis(hours);
-            long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-            millis -= TimeUnit.MINUTES.toMillis(minutes);
-            long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-
-            StringBuilder sb = new StringBuilder(64);
-            if (days > 0) {
-                sb.append(days);
-                sb.append(DAYS_STRING);
-            }
-            if (hours > 0) {
-                sb.append(hours);
-                sb.append(HOUR_STRING);
-            }
-            if (minutes > 0) {
-                sb.append(minutes);
-                sb.append(MIN_STRING);
-            }
-            sb.append(seconds);
-            sb.append(SEC_STRING);
-
-            return (sb.toString());
+            return (text.toString());
         }
     }
 
