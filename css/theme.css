@@ -772,7 +772,7 @@ RentConfirmationHintNoCenter {
 
 RentConfirmationHintNoCenterGreen {
     cn1-derive: RentConfirmationHint;
-    color: green;
+    color: #008000;
 }
 
 RentConfirmationLink {
@@ -983,4 +983,56 @@ CustomDialogButtonLeft {
 CustomDialogDelimiter {
     cn1-derive: PanelDelimiter;
     margin: 1mm 0mm 0mm 0mm;
+}
+
+/*====================== Rent History ==========================*/
+
+RentHistoryFormBoard {
+    cn1-derive: WalletFormCardBoard;
+    margin: 0mm 0mm 0.7mm 0mm;
+    padding: 2mm 1mm;
+}
+
+RentHistoryFormHint {
+    cn1-derive: RentConfirmationHint;
+    font-size: 2.7mm;
+    color: grey;
+}
+
+RentHistoryFormTimeIcon {
+    margin: 0mm;
+    padding: 0mm;
+    font-size: 2.7mm;
+    color: grey;
+}
+
+RentHistoryFormTime {
+    font-family: var(--font-ProximaNova-Regular);
+    font-size: 2.7mm;
+    margin: 0mm 1mm 0mm 0.5mm;
+    color: var(--grafit-color);
+}
+
+RentHistoryFormPrice {
+    cn1-derive: RentConfirmationHint;
+    font-family: var(--font-ProximaNova-Semibold);
+    font-size: 2.5mm;
+    margin: 0mm 2mm 0mm 1mm;
+    color: var(--grafit-color);
+}
+
+RentHistoryDate {
+    font-family: var(--font-ProximaNova-Regular);
+    margin: 1mm 2mm;
+    padding: 0mm;
+    font-size: 2.5mm;
+    color: grey;
+}
+
+/*====================== Rate App widget ==========================*/
+
+RateAppWidget {
+    cn1-derive: InfoFormLink;
+    font-size: 2mm;
+    color: var(--main-bg-color);
 }

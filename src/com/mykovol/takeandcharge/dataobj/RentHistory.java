@@ -33,12 +33,14 @@ import com.codename1.properties.*;
 public class RentHistory implements PropertyBusinessObject {
     public final Property<String, RentHistory> powerBankId = new Property<>("powerBankId");
     public final LongProperty<RentHistory> rentPeriodMs = new LongProperty<>("rentPeriodMs");
+    public final LongProperty<RentHistory> rentPrice = new LongProperty<>("rentPrice");
+    public final LongProperty<RentHistory> rentStartTime = new LongProperty<>("rentStartTime");
     public final IntProperty<RentHistory> isReturned = new IntProperty<>("isReturned");
     public final IntProperty<RentHistory> errorCode = new IntProperty<>("errorCode");
     public final Property<String, RentHistory> errorMessage = new Property<>("errorMessage");
 
     private final PropertyIndex idx = new PropertyIndex(this, "RentHistory", powerBankId,
-            rentPeriodMs, isReturned, errorCode, errorMessage);
+            rentPeriodMs, rentPrice, rentStartTime, isReturned, errorCode, errorMessage);
 
     @Override
     public PropertyIndex getPropertyIndex() {

@@ -394,7 +394,7 @@ public class CommonCode {
     }
 
     private static Button getHistoryButton() {
-        return constructSideMenuButton("History", FontImage.MATERIAL_HISTORY, new ComingSoonForm("Rent history", MainForm.get()));
+        return constructSideMenuButton("History", FontImage.MATERIAL_HISTORY, new RentHistoryForm());
     }
 
     private static Button getPromoCodeButton() {
@@ -418,7 +418,6 @@ public class CommonCode {
 //            });
 //        });
 //    }
-
 
 
     private static Button getRegisterButton() {

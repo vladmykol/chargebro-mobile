@@ -5,7 +5,6 @@ import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.geom.Dimension;
-import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
@@ -94,9 +93,10 @@ public class CustomDialog {
         starRank.setEditable(true);
         starRank.setMinValue(0);
         starRank.setMaxValue(10);
+        starRank.setProgress(10);
         Font fnt = Font.createTrueTypeFont("native:MainLight", "native:MainLight").
                 derive(Display.getInstance().convertToPixels(5, true), Font.STYLE_PLAIN);
-        Style s = new Style(0xffff33, 0, fnt, (byte)0);
+        Style s = new Style(0xffff33, 0, fnt, (byte) 0);
         Image fullStar = FontImage.createMaterial(FontImage.MATERIAL_STAR, s).toImage();
         s.setOpacity(100);
         s.setFgColor(0);

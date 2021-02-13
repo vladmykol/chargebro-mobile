@@ -273,14 +273,20 @@ public class MainForm extends Form {
 
     public void removeRentRow(String serialNumber) {
         draggablePanel.removeRentRow(serialNumber);
+        showRentIsOver();
+    }
 
+    public void showRentIsOver() {
         callSerially(() -> {
-                    final CustomDialog customDialog = new CustomDialog("Rent is over", "How do you rate your ChargerBro experience?");
+                    final CustomDialog customDialog = new CustomDialog("Rent is over",
+                            "Would you like to rate your ChargeBro experience in Telegram Bot?");
                     customDialog.addRatingStarts();
-                    customDialog.showOk();
+                    customDialog.addYesCancelButtons(evt -> {
+                        Display.getInstance().execute("https://t.me/chargebro_bot?start=survey");
+                    });
+                    customDialog.show();
                 }
         );
-
     }
 
     public void removeAllRentRows() {
