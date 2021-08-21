@@ -4,7 +4,6 @@
 build/
 dist/
 lib/impl/
-iosCerts
 css/.backups
 res/theme
 native/internal_tmp/
@@ -24,3 +23,4 @@ native/internal_tmp/
 *.iws
 /out/
 atlassian-ide-plugin.xml
+/src/theme.res
