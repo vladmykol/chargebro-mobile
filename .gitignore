@@ -8,7 +8,6 @@ css/.backups
 res/theme
 native/internal_tmp/
 #*.zip
-.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
 .idea/**/dataSources/
@@ -19,7 +18,6 @@ native/internal_tmp/
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/gradle.xml
-.idea/**/libraries
 *.iws
 /out/
 atlassian-ide-plugin.xml
