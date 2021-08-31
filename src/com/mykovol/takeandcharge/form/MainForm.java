@@ -67,7 +67,7 @@ import static com.codename1.ui.plaf.Style.UNIT_TYPE_SCREEN_PERCENTAGE;
  * @author Vlad Mykol
  */
 public class MainForm extends Form {
-    private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RVpEYUpceVw+VSlDWzkjXWZ8bCJDSF5GRkZ4cm1DFVdE");
+    private static final String MAP_JS_KEY = "REDACTED_GOOGLE_MAPS_KEY";
     private static MainForm instance;
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
     private final ToolBox toolBox = new ToolBox(mapContainer);

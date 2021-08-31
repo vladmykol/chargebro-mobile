@@ -7,7 +7,7 @@
         
     <project name="ChargeBro" default="default" basedir=".">
     <description>Builds, tests, and runs the project ChargeBro.</description>
-    <import file="nbproject/build-impl.xml"/>
+    <property file="codenameone_kotlin.properties"/><typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/><import file="nbproject/build-impl.xml"/>
     <property file="codenameone_settings.properties"/>
     <property name="automated" value="false" />
     <taskdef name="codeNameOne" classname="com.codename1.build.client.CodeNameOneBuildTask" classpath="CodeNameOneBuildClient.jar"/>
@@ -27,7 +27,11 @@
             bootclasspath="CLDC11.jar" excludes="${excludes}"
             classpath="${javac.classpath}:${build.classes.dir}">
             <src path="${test.src.dir}"/>
-        </javac>        
+        <withKotlin>
+            <compilerarg value="-no-stdlib"/>
+            <compilerarg value="-no-reflect"/>
+            <compilerarg value="-no-jdk"/>
+        </withKotlin></javac>        
         <prepareTests classesDir="${build.classes.dir}" testClassesDir="${build.test.classes.dir}" seJar="JavaSE.jar" metaDataFile="${build.test.classes.dir}/tests.dat" />
         <jar jarfile="dist/unitTests.jar">
             <fileset dir="${build.classes.dir}"/>
@@ -61,10 +65,15 @@
             bootclasspath="lib/CLDC11.jar" excludes="${excludes}"
             classpath="${javac.classpath}:${build.classes.dir}">
             <src path="${src.dir}"/>
-        </javac>        
+        <withKotlin>
+            <compilerarg value="-no-stdlib"/>
+            <compilerarg value="-no-reflect"/>
+            <compilerarg value="-no-jdk"/>
+        </withKotlin></javac>        
     </target>
 
     <target name="-post-compile">
+        <delete><fileset dir="${build.classes.dir}" includes="**/*.kt,**/*.kts"/></delete>
         <delete>
             <fileset dir="${build.classes.dir}" includes="**/package-info.class"/>
         </delete>
@@ -94,34 +103,6 @@
             appid="${codename1.ios.appid}"
             automated="${automated}"
             />
-    </target>
-
-    <target name="offline-builder-ios-debug" depends="clean,copy-ios-override,copy-libs,jar,clean-override">
-        <initOfflineBuilder />
-        <java jar="${selectedOfflineBuilder}">
-            <arg value="ios" />
-            <arg file="codenameone_settings.properties" />
-            <arg file="${dist.jar}" />
-        </java>
-    </target>
-
-    <target name="offline-builder-ios-release" depends="clean,copy-ios-override,copy-libs,jar,clean-override">
-        <initOfflineBuilder />
-        <java jar="${selectedOfflineBuilder}">
-            <arg value="ios-release" />
-            <arg file="codenameone_settings.properties" />
-            <arg file="${dist.jar}" />
-        </java>
-    </target>
-
-    <target name="offline-builder-android" depends="clean,copy-android-override,copy-libs,jar,clean-override">
-        <initOfflineBuilder />
-        <java jar="${selectedOfflineBuilder}">
-            <arg value="and" />
-            <arg file="codenameone_settings.properties" />
-            <arg file="${dist.jar}" />
-            <arg file="gradlePath" />
-        </java>
     </target>
 
     <target name="test-for-ios-device" depends="clean,copy-ios-override,copy-libs,compile-test,clean-override">
@@ -428,26 +409,6 @@
             <fileset dir="${build.classes.dir}" includes="**/*.class"/>
         </delete>
     </target>
-
-    <target name="build-for-mac-os-x-desktop" depends="clean,copy-desktop-override,copy-libs,jar,clean-override">
-        <codeNameOne 
-            jarFile="${dist.jar}"
-            displayName="${codename1.displayName}"
-            packageName = "${codename1.packageName}"
-            mainClassName = "${codename1.mainName}"
-            version="${codename1.version}"
-            icon="${codename1.icon}"
-            vendor="${codename1.vendor}"
-            subtitle="${codename1.secondaryTitle}"
-            certificate="${codename1.desktop.mac.certificate}"
-            certPassword="${codename1.desktop.mac.certificatePassword}"
-            targetType="desktop_macosx"
-            automated="${automated}"
-            />
-        <delete>
-            <fileset dir="${build.classes.dir}" includes="**/*.class"/>
-        </delete>
-    </target>
     
     <target name="build-for-windows-desktop" depends="clean,copy-desktop-override,copy-libs,jar,clean-override">
         <codeNameOne 
@@ -546,7 +507,11 @@
             classpathref="native.jars.class.path">
             <src path="native/javase"/>
             <src path="lib/impl/native/javase"/>
-        </javac>
+        <withKotlin>
+            <compilerarg value="-no-stdlib"/>
+            <compilerarg value="-no-reflect"/>
+            <compilerarg value="-no-jdk"/>
+        </withKotlin></javac>
         <copy todir="native/internal_tmp">
             <fileset dir="native/javase" excludes="*.java,*.jar"/>
             <fileset dir="lib/impl/native/javase" excludes="*.java,*.jar"/>
@@ -594,25 +559,6 @@
             subtitle="${codename1.secondaryTitle}"
             
             targetType="win"
-            automated="${automated}"
-            />
-    </target>
-                
-    <target name="build-for-windows-device" depends="clean,copy-windows-override,copy-libs,jar,clean-override">
-        <codeNameOne 
-            jarFile="${dist.jar}"
-            displayName="${codename1.displayName}"
-            packageName = "${codename1.packageName}"
-            mainClassName = "${codename1.mainName}"
-            version="${codename1.version}"
-            icon="${codename1.icon}"
-            vendor="${codename1.vendor}"
-            subtitle="${codename1.secondaryTitle}"
-            
-            certificate="${codename1.windows.certificate}"
-            certPassword="${codename1.windows.certificatePassword}"
-
-            targetType="windows"
             automated="${automated}"
             />
     </target>

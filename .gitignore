@@ -21,4 +21,3 @@ native/internal_tmp/
 *.iws
 /out/
 atlassian-ide-plugin.xml
-/src/theme.res

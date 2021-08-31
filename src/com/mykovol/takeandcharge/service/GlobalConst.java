@@ -29,7 +29,7 @@ package com.mykovol.takeandcharge.service;
  * @author Vlad Mykol
  */
 public final class GlobalConst {
-    public static final boolean LOCAL = false;
+    public static final boolean LOCAL = true;
 
     public static final String RENT_URL = "/rent";
     public static final String PAY_URL = "/pay/checkout";
@@ -51,7 +51,7 @@ public final class GlobalConst {
     public static final String API_LOGOUT = API_AUTH + "/logout";
 
     public static String getServerUrl() {
-        if (LOCAL) return "http://192.168.88.124:10381";
+        if (LOCAL) return "http://localhost:10381";
         else return "https://api.chargebro.com";
     }
 }
