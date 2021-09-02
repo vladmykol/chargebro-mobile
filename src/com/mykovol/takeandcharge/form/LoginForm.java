@@ -116,8 +116,6 @@ public class LoginForm extends Form {
         Button forgotPassButton = new Button("Forgot password?", "LoginForgotLabel");
         forgotPassButton.addActionListener(evt -> {
             final RegistrationForm resetPasswordForm = new RegistrationForm();
-            resetPasswordForm.setHeader("Reset password");
-            resetPasswordForm.setResetPassMode();
             resetPasswordForm.show();
         });
         Button singUp = new Button("Sign Up", "LoginForgotLabel");

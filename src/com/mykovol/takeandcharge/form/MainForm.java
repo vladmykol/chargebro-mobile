@@ -27,7 +27,6 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Preferences;
-import com.codename1.io.Util;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -203,12 +202,18 @@ public class MainForm extends Form {
     }
 
     private void initMap() {
-        final double lastPositionX = Preferences.get("lastPositionX", 0d);
-        final double lastPositionY = Preferences.get("lastPositionY", 0d);
-        if (lastPositionX > 0 && lastPositionY > 0) {
-            final Coord coord = new Coord(lastPositionX, lastPositionY);
+        if (Display.getInstance().isSimulator()) {
+            final Coord coord = new Coord(50.476473, 30.416910);
             mapContainer.setCameraPosition(coord);
-            mapContainer.zoom(coord, mapContainer.getMinZoom() + 12);
+            mapContainer.zoom(coord, mapContainer.getMinZoom() + 11);
+        } else {
+            final double lastPositionX = Preferences.get("lastPositionX", 0d);
+            final double lastPositionY = Preferences.get("lastPositionY", 0d);
+            if (lastPositionX > 0 && lastPositionY > 0) {
+                final Coord coord = new Coord(lastPositionX, lastPositionY);
+                mapContainer.setCameraPosition(coord);
+                mapContainer.zoom(coord, mapContainer.getMinZoom() + 12);
+            }
         }
 
         addMapListenerToDrawStationsOnMap();
@@ -402,11 +407,7 @@ public class MainForm extends Form {
                     }
                 });
             } else {
-                if (WalletForm.isUserHasCard()) {
-                    new LoginForm().show();
-                } else {
-                    new RegistrationForm().show();
-                }
+                new RegistrationForm().show();
             }
         }
 

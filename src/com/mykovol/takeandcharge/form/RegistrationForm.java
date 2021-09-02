@@ -49,8 +49,7 @@ public class RegistrationForm extends Form {
     private final Validator phoneValidator = new Validator();
     private final SpanLabel errorLabel = new SpanLabel("Password error", "LoginError");
     private final PhoneFieldContainer phoneFieldContainer = new PhoneFieldContainer();
-    private final Label headerText = new Label("Sign Up", "LoginHeader");
-    private boolean isReset = false;
+    private final Label headerText = new Label("Log in", "LoginHeader");
 
     public RegistrationForm() {
         super(new BorderLayout());
@@ -65,7 +64,7 @@ public class RegistrationForm extends Form {
             spaceLabel.setHidden(true);
         }
 
-        FormCommand.setCloseAction(MainForm.get(),this);
+        FormCommand.setCloseAction(MainForm.get(), this);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
@@ -97,46 +96,28 @@ public class RegistrationForm extends Form {
             }
 
             InfinityProgressBlocking.get().start(this);
-            UserService.validateUserPhone(phoneFieldContainer.getFullPhoneNumber(), isReset, new Callback<RegisterInitResponse>() {
+            UserService.validateUserPhone(phoneFieldContainer.getFullPhoneNumber(), new Callback<RegisterInitResponse>() {
                 @Override
                 public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                    if (errorCode == 409) {
-                        LoginForm loginForm = new LoginForm();
-                        loginForm.predefinePhone(phoneFieldContainer.getPhoneNumber());
-                        loginForm.show();
-                    } else {
-                        InfinityProgressBlocking.get().stop();
-                        showError(errorMessage);
-                    }
+                    InfinityProgressBlocking.get().stop();
+                    showError(errorMessage);
                 }
 
                 @Override
                 public void onSucess(RegisterInitResponse response) {
                     RegisterFormConfirmation step2Form = new RegisterFormConfirmation(getCurrentForm(),
                             phoneFieldContainer, response);
-                    if (isReset) {
-                        step2Form.setResetMode();
-                    }
                     step2Form.show();
                 }
             });
         });
-
-        final Label loginLabel = new Label("Already have an account?", "LoginLabel");
-        loginLabel.getAllStyles().setMarginRight(2);
-        Button logInButton = new Button("Log in", "LoginForgotLabel");
-        logInButton.addActionListener(evt -> {
-            new LoginForm().show();
-        });
-
 
         final Container mainContainer = BoxLayout.encloseY(
                 headerText,
                 spaceLabel,
                 phoneFieldContainer,
                 errorLabel,
-                submitButton,
-                FlowLayout.encloseCenter(loginLabel, logInButton)
+                submitButton
         );
         mainContainer.setScrollableY(true);
         mainContainer.setScrollVisible(false);
@@ -206,10 +187,5 @@ public class RegistrationForm extends Form {
         if (errorMessage1 != null) {
             showError(errorMessage1);
         }
-    }
-
-    public void setResetPassMode() {
-        isReset = true;
-        setHeader(("Reset password"));
     }
 }

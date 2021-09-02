@@ -154,13 +154,8 @@ public class UserService {
     }
 
 
-    public static void validateUserPhone(String phoneNumber, boolean isReset, final Callback<RegisterInitResponse> callback) {
-        String url;
-        if (isReset) {
-            url = getServerUrl() + API_RESET_PASS;
-        } else {
-            url = getServerUrl() + API_INIT;
-        }
+    public static void validateUserPhone(String phoneNumber, final Callback<RegisterInitResponse> callback) {
+        String url = getServerUrl() + API_INIT;
         Rest.post(url)
 //                .bearer(UserService.getToken())
                 .queryParam("phone", phoneNumber)

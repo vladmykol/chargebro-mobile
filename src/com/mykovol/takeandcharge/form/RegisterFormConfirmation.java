@@ -47,12 +47,9 @@ import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
  */
 public class RegisterFormConfirmation extends Form {
     private final SmsFieldContainer smsCodeField;
-    private final PasswordFieldContainer passwordField = new PasswordFieldContainer();
-
     private final SpanLabel errorLabel = new SpanLabel("", "LoginError");
     private final UserCreationRequest userCreationRequest = new UserCreationRequest();
     private final Validator smsValidator = new Validator();
-    private final Validator passwordValidator = new Validator();
     private final Button registerButton = new Button("OK", "LoginButton");
 
     public RegisterFormConfirmation(Form previousForm, PhoneFieldContainer phoneFieldContainer,
@@ -87,9 +84,6 @@ public class RegisterFormConfirmation extends Form {
         smsValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
         smsCodeField.setValidator(smsValidator);
 
-        passwordValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
-        passwordField.setValidator(passwordValidator);
-
         errorLabel.setHidden(true);
         registerButton.addActionListener(evt -> {
             errorLabel.setHidden(true);
@@ -99,7 +93,6 @@ public class RegisterFormConfirmation extends Form {
             InfinityProgressBlocking.get().start(this);
             setEditOnShow(null);
 
-            userCreationRequest.password.set(passwordField.getValue());
             userCreationRequest.smsCode.set(smsCodeField.getValue());
 
             UserService.registerUser(userCreationRequest, new LoginCallback() {
@@ -122,7 +115,6 @@ public class RegisterFormConfirmation extends Form {
                 phoneNumberHolder,
                 spaceLabel,
                 smsCodeField,
-                passwordField,
                 errorLabel,
                 registerButton
         );
@@ -133,13 +125,9 @@ public class RegisterFormConfirmation extends Form {
             errorLabel.setHidden(true);
         }
 
-        passwordField.getField().setNextFocusDown(smsCodeField.getField());
+        smsCodeField.getField().setNextFocusDown(registerButton);
     }
 
-
-    public void setPasswordFieldName(String text) {
-
-    }
 
     private void showError(String errorMessage) {
         errorLabel.setText(errorMessage);
@@ -160,14 +148,9 @@ public class RegisterFormConfirmation extends Form {
     private boolean isValid() {
         if (!smsValidator.isValid()) {
             showError(smsCodeField.getErrorMessage());
-        } else if (!passwordValidator.isValid()) {
-            showError(passwordField.getErrorMessage());
         }
 
-        return smsValidator.isValid() && passwordValidator.isValid();
+        return smsValidator.isValid();
     }
 
-    public void setResetMode() {
-        passwordField.setLabelText("New password");
-    }
 }
