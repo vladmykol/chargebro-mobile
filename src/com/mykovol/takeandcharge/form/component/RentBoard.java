@@ -1,9 +1,11 @@
 package com.mykovol.takeandcharge.form.component;
 
+import com.codename1.charts.util.ColorUtil;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.Style;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
 
@@ -61,6 +63,15 @@ public class RentBoard extends Container {
     public void setUpdatableRentInfo(RentHistory rentHistory) {
         if (rentHistory.errorCode.get() > 0) {
             setUIID("RentBorderError");
+            Stroke borderStroke = new Stroke(2, Stroke.CAP_SQUARE, Stroke.JOIN_MITER, 1);
+            getAllStyles().setBorder(RoundBorder
+                    .create()
+                    .color(getAllStyles().getBgColor())
+                    .strokeColor(ColorUtil.rgb(205,92,92))
+                    .strokeOpacity(120)
+                    .stroke(borderStroke)
+                    .rectangle(true)
+            );
             errorMessageText.setText(rentHistory.errorMessage.get());
             errorMessageHeader.setText(MessagePopUp.errorCodeToString(rentHistory.errorCode.getInt()));
             if (getParent() != null) {
@@ -69,6 +80,16 @@ public class RentBoard extends Container {
         } else {
             errorMessageContainer.setHidden(true);
             setUIID("RentBorder");
+            Stroke borderStroke = new Stroke(2, Stroke.CAP_SQUARE, Stroke.JOIN_MITER, 1);
+            getAllStyles().setBorder(RoundBorder
+                    .create()
+                    .color(getAllStyles().getBgColor())
+                    .strokeColor(ColorUtil.GRAY)
+                    .strokeOpacity(120)
+                    .stroke(borderStroke)
+                    .rectangle(true)
+            );
+
         }
 
         startTime = System.currentTimeMillis() - rentHistory.rentPeriodMs.getLong();

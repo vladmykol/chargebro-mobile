@@ -27,6 +27,7 @@ package com.mykovol.takeandcharge.form;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Preferences;
+import com.codename1.io.Util;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
@@ -66,7 +67,7 @@ import static com.codename1.ui.plaf.Style.UNIT_TYPE_SCREEN_PERCENTAGE;
  * @author Vlad Mykol
  */
 public class MainForm extends Form {
-    private static final String MAP_JS_KEY = "REDACTED_GOOGLE_MAPS_KEY";
+    private static final String MAP_JS_KEY = Util.xorDecode("QEt5ZVZ/RU1uOnlqYGF9ZmF7enFvckdXTHxTW2VrfGoYWmt1FB9A");
     private static MainForm instance;
     private final MapContainer mapContainer = new MapContainer(MAP_JS_KEY);
     private final ToolBox toolBox = new ToolBox(mapContainer);
@@ -82,10 +83,6 @@ public class MainForm extends Form {
     private final Map<String, MapContainer.MapObject> mapMarkers = new HashMap<>();
     private final MessagePopUp messagePopUp = new MessagePopUp();
     private Coord previousCoord;
-
-    {
-
-    }
 
     private MainForm() {
         super(new LayeredLayout());
@@ -235,7 +232,7 @@ public class MainForm extends Form {
                 final String userLocationProp = "isUserNotifiedAboutLocationUse";
                 boolean isUserNotifiedAboutLocationUse = Preferences.get(userLocationProp, false);
                 if (!isUserNotifiedAboutLocationUse) {
-                    new CustomDialog("Permission required", "Please allow using of geolocation to show nearest stations").showOk();
+                    new CustomDialog("Permission required", "Please allow using of geolocation to show nearest stations").showOk(this);
                     Preferences.set(userLocationProp, true);
                 }
 
@@ -286,10 +283,10 @@ public class MainForm extends Form {
                     final CustomDialog customDialog = new CustomDialog("Rent is over",
                             "Would you like to rate your ChargeBro experience in Telegram Bot?");
                     customDialog.addRatingStarts();
-                    customDialog.addYesCancelButtons(evt -> {
+                    customDialog.addYesCancelButtons("Yes",evt -> {
                         Display.getInstance().execute("https://t.me/chargebro_bot?start=survey");
                     });
-                    customDialog.show();
+                    customDialog.show(this);
                 }
         );
     }
@@ -396,18 +393,18 @@ public class MainForm extends Form {
                     public void onSucess(BeforeRentInfo value) {
                         RentConfirmation rentConfirmation = new RentConfirmation(value);
                         WebSocketClient.ensureConnection();
-                        MainNoBlockingLoader.get().stop();
                         rentConfirmation.show();
+                        MainNoBlockingLoader.get().stop();
                     }
 
                     @Override
                     public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
-                        MainNoBlockingLoader.get().stop();
                         showErrorOnMainScreen(errorMessage, errorCode);
+                        MainNoBlockingLoader.get().stop();
                     }
                 });
             } else {
-                new RegistrationForm().show();
+                new LoginForm().show();
             }
         }
 

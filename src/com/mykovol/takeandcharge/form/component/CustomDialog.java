@@ -52,8 +52,8 @@ public class CustomDialog {
         mainContainer.add(button);
     }
 
-    public void addYesCancelButtons(ActionListener<?> okAction) {
-        Button okButton = new Button("Yes", "CustomDialogButtonRight");
+    public void addYesCancelButtons(String okButtonText, ActionListener<?> okAction) {
+        Button okButton = new Button(okButtonText, "CustomDialogButtonRight");
         okButton.addActionListener(evt -> dlg.dispose());
         okButton.addActionListener(okAction);
         Button exitButton = new Button("Cancel", "CustomDialogButtonLeft");
@@ -74,10 +74,10 @@ public class CustomDialog {
     }
 
 
-    public void show() {
-        Form f = CN.getCurrentForm();
-        if (f.getAnimationManager().isAnimating()) {
-            f.getAnimationManager().flushAnimation(dlg::show);
+    public void show(Form currentForm) {
+        if (currentForm.getAnimationManager().isAnimating()) {
+            currentForm
+                    .getAnimationManager().flushAnimation(dlg::show);
         } else {
             dlg.show();
         }
@@ -117,8 +117,8 @@ public class CustomDialog {
     }
 
 
-    public void showOk() {
+    public void showOk(Form currentFrom) {
         addOkButton();
-        show();
+        show(currentFrom);
     }
 }

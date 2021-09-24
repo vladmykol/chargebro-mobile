@@ -19,7 +19,7 @@ public class SmsFieldContainer extends Container {
     private UITimer timer;
 
 
-    public SmsFieldContainer(String registerCode, int validForSeconds, Form currentForm) {
+    public SmsFieldContainer(String registerCode, int validForSeconds, Form currentForm, Form previousForm) {
         super(BoxLayout.y());
         this.registerCode = registerCode;
         this.validForSeconds = validForSeconds;
@@ -40,6 +40,9 @@ public class SmsFieldContainer extends Container {
         addAll(new Label("SMS code", "LoginLabel"),
                 textField,
                 resendContainer);
+        resendButton.addActionListener(evt -> {
+            previousForm.show();
+        });
     }
 
     public void setValidator(Validator validator) {

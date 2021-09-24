@@ -44,8 +44,7 @@ import com.mykovol.takeandcharge.tools.CommonCode;
 import java.io.IOException;
 import java.util.List;
 
-import static com.codename1.ui.CN.addToQueue;
-import static com.codename1.ui.CN.callSerially;
+import static com.codename1.ui.CN.*;
 import static com.mykovol.takeandcharge.service.GlobalConst.*;
 
 /**
@@ -106,7 +105,7 @@ public class UserService {
                 .onErrorCode(errorData -> {
                     if (isInfoMessage) {
                         new CustomDialog("Good news!",
-                                "You are using last stable version").showOk();
+                                "You are using last stable version").showOk(getCurrentForm());
                     } else {
                         Log.p("App version is app to date " + errorData.getResponseCode());
                     }
@@ -114,10 +113,10 @@ public class UserService {
                 .fetchAsString(link -> {
                     final CustomDialog customDialog = new CustomDialog("New version available",
                             "Do you want to update to latest version and get new feature and improvements?");
-                    customDialog.addYesCancelButtons(evt -> {
+                    customDialog.addYesCancelButtons("Yes", evt -> {
                         Display.getInstance().execute(link.getResponseData());
                     });
-                    customDialog.show();
+                    customDialog.show(getCurrentForm());
                 });
     }
 
@@ -146,6 +145,10 @@ public class UserService {
                 .acceptJson()
                 .timeout(5000)
                 .onErrorCode(errorData -> {
+
+                    if (errorData.getResponseCode() == 412) {
+
+                    }
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
                     errorCallback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
@@ -171,7 +174,7 @@ public class UserService {
     }
 
 
-    public static void registerUser(UserCreationRequest request, final LoginCallback callback) {
+    public static void registerUser(UserCreationRequest request, final Callback<String> callback) {
         Rest.post(getServerUrl() + API_REGISTER)
 //                .bearer(UserService.getToken())
                 .acceptJson()
@@ -180,11 +183,11 @@ public class UserService {
                 .body(request)
                 .onErrorCode(errorData -> {
                     ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
-                    callback.loginFailed(responseData.message.get());
+                    callback.onError(null, null, errorData.getResponseCode(), responseData.message.get());
                 }, ErrorResponse.class)
                 .fetchAsProperties(resp -> {
                     onUserLogin((UserInfo) resp.getResponseData());
-                    callback.loginSuccessful();
+                    callback.onSucess("");
                 }, UserInfo.class);
     }
 

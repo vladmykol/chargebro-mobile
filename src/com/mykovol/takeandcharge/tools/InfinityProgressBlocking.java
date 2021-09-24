@@ -56,7 +56,7 @@ public class InfinityProgressBlocking extends Form {
             if (timer != null) {
                 timer.cancel();
             }
-            timer = UITimer.timer(2000, true, this, () -> {
+            timer = UITimer.timer(20000, true, this, () -> {
                 MainForm.get().showErrorOnMainScreen("No response from server. Please try again latter", 500);
             });
         });
@@ -72,7 +72,7 @@ public class InfinityProgressBlocking extends Form {
     }
 
     public void setBackgroundForm(Form backRoundForm) {
-        if (this.backgroundForm == null) {
+        if (this.backgroundForm != backRoundForm) {
             this.backgroundForm = backRoundForm;
             if (getBlurBackgroundRadius() > 0 && Display.getInstance().isGaussianBlurSupported()) {
                 Image img = Image.createImage(backRoundForm.getWidth(), backRoundForm.getHeight());

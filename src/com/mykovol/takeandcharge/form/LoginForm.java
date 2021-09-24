@@ -20,18 +20,22 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
-import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
-import com.codename1.ui.animations.CommonTransitions;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.validation.Validator;
-import com.mykovol.takeandcharge.form.component.PasswordFieldContainer;
+import com.codename1.util.Callback;
+import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FormCommand;
 import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
+
+import static com.codename1.ui.CN.SOUTH;
+import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
 
 
 /**
@@ -42,20 +46,15 @@ import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
 public class LoginForm extends Form {
 
     private final Validator phoneValidator = new Validator();
-    private final Validator passwordValidator = new Validator();
-    private final PasswordFieldContainer passwordFieldContainer = new PasswordFieldContainer();
     private final SpanLabel errorLabel = new SpanLabel("Password error", "LoginError");
-    private final Button loginButton = new Button("Log in", "LoginButton");
     private final PhoneFieldContainer phoneFieldContainer = new PhoneFieldContainer();
     private final Label headerText = new Label("Log in", "LoginHeader");
 
-
     public LoginForm() {
-        super(BoxLayout.y());
-        setToolbar(new Toolbar(false));
-        setFormBottomPaddingEditingMode(true);
+        super(new BorderLayout());
 //        CommonCode.removeTransitionsTemporarily(previous);
-        // We remove the extra space for low resolution devices so things fit better
+        setFormBottomPaddingEditingMode(true);
+        setToolbar(new Toolbar(false));
         Label spaceLabel = new Label(" ");
         if (!Display.getInstance().isTablet() && Display.getInstance().getDeviceDensity() < Display.DENSITY_HD) {
             spaceLabel = new Label();
@@ -64,7 +63,7 @@ public class LoginForm extends Form {
             spaceLabel.setHidden(true);
         }
 
-        FormCommand.setCloseAction(MainForm.get(),this);
+        FormCommand.setCloseAction(MainForm.get(), this);
 
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
@@ -79,92 +78,115 @@ public class LoginForm extends Form {
 //        );
 
         Validator.setValidateOnEveryKey(true);
-        phoneValidator.addSubmitButtons(loginButton);
+        //    private final SpanLabel infoLabel = new SpanLabel("Your phone number will be used to send varification SMS and won’t be forwarded to third parties"
+        //            , "LoginInfo");
+        Button submitButton = new Button("OK", "LoginButton");
+        phoneValidator.addSubmitButtons(submitButton);
         phoneValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
         phoneFieldContainer.setValidator(phoneValidator);
 
-        passwordValidator.setValidationFailureHighlightMode(Validator.HighlightMode.NONE);
-        passwordFieldContainer.setValidator(passwordValidator);
-
+        errorLabel.setEnabled(false);
         errorLabel.setHidden(true);
-        loginButton.addActionListener(evt -> {
-            InfinityProgressBlocking.get().start(this);
-            setEditOnShow(null);
+        LoginForm loginForm = this;
+        submitButton.addActionListener(evt -> {
             errorLabel.setHidden(true);
-
-            if (!isValid()) {
-                InfinityProgressBlocking.get().stop();
+            if (!phoneValidator.isValid()) {
+                showValidatorError();
                 return;
             }
 
-
-            UserService.login(phoneFieldContainer, passwordFieldContainer.getValue(), new LoginCallback() {
+            InfinityProgressBlocking.get().start(loginForm);
+            UserService.validateUserPhone(phoneFieldContainer.getFullPhoneNumber(), new Callback<RegisterInitResponse>() {
                 @Override
-                public void loginSuccessful() {
-                    setTransitionOutAnimator(CommonTransitions.createUncover(CommonTransitions.SLIDE_VERTICAL, true, 300));
-                    MainForm.get().show();
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    InfinityProgressBlocking.get().stop();
+                    showError(errorMessage);
                 }
 
                 @Override
-                public void loginFailed(String errorMessage) {
+                public void onSucess(RegisterInitResponse response) {
+                    LoginFormConfirmation step2Form = new LoginFormConfirmation(loginForm,
+                            phoneFieldContainer, response);
                     InfinityProgressBlocking.get().stop();
-                    showError(errorMessage);
+                    step2Form.show();
                 }
             });
         });
 
-        Button forgotPassButton = new Button("Forgot password?", "LoginForgotLabel");
-        forgotPassButton.addActionListener(evt -> {
-            final RegistrationForm resetPasswordForm = new RegistrationForm();
-            resetPasswordForm.show();
-        });
-        Button singUp = new Button("Sign Up", "LoginForgotLabel");
-        singUp.addActionListener(evt -> {
-            new RegistrationForm().show();
-        });
-        Label dotLabel = new Label("", "LoginForgotLabel");
-        dotLabel.setMaterialIcon(FontImage.MATERIAL_FIBER_MANUAL_RECORD, 1.5f);
-        dotLabel.getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
-        dotLabel.getAllStyles().setMarginLeft(2);
-        dotLabel.getAllStyles().setMarginRight(2);
-
-        addAll(
+        final Container mainContainer = BoxLayout.encloseY(
                 headerText,
                 spaceLabel,
                 phoneFieldContainer,
-                passwordFieldContainer,
                 errorLabel,
-                loginButton,
-                FlowLayout.encloseCenter(singUp, dotLabel, forgotPassButton)
+                submitButton
         );
-        setScrollableY(true);
-        setScrollVisible(false);
-        setTensileDragEnabled(false);
+        mainContainer.setScrollableY(true);
+        mainContainer.setScrollVisible(false);
+        mainContainer.setTensileDragEnabled(false);
+        add(CENTER, mainContainer);
+
+        final Label termsLabel = new Label("By continuing you are", "LoginTermsText");
+        final Label termsLabelSpace = new Label(" ", "LoginTermsText");
+        final Label termsLabel2 = new Label("indicating that you are", "LoginTermsText");
+        final Label termsLabel2Space = new Label(" ", "LoginTermsText");
+        final Label termsLabel3 = new Label("agree to the", "LoginTermsText");
+        final Label termsLabel3Space = new Label(" ", "LoginTermsText");
+        final Button termsLinkButton = new Button("Terms", "LoginTermsLink");
+        final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
+        termsForm.setFadeBackDownTo(loginForm);
+        termsLinkButton.addActionListener(evt -> {
+            CommonCode.removeTransitionsTemporarily(loginForm);
+            termsForm.show();
+            termsForm.serUrlNoReload(POLICY_URL);
+        });
+//        final Label termsLinkButtonSpace = new Label(" ", "LoginTermsText");
+//        final Label andLabel = new Label("and", "LoginTermsText");
+//        final Label andLabelSpace = new Label(" ", "LoginTermsText");
+//        final Button privacyLinkButton = new Button("Privacy Policy", "LoginTermsLink");
+//        privacyLinkButton.addActionListener(evt -> {
+//            CommonCode.removeTransitionsTemporarily(this);
+//            termsForm.show();
+//        });
+
+        final Container termsContainer = FlowLayout.encloseCenter(
+                termsLabel,
+                termsLabelSpace,
+                termsLabel2,
+                termsLabel2Space,
+                termsLabel3,
+                termsLabel3Space,
+                termsLinkButton
+//                termsLinkButtonSpace,
+//                andLabel,
+//                andLabelSpace,
+//                privacyLinkButton
+        );
+        add(SOUTH, termsContainer);
+        termsContainer.setScrollableY(false);
 
         setEditOnShow(phoneFieldContainer.getField());
-        phoneFieldContainer.getField().setNextFocusDown(passwordFieldContainer.getField());
-        passwordFieldContainer.getField().setNextFocusDown(loginButton);
+        phoneFieldContainer.getField().setNextFocusDown(submitButton);
     }
 
-    public void predefinePhone(String phone){
-        phoneFieldContainer.getField().setText(phone);
-        setEditOnShow(passwordFieldContainer.getField());
+    public void setHeader(String text) {
+        if (headerText.isHidden()) {
+            setTitle(text);
+        } else {
+            headerText.setText(text);
+        }
     }
 
     private void showError(String errorMessage) {
         errorLabel.setText(errorMessage);
+        errorLabel.revalidate();
         errorLabel.setHidden(false);
         errorLabel.getParent().animateLayoutFade(300, 0);
     }
 
-    private boolean isValid() {
-        if (!phoneValidator.isValid()) {
-            showError(phoneFieldContainer.getErrorMessage());
-        } else if (!passwordValidator.isValid()) {
-            showError(passwordFieldContainer.getErrorMessage());
+    private void showValidatorError() {
+        final String errorMessage1 = phoneFieldContainer.getErrorMessage();
+        if (errorMessage1 != null) {
+            showError(errorMessage1);
         }
-
-        return phoneValidator.isValid() && passwordValidator.isValid();
     }
-
 }

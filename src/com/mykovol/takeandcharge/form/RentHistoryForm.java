@@ -19,6 +19,7 @@
 
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.charts.util.ColorUtil;
 import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
 import com.codename1.l10n.SimpleDateFormat;
@@ -26,6 +27,8 @@ import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Border;
+import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.Style;
 import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.RentHistory;
@@ -52,7 +55,7 @@ public class RentHistoryForm extends Form {
     private final String SEC_STRING = " " + getUIManager().localize("sec", "sec") + " ";
 
     public RentHistoryForm() {
-        super(BoxLayout.y());
+        super(new BorderLayout());
         setToolbar(new Toolbar(false));
         setFormBottomPaddingEditingMode(true);
         setTransitionInAnimator(CommonTransitions.createEmpty());
@@ -81,13 +84,12 @@ public class RentHistoryForm extends Form {
 
 
         Label headerText = new Label("Rent history", "WalletFromHeader");
-        addAll(
+        add(BorderLayout.NORTH, BoxLayout.encloseY(
                 headerText,
                 spaceLabel,
-                cardContainer,
-                notRentHistoryHint
+                notRentHistoryHint)
         );
-        setScrollableY(false);
+        add(BorderLayout.CENTER, cardContainer);
 
         addShowListener(evt -> {
             cardContainer.removeAll();

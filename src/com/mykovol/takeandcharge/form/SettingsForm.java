@@ -73,9 +73,12 @@ public class SettingsForm extends Form {
         landPicket.setSelectedString(getLandPrefTranslated());
         landPicket.addActionListener(evt -> {
             if (!getLandPrefTranslated().equals(landPicket.getSelectedString())) {
-                setLandPref(landPicket.getSelectedString());
-                TakeAndChargeMain.loadLocalization();
-                new CustomDialog("Warning", "In order to language changes take effect, you need to restart the application").showOk();
+                CustomDialog customDialog = new CustomDialog("Warning", "In order to language changes take effect, you need to restart the application");
+                customDialog.addYesCancelButtons("OK", ev -> {
+                    setLandPref(landPicket.getSelectedString());
+                    TakeAndChargeMain.loadLocalization();
+                });
+                customDialog.show(this);
 //            });
             }
         });
@@ -95,12 +98,12 @@ public class SettingsForm extends Form {
         existButton.setMaterialIcon(FontImage.MATERIAL_EXIT_TO_APP);
         existButton.addActionListener(evt -> {
             final CustomDialog customDialog = new CustomDialog("Are you sure you want to logout?", "");
-            customDialog.addYesCancelButtons(evt1 -> {
+            customDialog.addYesCancelButtons("Yes", evt1 -> {
                 UserService.onUserLogout();
                 setTransitionOutAnimator(CommonTransitions.createEmpty());
                 MainForm.get().show();
             });
-            customDialog.show();
+            customDialog.show(this);
         });
 
 

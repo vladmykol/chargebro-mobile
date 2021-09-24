@@ -31,7 +31,6 @@ import com.mykovol.takeandcharge.service.GlobalConst;
 import com.mykovol.takeandcharge.service.UserService;
 import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FormCommand;
-import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
 import static com.codename1.ui.CN.convertToPixels;
 import static com.mykovol.takeandcharge.service.GlobalConst.POLICY_URL;
@@ -97,7 +96,8 @@ public class InfoForm extends Form {
         });
 
         final Label versionLabelText = new Label("app version", "InfoFormText");
-        final Button versionNum = new Button(Display.getInstance().getProperty("AppVersion", "unknown") + (GlobalConst.LOCAL ? " (debug mode)" : ""), "InfoFormTextVersion");
+        final Button versionNum = new Button(Display.getInstance().getProperty("AppVersion", "unknown")
+                + (GlobalConst.isRunningOnLocalHost() ? " (debug mode)" : ""), "InfoFormTextVersion");
 
         versionNum.addActionListener(evt -> {
             UserService.checkForNewVersion(true);

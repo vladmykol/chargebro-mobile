@@ -24,16 +24,14 @@
 package com.mykovol.takeandcharge.form;
 
 import com.codename1.components.SpanLabel;
-import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
-import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.validation.Validator;
+import com.codename1.util.Callback;
 import com.mykovol.takeandcharge.dataobj.RegisterInitResponse;
 import com.mykovol.takeandcharge.dataobj.UserCreationRequest;
-import com.mykovol.takeandcharge.form.component.PasswordFieldContainer;
 import com.mykovol.takeandcharge.form.component.PhoneFieldContainer;
 import com.mykovol.takeandcharge.form.component.SmsFieldContainer;
 import com.mykovol.takeandcharge.service.UserService;
@@ -45,15 +43,15 @@ import com.mykovol.takeandcharge.tools.InfinityProgressBlocking;
  *
  * @author Vlad Mykol
  */
-public class RegisterFormConfirmation extends Form {
+public class LoginFormConfirmation extends Form {
     private final SmsFieldContainer smsCodeField;
     private final SpanLabel errorLabel = new SpanLabel("", "LoginError");
     private final UserCreationRequest userCreationRequest = new UserCreationRequest();
     private final Validator smsValidator = new Validator();
     private final Button registerButton = new Button("OK", "LoginButton");
 
-    public RegisterFormConfirmation(Form previousForm, PhoneFieldContainer phoneFieldContainer,
-                                    RegisterInitResponse response) {
+    public LoginFormConfirmation(Form previousForm, PhoneFieldContainer phoneFieldContainer,
+                                 RegisterInitResponse response) {
         super(BoxLayout.y());
         setFormBottomPaddingEditingMode(true);
         setToolbar(new Toolbar(false));
@@ -72,7 +70,7 @@ public class RegisterFormConfirmation extends Form {
         getContentPane().getAllStyles().setMarginUnit(Style.UNIT_TYPE_DIPS);
         getContentPane().getAllStyles().setMargin(0, 4, 3.5f, 3.5f);
 
-        smsCodeField = new SmsFieldContainer(response.code.get(), response.validForMin.getInt() * 60, this);
+        smsCodeField = new SmsFieldContainer(response.code.get(), response.validForMin.getInt() * 60, this, previousForm);
         Label phoneNumberHolder = new Label("", "LoginSubHeader");
         phoneNumberHolder.setText(phoneFieldContainer.getFormattedPhoneNumber());
 
@@ -95,17 +93,21 @@ public class RegisterFormConfirmation extends Form {
 
             userCreationRequest.smsCode.set(smsCodeField.getValue());
 
-            UserService.registerUser(userCreationRequest, new LoginCallback() {
+            UserService.registerUser(userCreationRequest, new Callback<String>() {
                 @Override
-                public void loginFailed(String errorMessage) {
+                public void onSucess(String value) {
+                    setTransitionOutAnimator(CommonTransitions.createEmpty());
                     InfinityProgressBlocking.get().stop();
-                    showError(errorMessage);
+                    MainForm.get().show();
                 }
 
                 @Override
-                public void loginSuccessful() {
-                    setTransitionOutAnimator(CommonTransitions.createEmpty());
-                    MainForm.get().show();
+                public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
+                    if (errorCode == 412) {
+                        errorMessage = "SMS code is incorrect";
+                    }
+                    InfinityProgressBlocking.get().stop();
+                    showError(errorMessage);
                 }
             });
         });
@@ -131,18 +133,9 @@ public class RegisterFormConfirmation extends Form {
 
     private void showError(String errorMessage) {
         errorLabel.setText(errorMessage);
+        errorLabel.revalidate();
         errorLabel.setHidden(false);
         errorLabel.getParent().animateLayoutFade(300, 0);
-    }
-
-    private Command constructBackCommand(Form previousForm) {
-        //        CommonCode.removeTransitionsTemporarily(previous);
-        return new Command("") {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                previousForm.showBack();
-            }
-        };
     }
 
     private boolean isValid() {

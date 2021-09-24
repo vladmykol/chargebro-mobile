@@ -23,13 +23,15 @@
 
 package com.mykovol.takeandcharge.service;
 
+import com.codename1.ui.Display;
+
 /**
  * Global settings used in the application
  *
  * @author Vlad Mykol
  */
 public final class GlobalConst {
-    public static final boolean LOCAL = true;
+    public static final boolean FORCE_REMOTE = false;
 
     public static final String RENT_URL = "/rent";
     public static final String PAY_URL = "/pay/checkout";
@@ -43,6 +45,7 @@ public final class GlobalConst {
     public static final String API_APP_USER_CARD = API_APP_USER + "/card";
     public static final String POLICY_URL = "https://chargebro.com/policy";
     public static final String PRICE_URL = "https://chargebro.com/pricing";
+    public static final String FONDY_POLICY_URL = "https://fondy.ua/ru/legal/public-offer/";
     private static final String API_AUTH = "/v1/auth";
     public static final String API_INIT = API_AUTH + "/init";
     public static final String API_RESET_PASS = API_AUTH + "/reset";
@@ -51,7 +54,11 @@ public final class GlobalConst {
     public static final String API_LOGOUT = API_AUTH + "/logout";
 
     public static String getServerUrl() {
-        if (LOCAL) return "http://localhost:10381";
+        if (isRunningOnLocalHost()) return "http://localhost:10381";
         else return "https://api.chargebro.com";
+    }
+
+    public static boolean isRunningOnLocalHost() {
+        return Display.getInstance().isSimulator() && !FORCE_REMOTE;
     }
 }

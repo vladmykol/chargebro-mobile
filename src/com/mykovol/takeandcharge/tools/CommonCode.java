@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.codename1.ui.CN.convertToPixels;
+import static com.codename1.ui.CN.getCurrentForm;
 import static com.codename1.ui.CN1Constants.GALLERY_IMAGE;
 import static com.codename1.ui.ComponentSelector.$;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED;
@@ -203,6 +204,8 @@ public class CommonCode {
         menuTopPartHolder.getParent().setScrollableY(true);
         menuTopPartHolder.getParent().setTensileDragEnabled(false);
         menuTopPartHolder.getParent().setScrollVisible(false);
+        menuTopPartHolder.getParent().setSafeArea(false);
+        menuTopPartHolder.getParent().getAllStyles().setPaddingTop(0);
 //        if (Display.getInstance().getDeviceDensity() >= Display.DENSITY_HD) {
 //            menuTopPartHolder.getParent().setScrollableY(false);
 //        }
@@ -314,7 +317,7 @@ public class CommonCode {
                 }
             }, GALLERY_IMAGE);
         });
-        customDialog.show();
+        customDialog.show(getCurrentForm());
 
 //        if (Dialog.show("Confirmation", "Would you like to use the camera or the gallery?", "Camera", "Gallery")) {
 //            String pic = Capture.capturePhoto();
@@ -421,7 +424,7 @@ public class CommonCode {
 
 
     private static Button getRegisterButton() {
-        return constructSideMenuButton("Register", FontImage.MATERIAL_PERSON_ADD, new RegistrationForm());
+        return constructSideMenuButton("Register", FontImage.MATERIAL_PERSON_ADD, new LoginForm());
     }
 
     private static Button getSettingsButton() {
@@ -490,7 +493,7 @@ public class CommonCode {
         final String content = "\n \n \n -------------- user info (do not delete) ------------------ \n" +
                 "User: " + userPhone + "\n" +
                 "OS: " + Display.getInstance().getPlatformName() + "\n" +
-                "App version: " + appVersion + (GlobalConst.LOCAL ? "(debug mode)" : "") + "\n" +
+                "App version: " + appVersion + (GlobalConst.isRunningOnLocalHost() ? "(debug mode)" : "") + "\n" +
                 "Log: " + logText + "\n";
         Message message = new Message(content);
 

@@ -28,10 +28,11 @@ import com.codename1.location.Location;
 import com.codename1.location.LocationListener;
 import com.codename1.location.LocationManager;
 import com.codename1.maps.Coord;
-import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.component.CustomDialog;
+
+import static com.codename1.ui.CN.getCurrentForm;
 
 /**
  * A generic service class that handles login/creation etc.
@@ -44,7 +45,7 @@ public class LocationService {
     public boolean checkGpsEnabled() {
         if (lm.isGPSDetectionSupported()) {
             if (!lm.isGPSEnabled()) {
-                new CustomDialog("", "Please enable GPS in your settings").showOk();
+                new CustomDialog("", "Please enable GPS in your settings").showOk(getCurrentForm());
                 return false;
             }
         }

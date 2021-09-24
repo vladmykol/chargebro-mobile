@@ -160,7 +160,7 @@ public class RentService {
         if (predefinedStationId != null) {
             getBeforeRentInfo(predefinedStationId, callback);
         } else if (Display.getInstance().isSimulator()) {
-            getBeforeRentInfo("https://api.chargebro.com/a/k14", callback);
+            getBeforeRentInfo("https://api.chargebro.com/a/k20", callback);
         } else {
             if (!CodeScanner.isSupported()) {
                 callback.onError(null, null, 0, "Not possible to scan QR code without camera access");

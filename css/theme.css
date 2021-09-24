@@ -290,11 +290,6 @@ TakePowerBankButton {
     /*background: linear-gradient(0deg, cadetblue, #5873B8);*/
     padding: 3.3mm 7mm;
     /*margin: 2mm 10mm;*/
-    /*border-radius: 10mm;*/
-    /*box-shadow: 0.5mm 0.5mm 3.8mm 5mm #91999a;*/
-    /*box-shadow: 0px 14px 14px 12px #8FC0C5;*/
-    /*cn1-box-shadow-spread: 4mm;*/
-    /*cn1-box-shadow-blur: 4mm;*/
     font-family: var(--font-ProximaNova-Bold);
     font-size: 3.5mm;
     text-align: center;
@@ -352,7 +347,6 @@ BottomPanelUnfolded {
     background: white;
     padding: 0mm;
     margin: 0mm;
-    /*box-shadow: 0mm 0mm 1.5mm 0mm #8FC0C5;*/
     border: 0.1mm solid lightgrey;
     border-radius: 3mm 3mm 0mm 0mm;
 }
@@ -362,13 +356,6 @@ BottomPanelFolded {
     padding: 0mm;
     margin: 0mm;
 }
-
-/*UnderBottomPanel {*/
-/*    padding: 0mm;*/
-/*    margin: 0mm;*/
-/*    !*border-radius: 2mm;*!*/
-/*    !*box-shadow: 0mm -0.5mm 3.5mm -1mm;*!*/
-/*}*/
 
 PanelHeader {
     color: #8FC0C5;
@@ -396,15 +383,12 @@ PanelImage {
 
 RentBorder {
     border-radius: 2mm;
-    box-shadow: 0mm 0.2mm 1mm 0mm #8FC0C5;
-    background: white;
     margin: 1mm 1mm 0.5mm 1mm;
     padding: 1.5mm 1mm;
 }
 
 RentBorderError {
     cn1-derive: RentBorder;
-    box-shadow: 0mm 0.2mm 1mm 0mm #f53333;
 }
 
 
@@ -453,7 +437,8 @@ DraggableIcon {
 
 AvatarBackground {
     cn1-derive: Container;
-    background: linear-gradient(to right, #249DA7, rgba(36, 157, 167, 0.6));
+    background: linear-gradient(to right, #2a929c, #2eb1c2);
+    /*background: blue;*/
     margin: 0mm 0mm 0.15mm 0mm;
 }
 
@@ -540,21 +525,13 @@ SideMenuButtonSignOut {
 
 SideNavigationPanel {
     background-color: white;
-    padding: 0mm 0mm 8mm 0mm;
-    /*margin: 0mm;*/
-    /*border-bottom: 0.1mm solid gray;*/
+    padding: 0mm 0mm 5mm 0mm;
+    margin: 0mm;
+    border-bottom: 0.1mm solid gray;
 }
 
 /*====================== Gif Loader ==========================*/
 LoadImage {
-    /*background: white;*/
-    /*margin: 0mm 0mm 20mm;*/
-    /*cn1-box-shadow-spread: 4mm;*/
-    /*cn1-box-shadow-blur: 4mm;*/
-    /*font-family: "native:MainRegular";*/
-    /*font-size: 2.2mm;*/
-    /*padding: 0mm 15mm;*/
-    /*text-align: center;*/
 }
 
 LoadImageText {
@@ -816,11 +793,9 @@ WalletFromNewCardButton.pressed {
 }
 
 WalletFormCardBoard {
-    border-radius: 2mm;
-    box-shadow: 0mm 0mm 1.5mm 0.1mm #cecece;
     background: white;
-    margin: 1mm 1mm 0.5mm 1mm;
-    padding: 1.5mm 1mm;
+    margin: 1mm;
+    padding: 2mm;
 }
 
 WalletFormDelimiter {
@@ -989,7 +964,7 @@ CustomDialogDelimiter {
 RentHistoryFormBoard {
     cn1-derive: WalletFormCardBoard;
     margin: 0mm 0mm 0.7mm 0mm;
-    padding: 2mm 1mm;
+    padding: 1mm;
 }
 
 RentHistoryFormHint {

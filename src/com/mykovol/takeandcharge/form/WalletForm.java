@@ -19,6 +19,7 @@
 
 package com.mykovol.takeandcharge.form;
 
+import com.codename1.charts.util.ColorUtil;
 import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
@@ -27,6 +28,8 @@ import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.Callback;
@@ -35,11 +38,13 @@ import com.mykovol.takeandcharge.dataobj.UserCardResponse;
 import com.mykovol.takeandcharge.form.component.CustomDialog;
 import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.UserService;
+import com.mykovol.takeandcharge.tools.CommonCode;
 import com.mykovol.takeandcharge.tools.FormCommand;
 
 import java.util.List;
 
-import static com.codename1.ui.CN.getDisplayWidth;
+import static com.codename1.ui.CN.*;
+import static com.mykovol.takeandcharge.service.GlobalConst.FONDY_POLICY_URL;
 
 
 /**
@@ -52,7 +57,7 @@ public class WalletForm extends Form {
     private final Container cardContainer = new Container(BoxLayout.y());
 
     public WalletForm() {
-        super(BoxLayout.y());
+        super(new BorderLayout());
         setToolbar(new Toolbar(false));
         setFormBottomPaddingEditingMode(true);
         setTransitionInAnimator(CommonTransitions.createEmpty());
@@ -111,7 +116,7 @@ public class WalletForm extends Form {
         });
 
         Label headerText = new Label("Payment cards", "WalletFromHeader");
-        addAll(
+        final Container mainContainer = BoxLayout.encloseY(
                 headerText,
                 spaceLabel,
                 cardContainer,
@@ -119,8 +124,35 @@ public class WalletForm extends Form {
                 delimiter,
                 BoxLayout.encloseXCenter(addCardButton)
         );
-        setScrollableY(false);
+        mainContainer.setScrollableY(true);
+        mainContainer.setScrollVisible(false);
+        mainContainer.setTensileDragEnabled(false);
 
+        add(CENTER, mainContainer);
+
+
+        final Label termsLabel = new Label("By adding a card", "LoginTermsText");
+        final Label termsLabel2Space = new Label(" ", "LoginTermsText");
+        final Label termsLabel3 = new Label("you agree to the", "LoginTermsText");
+        final Label termsLabel3Space = new Label(" ", "LoginTermsText");
+        final Button termsLinkButton = new Button("public offer", "LoginTermsLink");
+        final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
+        termsForm.setFadeBackDownTo(this);
+        termsLinkButton.addActionListener(evt -> {
+            CommonCode.removeTransitionsTemporarily(this);
+            termsForm.show();
+            termsForm.serUrlNoReload(FONDY_POLICY_URL);
+        });
+        final Container termsContainer = FlowLayout.encloseCenter(
+                termsLabel,
+                termsLabel2Space,
+                termsLabel3,
+                termsLabel3Space,
+                termsLinkButton
+        );
+        termsContainer.setScrollableY(false);
+
+        add(SOUTH, termsContainer);
         addShowListener(evt -> {
             if (cardContainer.getComponentCount() == 0) {
                 noCardsHint.setHidden(true);
@@ -192,6 +224,15 @@ public class WalletForm extends Form {
             super(new BorderLayout());
             setUIID("WalletFormCardBoard");
             setName(card.id.get());
+            Stroke borderStroke = new Stroke(2, Stroke.CAP_SQUARE, Stroke.JOIN_MITER, 1);
+            getAllStyles().setBorder(RoundBorder
+                    .create()
+                    .color(getAllStyles().getBgColor())
+                    .strokeColor(ColorUtil.GRAY)
+                    .strokeOpacity(120)
+                    .stroke(borderStroke)
+                    .rectangle(true)
+            );
 
             Label cardLogo;
             if ("VISA".equals(card.type.get())) {
@@ -209,11 +250,11 @@ public class WalletForm extends Form {
                     new Label(card.maskedNum.get())
                     )
             );
-            add(BorderLayout.EAST, BorderLayout.centerAbsolute(removeButton));
+            add(BorderLayout.EAST, BorderLayout.centerCenter(removeButton));
 
             removeButton.addActionListener(evt -> {
                 final CustomDialog customDialog = new CustomDialog("Are you sure you want to delete this card from your account?", "");
-                customDialog.addYesCancelButtons(evt1 -> {
+                customDialog.addYesCancelButtons("Yes", evt1 -> {
                     UserService.removeUserCard(getName(), new FailureCallback<String>() {
                         @Override
                         public void onError(Object sender, Throwable err, int errorCode, String errorMessage) {
@@ -230,7 +271,7 @@ public class WalletForm extends Form {
                         noCardsHint.setHidden(false);
                     }
                 });
-                customDialog.show();
+                customDialog.show(getCurrentForm());
             });
 
         }
@@ -244,6 +285,7 @@ public class WalletForm extends Form {
         public void hideRemoveButton() {
             removeButton.setHidden(true);
             removeButton.getParent().getParent().animateLayout(200);
+
         }
     }
 
