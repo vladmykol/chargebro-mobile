@@ -10,6 +10,8 @@ import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
 
+import static com.codename1.ui.CN.callSerially;
+
 public class ToolBox extends Container {
     private final MapContainer mapContainer;
     private final Button showNearestStationsButton = new Button("", "ToolBoxButton");
@@ -30,7 +32,11 @@ public class ToolBox extends Container {
             NetworkManager.getInstance().start();
             WebSocketClient.disconnect();
             WebSocketClient.ensureConnection();
+            MainForm.get().refreshRentContent(true);
             MainForm.get().revalidate();
+            callSerially(() -> {
+                MainForm.get().showRentIsOver();
+            });
         });
         reportErrorButton.setMaterialIcon(FontImage.MATERIAL_SUPPORT_AGENT);
         reportErrorButton.addActionListener(evt -> {

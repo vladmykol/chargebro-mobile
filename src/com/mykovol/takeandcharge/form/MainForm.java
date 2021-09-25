@@ -214,11 +214,6 @@ public class MainForm extends Form {
         }
 
         addMapListenerToDrawStationsOnMap();
-//        UITimer.timer(3000, false, getComponentForm(), () -> {
-//            mapContainer.zoom(ukraineCoord, mapContainer.getMinZoom() + 15);
-//            scanButton.setVisible(true);
-//            revalidateWithAnimationSafety();
-//        });
     }
 
     public void showMeOnMap() {
@@ -232,7 +227,7 @@ public class MainForm extends Form {
                 final String userLocationProp = "isUserNotifiedAboutLocationUse";
                 boolean isUserNotifiedAboutLocationUse = Preferences.get(userLocationProp, false);
                 if (!isUserNotifiedAboutLocationUse) {
-                    new CustomDialog("Permission required", "Please allow using of geolocation to show nearest stations").showOk(this);
+                    new CustomDialog("Permission required", "Please allow using of geolocation to show nearest stations").showOk();
                     Preferences.set(userLocationProp, true);
                 }
 
@@ -274,21 +269,19 @@ public class MainForm extends Form {
     }
 
     public void removeRentRow(String serialNumber) {
-        draggablePanel.removeRentRow(serialNumber);
-        showRentIsOver();
+        if (draggablePanel.removeRentRow(serialNumber)) {
+            callSerially(this::showRentIsOver);
+        }
     }
 
     public void showRentIsOver() {
-        callSerially(() -> {
-                    final CustomDialog customDialog = new CustomDialog("Rent is over",
-                            "Would you like to rate your ChargeBro experience in Telegram Bot?");
-                    customDialog.addRatingStarts();
-                    customDialog.addYesCancelButtons("Yes",evt -> {
-                        Display.getInstance().execute("https://t.me/chargebro_bot?start=survey");
-                    });
-                    customDialog.show(this);
-                }
-        );
+        final CustomDialog customDialog = new CustomDialog("Rent is over",
+                "Would you like to rate your ChargeBro experience in Telegram Bot?");
+        customDialog.addRatingStarts();
+        customDialog.addYesCancelButtons("Yes", evt -> {
+            Display.getInstance().execute("https://t.me/chargebro_bot?start=survey");
+        });
+        customDialog.showWithAnimationSafety();
     }
 
     public void removeAllRentRows() {

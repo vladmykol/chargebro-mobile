@@ -212,10 +212,15 @@ public class DraggablePanel extends Container {
         });
     }
 
-    public void removeRentRow(String serialNumber) {
+    public boolean removeRentRow(String serialNumber) {
         Log.p("remove rent row" + serialNumber);
         RentBoard rentBoard = rentContent.findRentBoardByName(serialNumber);
-        if (rentBoard != null) removeRentRow(rentBoard);
+        if (rentBoard != null) {
+            removeRentRow(rentBoard);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void removeAllRentRows() {

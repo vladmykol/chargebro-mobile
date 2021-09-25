@@ -10,6 +10,9 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.plaf.Border;
 import com.codename1.ui.plaf.Style;
+import com.mykovol.takeandcharge.form.MainForm;
+
+import static com.codename1.ui.CN.getCurrentForm;
 
 public class CustomDialog {
     private final Dialog dlg = new Dialog("");
@@ -54,10 +57,14 @@ public class CustomDialog {
 
     public void addYesCancelButtons(String okButtonText, ActionListener<?> okAction) {
         Button okButton = new Button(okButtonText, "CustomDialogButtonRight");
-        okButton.addActionListener(evt -> dlg.dispose());
+        okButton.addActionListener(evt -> {
+            dlg.dispose();
+        });
         okButton.addActionListener(okAction);
         Button exitButton = new Button("Cancel", "CustomDialogButtonLeft");
-        exitButton.addActionListener(evt -> dlg.dispose());
+        exitButton.addActionListener(evt -> {
+            dlg.dispose();
+        });
 
         final Label panelDelimiterLabel = new Label("", "CustomDialogDelimiter");
         panelDelimiterLabel.setShowEvenIfBlank(true);
@@ -67,17 +74,14 @@ public class CustomDialog {
         final Label verticalDelimiterLabel = new Label("", "CustomDialogVerticalDelimiter");
         verticalDelimiterLabel.setShowEvenIfBlank(true);
 
-//        final Container buttonContainer = new Container(new GridLayout(1, 2));
-//        buttonContainer.add(BorderLayout.center(okButton));
-//        buttonContainer.add(BorderLayout.center(exitButton));
         mainContainer.add(GridLayout.encloseIn(2, okButton, exitButton));
     }
 
 
-    public void show(Form currentForm) {
-        if (currentForm.getAnimationManager().isAnimating()) {
-            currentForm
-                    .getAnimationManager().flushAnimation(dlg::show);
+    public void showWithAnimationSafety() {
+        Form form = getCurrentForm();
+        if (form.getAnimationManager().isAnimating()) {
+            form.getAnimationManager().flushAnimation(dlg::show);
         } else {
             dlg.show();
         }
@@ -117,8 +121,8 @@ public class CustomDialog {
     }
 
 
-    public void showOk(Form currentFrom) {
+    public void showOk() {
         addOkButton();
-        show(currentFrom);
+        showWithAnimationSafety();
     }
 }

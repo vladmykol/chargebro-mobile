@@ -78,7 +78,7 @@ public class SettingsForm extends Form {
                     setLandPref(landPicket.getSelectedString());
                     TakeAndChargeMain.loadLocalization();
                 });
-                customDialog.show(this);
+                customDialog.showWithAnimationSafety();
 //            });
             }
         });
@@ -103,7 +103,7 @@ public class SettingsForm extends Form {
                 setTransitionOutAnimator(CommonTransitions.createEmpty());
                 MainForm.get().show();
             });
-            customDialog.show(this);
+            customDialog.showWithAnimationSafety();
         });
 
 

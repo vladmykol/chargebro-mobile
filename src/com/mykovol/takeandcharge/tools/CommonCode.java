@@ -53,7 +53,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.codename1.ui.CN.convertToPixels;
-import static com.codename1.ui.CN.getCurrentForm;
 import static com.codename1.ui.CN1Constants.GALLERY_IMAGE;
 import static com.codename1.ui.ComponentSelector.$;
 import static com.codename1.ui.plaf.Style.BACKGROUND_IMAGE_SCALED;
@@ -317,7 +316,7 @@ public class CommonCode {
                 }
             }, GALLERY_IMAGE);
         });
-        customDialog.show(getCurrentForm());
+        customDialog.showWithAnimationSafety();
 
 //        if (Dialog.show("Confirmation", "Would you like to use the camera or the gallery?", "Camera", "Gallery")) {
 //            String pic = Capture.capturePhoto();

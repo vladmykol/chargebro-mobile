@@ -1,4 +1,5 @@
 #Constants {
+    hideEmptyTitleBool:true;
     includeNativeBool: true;
     sideMenuAnimSpeedInt: 200;
     transitionSpeedInt: 200;

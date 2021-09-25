@@ -105,7 +105,7 @@ public class UserService {
                 .onErrorCode(errorData -> {
                     if (isInfoMessage) {
                         new CustomDialog("Good news!",
-                                "You are using last stable version").showOk(getCurrentForm());
+                                "You are using last stable version").showOk();
                     } else {
                         Log.p("App version is app to date " + errorData.getResponseCode());
                     }
@@ -116,7 +116,7 @@ public class UserService {
                     customDialog.addYesCancelButtons("Yes", evt -> {
                         Display.getInstance().execute(link.getResponseData());
                     });
-                    customDialog.show(getCurrentForm());
+                    customDialog.showWithAnimationSafety();
                 });
     }
 

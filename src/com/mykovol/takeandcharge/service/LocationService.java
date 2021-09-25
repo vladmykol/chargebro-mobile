@@ -45,7 +45,7 @@ public class LocationService {
     public boolean checkGpsEnabled() {
         if (lm.isGPSDetectionSupported()) {
             if (!lm.isGPSEnabled()) {
-                new CustomDialog("", "Please enable GPS in your settings").showOk(getCurrentForm());
+                new CustomDialog("", "Please enable GPS in your settings").showOk();
                 return false;
             }
         }

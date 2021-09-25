@@ -271,7 +271,7 @@ public class WalletForm extends Form {
                         noCardsHint.setHidden(false);
                     }
                 });
-                customDialog.show(getCurrentForm());
+                customDialog.showWithAnimationSafety();
             });
 
         }
