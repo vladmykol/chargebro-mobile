@@ -34,9 +34,6 @@ public class ToolBox extends Container {
             WebSocketClient.ensureConnection();
             MainForm.get().refreshRentContent(true);
             MainForm.get().revalidate();
-            callSerially(() -> {
-                MainForm.get().showRentIsOver();
-            });
         });
         reportErrorButton.setMaterialIcon(FontImage.MATERIAL_SUPPORT_AGENT);
         reportErrorButton.addActionListener(evt -> {
