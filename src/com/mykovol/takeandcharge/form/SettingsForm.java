@@ -73,10 +73,11 @@ public class SettingsForm extends Form {
         landPicket.setSelectedString(getLandPrefTranslated());
         landPicket.addActionListener(evt -> {
             if (!getLandPrefTranslated().equals(landPicket.getSelectedString())) {
-                CustomDialog customDialog = new CustomDialog("Warning", "In order to language changes take effect, you need to restart the application");
+                CustomDialog customDialog = new CustomDialog("Warning", "In order to language changes take effect, you need to restart the application. Exit now?", false);
                 customDialog.addYesCancelButtons("OK", ev -> {
                     setLandPref(landPicket.getSelectedString());
                     TakeAndChargeMain.loadLocalization();
+                    Display.getInstance().exitApplication();
                 });
                 customDialog.showWithAnimationSafety();
 //            });
@@ -96,13 +97,13 @@ public class SettingsForm extends Form {
 
         Button existButton = new Button("Sign out", "SettingsFormText");
         existButton.setMaterialIcon(FontImage.MATERIAL_EXIT_TO_APP);
+        final CustomDialog customDialog = new CustomDialog("Are you sure you want to logout?", "");
+        customDialog.addYesCancelButtons("Yes", evt1 -> {
+            UserService.onUserLogout();
+            setTransitionOutAnimator(CommonTransitions.createEmpty());
+            MainForm.get().show();
+        });
         existButton.addActionListener(evt -> {
-            final CustomDialog customDialog = new CustomDialog("Are you sure you want to logout?", "");
-            customDialog.addYesCancelButtons("Yes", evt1 -> {
-                UserService.onUserLogout();
-                setTransitionOutAnimator(CommonTransitions.createEmpty());
-                MainForm.get().show();
-            });
             customDialog.showWithAnimationSafety();
         });
 

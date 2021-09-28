@@ -44,7 +44,8 @@ import com.mykovol.takeandcharge.tools.CommonCode;
 import java.io.IOException;
 import java.util.List;
 
-import static com.codename1.ui.CN.*;
+import static com.codename1.ui.CN.addToQueue;
+import static com.codename1.ui.CN.callSerially;
 import static com.mykovol.takeandcharge.service.GlobalConst.*;
 
 /**
@@ -105,14 +106,14 @@ public class UserService {
                 .onErrorCode(errorData -> {
                     if (isInfoMessage) {
                         new CustomDialog("Good news!",
-                                "You are using last stable version").showOk();
+                                "You are using newest stable app version").showOk();
                     } else {
                         Log.p("App version is app to date " + errorData.getResponseCode());
                     }
                 }, ErrorResponse.class)
                 .fetchAsString(link -> {
                     final CustomDialog customDialog = new CustomDialog("New version available",
-                            "Do you want to update to latest version and get new feature and improvements?");
+                            "Do you want to update to latest version and get new feature and improvements?", false);
                     customDialog.addYesCancelButtons("Yes", evt -> {
                         Display.getInstance().execute(link.getResponseData());
                     });

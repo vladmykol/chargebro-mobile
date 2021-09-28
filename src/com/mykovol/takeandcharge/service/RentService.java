@@ -160,7 +160,7 @@ public class RentService {
         if (predefinedStationId != null) {
             getBeforeRentInfo(predefinedStationId, callback);
         } else if (Display.getInstance().isSimulator()) {
-            getBeforeRentInfo("https://api.chargebro.com/a/k20", callback);
+            getBeforeRentInfo("https://api.chargebro.com/a/" + TEST_STATION, callback);
         } else {
             if (!CodeScanner.isSupported()) {
                 callback.onError(null, null, 0, "Not possible to scan QR code without camera access");
@@ -220,6 +220,26 @@ public class RentService {
                 }, ErrorResponse.class)
                 .fetchAsString(resp -> {
                     callback.onSucess(resp.getResponseData());
+                });
+    }
+
+    public static void refreshRentStatus() {
+        if (!UserService.isLoggedIn()) return;
+        Rest.post(GlobalConst.getServerUrl() + RENT_REFRESH_URL)
+                .bearer(UserService.getToken())
+//                .queryParam("stationId", stationId)
+                .acceptJson()
+                .timeout(10000)
+                .onErrorCode(errorData -> {
+                    // TODO: 5/27/2020 move to general error handler
+                    if (errorData.getResponseCode() == 403 || errorData.getResponseCode() == 401) {
+                        new LoginForm().show();
+                        return;
+                    }
+                    ErrorResponse responseData = (ErrorResponse) (errorData.getResponseData());
+                    Log.p("Error in refreshRentStatus:" + errorData.getResponseCode() + responseData.message.get());
+                }, ErrorResponse.class)
+                .fetchAsString(resp -> {
                 });
     }
 

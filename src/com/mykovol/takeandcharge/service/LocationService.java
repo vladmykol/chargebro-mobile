@@ -32,8 +32,6 @@ import com.codename1.ui.Display;
 import com.mykovol.takeandcharge.form.MainForm;
 import com.mykovol.takeandcharge.form.component.CustomDialog;
 
-import static com.codename1.ui.CN.getCurrentForm;
-
 /**
  * A generic service class that handles login/creation etc.
  *

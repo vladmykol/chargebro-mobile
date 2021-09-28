@@ -9,7 +9,7 @@ import com.mykovol.takeandcharge.dataobj.RentHistory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mykovol.takeandcharge.service.StyleConst.*;
+import static com.mykovol.takeandcharge.service.StyleConst.RENT_BORDER_HEADER;
 
 public class RentContent extends Container {
     private final Label rentTitle = new Label("Your rental", RENT_BORDER_HEADER);
@@ -34,7 +34,9 @@ public class RentContent extends Container {
 
     public RentBoard addRow(RentHistory rentHistory) {
         RentBoard rentBoard = new RentBoard(rentHistory);
-        rentDetails.addComponent(0, rentBoard);
+        if (!isRentRowExist(rentBoard.getName())) {
+            rentDetails.addComponent(0, rentBoard);
+        }
         return rentBoard;
     }
 
@@ -53,6 +55,16 @@ public class RentContent extends Container {
             rentInfoMap.put(rentRow.getName(), (RentBoard) rentRow);
         }
         return rentInfoMap;
+    }
+
+    public boolean isRentRowExist(String serialNumber) {
+        for (int i = 0; i < rentDetails.getComponentCount(); i++) {
+            Component rentRow = rentDetails.getComponentAt(i);
+            if (rentRow.getName().equals(serialNumber)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public RentBoard findRentBoardByName(String serialNumber) {

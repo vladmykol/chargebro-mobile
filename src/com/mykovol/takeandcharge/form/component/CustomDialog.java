@@ -10,24 +10,27 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.plaf.Border;
 import com.codename1.ui.plaf.Style;
-import com.mykovol.takeandcharge.form.MainForm;
 
 import static com.codename1.ui.CN.getCurrentForm;
 
 public class CustomDialog {
     private final Dialog dlg = new Dialog("");
-    private final SpanLabel customDialogTitle = new SpanLabel("", "CustomDialogTitle");
     private Container mainContainer;
 
     public CustomDialog(String titleText, String bodyText) {
+        this(titleText, bodyText, true);
+    }
+
+    public CustomDialog(String titleText, String bodyText, boolean disposeOnOutOfBounds) {
         dlg.setDialogUIID("CustomDialog");
-        dlg.setDisposeWhenPointerOutOfBounds(true);
+        dlg.setDisposeWhenPointerOutOfBounds(disposeOnOutOfBounds);
 
         Style dlgStyle = dlg.getDialogStyle();
         dlgStyle.setBorder(Border.createEmpty());
         dlgStyle.setBgTransparency(0);
 //        dlgStyle.setBgColor(0xffffff);
 
+        SpanLabel customDialogTitle = new SpanLabel("", "CustomDialogTitle");
         customDialogTitle.setText(titleText);
         customDialogTitle.setEnabled(false);
 
@@ -109,7 +112,7 @@ public class CustomDialog {
         initStarRankStyle(starRank.getSliderEmptyUnselectedStyle(), emptyStar);
         initStarRankStyle(starRank.getSliderFullSelectedStyle(), fullStar);
         initStarRankStyle(starRank.getSliderFullUnselectedStyle(), fullStar);
-        starRank.setPreferredSize(new Dimension(fullStar.getWidth() * 5, fullStar.getHeight()));
+        starRank.setPreferredSize(new Dimension((int) (fullStar.getWidth() * 4.5f), fullStar.getHeight()));
         return starRank;
     }
 

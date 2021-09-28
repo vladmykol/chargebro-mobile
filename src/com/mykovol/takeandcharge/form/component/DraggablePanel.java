@@ -102,6 +102,9 @@ public class DraggablePanel extends Container {
                 topToolbarPanel.setVisible(false);
                 revalidate();
             });
+            callSerially(()-> {
+                MainForm.get().showRentIsOver();
+            });
         }
     }
 

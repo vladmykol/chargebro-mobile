@@ -268,13 +268,18 @@ public class MainForm extends Form {
         }
     }
 
+    public boolean isRentInProgress() {
+        return !scanButton.isVisible();
+    }
+
     public void removeRentRow(String serialNumber) {
         if (draggablePanel.removeRentRow(serialNumber)) {
-            callSerially(this::showRentIsOver);
+
         }
     }
 
     public void showRentIsOver() {
+        if (!UserService.isLoggedIn()) return;
         final CustomDialog customDialog = new CustomDialog("Rent is over",
                 "Would you like to rate your ChargeBro experience in Telegram Bot?");
         customDialog.addRatingStarts();

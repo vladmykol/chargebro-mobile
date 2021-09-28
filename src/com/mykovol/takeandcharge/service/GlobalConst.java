@@ -32,8 +32,10 @@ import com.codename1.ui.Display;
  */
 public final class GlobalConst {
     public static final boolean FORCE_REMOTE = false;
+    public static final String TEST_STATION = "k14";
 
     public static final String RENT_URL = "/rent";
+    public static final String RENT_REFRESH_URL = RENT_URL + "/refresh";
     public static final String PAY_URL = "/pay/checkout";
     public static final String RENT_HISTORY_URL = RENT_URL + "/history";
     public static final String STATIONS_URL = "/stations";

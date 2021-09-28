@@ -7,10 +7,9 @@ import com.codename1.ui.*;
 import com.codename1.ui.layouts.BoxLayout;
 import com.mykovol.takeandcharge.form.ComingSoonForm;
 import com.mykovol.takeandcharge.form.MainForm;
+import com.mykovol.takeandcharge.service.RentService;
 import com.mykovol.takeandcharge.service.WebSocketClient;
 import com.mykovol.takeandcharge.tools.MainNoBlockingLoader;
-
-import static com.codename1.ui.CN.callSerially;
 
 public class ToolBox extends Container {
     private final MapContainer mapContainer;
@@ -27,17 +26,21 @@ public class ToolBox extends Container {
         refreshButton.setMaterialIcon(FontImage.MATERIAL_LOOP);
         refreshButton.addActionListener(evt -> {
             MainNoBlockingLoader.get().startTimeout(250);
+
             Display.getInstance().vibrate(1);
             NetworkManager.getInstance().shutdownSync();
             NetworkManager.getInstance().start();
-            WebSocketClient.disconnect();
-            WebSocketClient.ensureConnection();
             MainForm.get().refreshRentContent(true);
+            RentService.refreshRentStatus();
+            if (MainForm.get().isRentInProgress()) {
+                WebSocketClient.disconnect();
+                WebSocketClient.ensureConnection();
+            }
             MainForm.get().revalidate();
         });
         reportErrorButton.setMaterialIcon(FontImage.MATERIAL_SUPPORT_AGENT);
         reportErrorButton.addActionListener(evt -> {
-                Display.getInstance().execute("https://t.me/ChargeBro_Bot");
+            Display.getInstance().execute("https://t.me/ChargeBro_Bot");
         });
         showNearestStationsButton.addActionListener(evt -> {
             new ComingSoonForm("Nearest stations", MainForm.get()).show();
