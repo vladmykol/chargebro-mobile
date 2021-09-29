@@ -70,7 +70,6 @@ public class SettingsForm extends Form {
         landPicket.setType(Display.PICKER_TYPE_STRINGS);
 
         landPicket.setStrings("ua", "ru", "en", "default");
-        landPicket.setSelectedString(getLandPrefTranslated());
         landPicket.addActionListener(evt -> {
             if (!getLandPrefTranslated().equals(landPicket.getSelectedString())) {
                 CustomDialog customDialog = new CustomDialog("Warning", "In order to language changes take effect, you need to restart the application. Exit now?", false);
@@ -116,6 +115,7 @@ public class SettingsForm extends Form {
         );
 
         addShowListener(evt -> {
+            landPicket.setSelectedString(getLandPrefTranslated());
             if (UserService.isLoggedIn()) {
                 existButton.setVisible(true);
             } else {

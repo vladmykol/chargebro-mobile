@@ -137,14 +137,16 @@ public class RentConfirmation extends Form {
             });
         });
 
+        Container termsContainer = FlowLayout.encloseCenter(priceHintLabel1,
+                priceHintLabel2,
+                priceHintLabel3,
+                priceHintLabel4,
+                priceHintLabel5,
+                priceHintLabel6,
+                priceHintLinkButton);
+        termsContainer.setScrollableY(false);
         final Container bottomHolder = BoxLayout.encloseY(
-                FlowLayout.encloseCenter(priceHintLabel1,
-                        priceHintLabel2,
-                        priceHintLabel3,
-                        priceHintLabel4,
-                        priceHintLabel5,
-                        priceHintLabel6,
-                        priceHintLinkButton),
+                termsContainer,
                 unlockPowerBankButton,
                 cancelButton
         );

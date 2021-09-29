@@ -137,6 +137,7 @@ public class WalletForm extends Form {
         final Label termsLabel3Space = new Label(" ", "LoginTermsText");
         final Button termsLinkButton = new Button("public offer", "LoginTermsLink");
         final BrowserPopUp termsForm = new BrowserPopUp("Terms&Conditions");
+        termsLabel3Space.setShowEvenIfBlank(true);
         termsForm.setFadeBackDownTo(this);
         termsLinkButton.addActionListener(evt -> {
             CommonCode.removeTransitionsTemporarily(this);

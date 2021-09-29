@@ -753,8 +753,7 @@ RentConfirmationHintNoCenterGreen {
 }
 
 RentConfirmationLink {
-    cn1-derive: RentConfirmationHint;
-    padding: 0.5mm 0mm;
+    cn1-derive: RentConfirmationHintNoCenter;
     color: #0095A0;
 }
 
