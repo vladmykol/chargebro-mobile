@@ -18,6 +18,24 @@ native/internal_tmp/
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/gradle.xml
+.idea/workspace.xml
 *.iws
 /out/
 atlassian-ide-plugin.xml
+
+# Certificates and keystores (NEVER commit these)
+*.p12
+*.cer
+*.pem
+*.key
+*.ks
+*.jks
+*.mobileprovision
+iosCerts/
+AndroidCert/
+
+# Sensitive config (use codenameone_settings.properties.example instead)
+codenameone_settings.properties
+
+# NetBeans private
+nbproject/private/
