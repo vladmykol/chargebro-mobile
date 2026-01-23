@@ -1,14 +1,12 @@
 # ChargeBro Mobile App
 
 <p align="center">
-  <img src="docs/logo.png" alt="ChargeBro Logo" width="100"/>
+  <img src="docs/app-mockup.png" alt="ChargeBro App" height="400"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/hero-banner.png" alt="ChargeBro Station" height="250"/>
 </p>
 
 Cross-platform mobile application for powerbank sharing service, built with [Codename One](https://www.codenameone.com/).
-
-<p align="center">
-  <img src="docs/hero-banner.png" alt="ChargeBro - Charging Station and App" width="600"/>
-</p>
 
 > **Note:** This project was developed in 2019-2020 as part of a startup that is no longer active. The code is shared for educational purposes and as a portfolio piece.
 
