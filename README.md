@@ -1,10 +1,11 @@
 # ChargeBro Mobile App
 
-<p align="center">
-  <img src="docs/app-mockup.png" alt="ChargeBro App" height="400"/>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/hero-banner.png" alt="ChargeBro Station" height="250"/>
-</p>
+<div align="center">
+  <img src="docs/screen-find.png" alt="Map View" height="350"/>
+  <img src="docs/screen-take.jpg" alt="Active Rental" height="350"/>
+  <img src="docs/screen-charge.png" alt="Menu" height="350"/>
+  <img src="docs/screen-track.jpg" alt="Menu" height="350"/>
+</div>
 
 Cross-platform mobile application for powerbank sharing service, built with [Codename One](https://www.codenameone.com/).
 
