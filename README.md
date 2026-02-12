@@ -9,7 +9,7 @@
 
 Cross-platform mobile application for powerbank sharing service, built with [Codename One](https://www.codenameone.com/).
 
-> **Note:** This project was developed in 2019-2020 as part of a startup that is no longer active. The code is shared for educational purposes and as a portfolio piece.
+> **Note:** This project was developed in 2020–2021 as part of a startup that is no longer active. It is not actively maintained. The code is shared for educational purposes and as a portfolio piece.
 
 ## Features
 
@@ -78,4 +78,4 @@ This project is provided as-is for educational purposes. Feel free to use it as 
 
 ## Author
 
-Developed by [Vlad Mykol](https://vladmykol.com/) ([GitHub](https://github.com/vladmykol)) in 2019-2020.
+Developed by [Vlad Mykol](https://vladmykol.com/) ([GitHub](https://github.com/vladmykol)) in 2020–2021.
